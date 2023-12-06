@@ -22,4 +22,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\Search\Controllers\" />
+    <Folder Include="Modules\Search\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Beyond.Shared\Beyond.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

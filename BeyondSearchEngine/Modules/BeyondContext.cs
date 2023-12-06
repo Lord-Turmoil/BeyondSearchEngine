@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BeyondSearchEngine.Modules
+namespace BeyondSearchEngine.Modules;
+
+public class BeyondContext : DbContext
 {
-    public class BeyondContext : DbContext
+    public BeyondContext(DbContextOptions<BeyondContext> options) : base(options)
     {
-        public BeyondContext(DbContextOptions<BeyondContext> options) : base(options) { }
     }
 }
