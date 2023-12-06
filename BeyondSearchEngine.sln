@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beyond.Shared", "Beyond.Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beyond.SearchEngine", "Beyond.SearchEngine\Beyond.SearchEngine.csproj", "{58325037-B0AA-40C6-A672-7AA78A958364}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndexTest", "IndexTest\IndexTest.csproj", "{6B83FD92-BFA6-49A4-8D18-C62C5E361B54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B83FD92-BFA6-49A4-8D18-C62C5E361B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B83FD92-BFA6-49A4-8D18-C62C5E361B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B83FD92-BFA6-49A4-8D18-C62C5E361B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B83FD92-BFA6-49A4-8D18-C62C5E361B54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
