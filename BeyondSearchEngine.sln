@@ -5,9 +5,9 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{27D70702-4BB1-49EC-B134-03EEE6B76065}"
 	ProjectSection(SolutionItems) = preProject
-		Author.json = Author.json
-		Institution.json = Institution.json
-		Work.json = Work.json
+		Misc\Author.json = Misc\Author.json
+		Misc\Institution.json = Misc\Institution.json
+		Misc\Work.json = Misc\Work.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E53EA48E-38F4-4D02-BFDD-08D9C8304DBD}"
@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beyond.Shared", "Beyond.Shared\Beyond.Shared.csproj", "{88F73EF6-0560-4076-9A7F-B8E03E0B5A75}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beyond.Spider", "Beyond.Spider\Beyond.Spider.csproj", "{BCB23039-EBDE-4B9A-B003-70E7431A1B22}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beyond.SearchEngine", "Beyond.SearchEngine\Beyond.SearchEngine.csproj", "{58325037-B0AA-40C6-A672-7AA78A958364}"
 EndProject
@@ -33,10 +31,6 @@ Global
 		{88F73EF6-0560-4076-9A7F-B8E03E0B5A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88F73EF6-0560-4076-9A7F-B8E03E0B5A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88F73EF6-0560-4076-9A7F-B8E03E0B5A75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCB23039-EBDE-4B9A-B003-70E7431A1B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCB23039-EBDE-4B9A-B003-70E7431A1B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCB23039-EBDE-4B9A-B003-70E7431A1B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCB23039-EBDE-4B9A-B003-70E7431A1B22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58325037-B0AA-40C6-A672-7AA78A958364}.Release|Any CPU.ActiveCfg = Release|Any CPU
