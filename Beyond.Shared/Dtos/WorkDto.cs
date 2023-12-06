@@ -34,26 +34,31 @@ class WorkDto
 
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }
+
     [JsonIgnore]
     public string Concepts => string.Join(";", ConceptList.Select(c => c.ToString()));
 
     [JsonProperty(PropertyName = "keywords")]
     public List<string> KeywordList { get; set; }
+
     [JsonIgnore]
     public string Keywords => string.Join(",", KeywordList);
 
     [JsonProperty(PropertyName = "related_works")]
     public List<string> RelatedWorkList { get; set; }
+
     [JsonIgnore]
     public string RelatedWorks => string.Join(",", RelatedWorkList);
 
     [JsonProperty(PropertyName = "referenced_works")]
     public List<string> ReferencedWorkList { get; set; }
+
     [JsonIgnore]
     public string ReferencedWorks => string.Join(",", ReferencedWorkList);
 
     [JsonProperty(PropertyName = "authors")]
     public List<AuthorData> AuthorList { get; set; }
+
     [JsonIgnore]
     public string Authors => string.Join(";", AuthorList.Select(a => a.ToString()));
 

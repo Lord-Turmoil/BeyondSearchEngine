@@ -34,11 +34,13 @@ class InstitutionDto
 
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }
+
     [JsonIgnore]
     public string Concepts => string.Join(";", ConceptList.Select(c => c.ToString()));
 
     [JsonProperty(PropertyName = "associated_institutions")]
     public List<AssociatedInstitutionData> AssociatedInstitutionList { get; set; }
+
     [JsonIgnore]
     public string AssociatedInstitutions => string.Join(";", AssociatedInstitutionList.Select(i => i.ToString()));
 

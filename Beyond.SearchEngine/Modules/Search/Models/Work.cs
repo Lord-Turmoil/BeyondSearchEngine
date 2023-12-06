@@ -49,10 +49,10 @@ public class Work
     /***               Relations              ***/
 
     /// <summary>
-    ///     It is the area of the work.
+    ///     It is the area of the work. <see cref="ConceptData" />
     ///     It is stored as a string of semi-colon separated concepts.
-    ///     id,name;id,name;...
-    ///     C86803240,Computer Science;C90856448,Zoology
+    ///     id,name,level,score;id,name,level,score;...
+    ///     C86803240,Computer Science,0,64.3;C90856448,Zoology,1,32.7
     /// </summary>
     public string Concepts { get; set; }
 

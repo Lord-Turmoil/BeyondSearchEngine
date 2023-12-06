@@ -14,6 +14,10 @@ public class AssociatedInstitutionData
         Relation = values[4];
     }
 
+    public AssociatedInstitutionData()
+    {
+    }
+
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
 
