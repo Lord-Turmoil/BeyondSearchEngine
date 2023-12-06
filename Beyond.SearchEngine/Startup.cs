@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Modules;
 using Tonisoft.AspExtensions.Module;
 using BeyondSearchEngine.Modules;
 using Microsoft.EntityFrameworkCore;

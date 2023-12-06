@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace BeyondSearchEngine.Modules;
+namespace Beyond.SearchEngine.Modules;
 
 public class AutoMapperProfile : MapperConfigurationExpression
 {

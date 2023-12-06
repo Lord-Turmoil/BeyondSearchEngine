@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Beyond.Shared.Data;
 
-namespace BeyondSearchEngine.Modules.Search.Models;
+namespace Beyond.SearchEngine.Modules.Search.Models;
 
 public class Institution
 {

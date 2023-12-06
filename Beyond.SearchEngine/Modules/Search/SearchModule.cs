@@ -1,6 +1,6 @@
 ﻿using Tonisoft.AspExtensions.Module;
 
-namespace BeyondSearchEngine.Modules.Search;
+namespace Beyond.SearchEngine.Modules.Search;
 
 public class SearchModule : BaseModule
 {

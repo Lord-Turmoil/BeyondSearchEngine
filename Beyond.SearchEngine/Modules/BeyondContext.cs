@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BeyondSearchEngine.Modules;
+namespace Beyond.SearchEngine.Modules;
 
 public class BeyondContext : DbContext
 {
