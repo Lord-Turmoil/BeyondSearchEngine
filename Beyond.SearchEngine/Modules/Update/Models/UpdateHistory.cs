@@ -5,18 +5,18 @@ namespace Beyond.SearchEngine.Modules.Update.Models;
 
 public class UpdateHistory
 {
-    public DateTime? Completed;
+    public DateTime? Completed { get; set; }
 
-    public DateTime Created;
+    public DateTime Created  { get; set; }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id;
+    public int Id { get; set; }
 
     [Column(TypeName = "varchar(15)")]
-    public string Type;
+    public string Type { get; set; }
 
-    public DateOnly UpdatedTime;
+    public DateOnly UpdatedTime { get; set; }
 
     public bool IsCompleted => Completed != null;
 }
