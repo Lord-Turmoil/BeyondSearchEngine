@@ -2,7 +2,7 @@
 
 namespace Beyond.Shared.Indexer;
 
-class ManifestEntry
+public class ManifestEntry
 {
     private const string UrlPrefix = "s3://openalex/data/";
 
@@ -20,8 +20,8 @@ class ManifestEntry
     {
         string url = (string)json["url"];
         int pos = url.IndexOf("updated_date=");
-        RelativePath = url.Substring(pos, 23);
-        UpdatedDate = DateOnly.ParseExact(RelativePath.Substring(pos + 13, 10), "yyyy-MM-dd", null);
+        RelativePath = url.Substring(pos);
+        UpdatedDate = DateOnly.ParseExact(RelativePath.Substring(13, 10), "yyyy-MM-dd", null);
 
         var meta = json["meta"] as JObject;
         RecordCount = (int)meta["record_count"];

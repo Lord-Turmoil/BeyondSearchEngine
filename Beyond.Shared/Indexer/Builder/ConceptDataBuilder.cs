@@ -18,10 +18,10 @@ static class ConceptDataBuilder
     public static ConceptData Build(JObject json)
     {
         return new ConceptData {
-            Id = json["id"].ToStringNotNull().OpenAlexId(),
-            Name = json["display_name"].ToStringNotNull(),
-            Level = json["level"].ToIntNotNull(),
-            Score = json["score"].ToDoubleNotNull()
+            Id = json["id"].ToStringNotNull("id").OpenAlexId(),
+            Name = json["display_name"].ToStringNotNull("display_name"),
+            Level = json["level"].ToIntNotNull("level"),
+            Score = json["score"].ToDoubleNotNull("score")
         };
     }
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "IndexTest": {
+      "commandName": "Project",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}

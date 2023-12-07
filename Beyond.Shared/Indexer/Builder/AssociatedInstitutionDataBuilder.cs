@@ -8,12 +8,11 @@ static class AssociatedInstitutionDataBuilder
 {
     public static AssociatedInstitutionData Build(JObject json)
     {
-        string id = json["id"].ToStringNotNull();
         return new AssociatedInstitutionData {
-            Id = id.Substring(id.LastIndexOf('/') + 1),
-            Name = json["display_name"].ToStringNotNull(),
-            Type = json["type"].ToStringNotNull(),
-            Relation = json["type"].ToStringNotNull()
+            Id = json["id"].ToStringNotNull("id").OpenAlexId(),
+            Name = json["display_name"].ToStringNotNull("display_name"),
+            Type = json["type"].ToStringNotNull("type"),
+            Relation = json["type"].ToStringNotNull("type")
         };
     }
 }

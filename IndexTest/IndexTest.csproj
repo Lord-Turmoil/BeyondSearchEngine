@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Beyond.Shared\Beyond.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

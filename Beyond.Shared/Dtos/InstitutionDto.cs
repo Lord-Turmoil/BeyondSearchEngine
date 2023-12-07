@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
-class InstitutionDto
+public class InstitutionDto
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }

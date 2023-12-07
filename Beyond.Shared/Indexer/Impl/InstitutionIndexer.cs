@@ -4,27 +4,44 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Impl;
 
-class InstitutionIndexer : OpenAlexIndexer
+public class InstitutionIndexer : OpenAlexIndexer
 {
-    public InstitutionIndexer(string dataPath, string tempPath, DateOnly beginDate)
-        : base(dataPath, tempPath, beginDate)
+    public InstitutionIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate)
+        : base(dataPath, tempPath, beginDate, endDate)
     {
+        _logger.Info("Indexing institutions");
     }
 
     public List<InstitutionDto>? NextDataChunk()
     {
         if (NeedNextManifest())
         {
-            currentManifestEntry = NextManifestEntry();
-            if (currentManifestEntry == null)
+            _currentManifestEntry = NextManifestEntry();
+            if (_currentManifestEntry == null)
             {
+                _logger.Info("No more manifest entries");
                 return null;
             }
         }
 
-        string archivePath = Path.Join(_dataPath, currentManifestEntry!.RelativePath);
+        string archivePath = Path.Join(_dataPath, _currentManifestEntry!.RelativePath);
         List<JObject> data = ExtractData(archivePath);
+        _currentManifestEntry = null;
 
-        return data.Select(InstitutionDtoBuilder.Build).ToList();
+        List<InstitutionDto> dtos = new List<InstitutionDto>();
+        foreach (JObject obj in data)
+        {
+            try
+            {
+                InstitutionDto dto = InstitutionDtoBuilder.Build(obj);
+                dtos.Add(dto);
+            }
+            catch (Exception e)
+            {
+                _logger.Log($"Failed to build institution: {e.Message}");
+            }
+        }
+
+        return dtos;
     }
 }

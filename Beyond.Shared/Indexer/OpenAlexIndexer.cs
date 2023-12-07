@@ -3,26 +3,29 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer;
 
-class OpenAlexIndexer
+public class OpenAlexIndexer
 {
     private readonly DateOnly _beginDate;
+    private readonly DateOnly _endDate;
 
     private readonly List<ManifestEntry> _manifest;
     private readonly string _tempPath;
-    protected string _dataPath;
+    protected readonly string _dataPath;
 
     private int _nextManifestEntryIndex;
 
-    protected ManifestEntry? currentManifestEntry;
+    protected ManifestEntry? _currentManifestEntry;
+
+    protected IndexLogger _logger;
 
     /// <summary>
     ///     Index all data in a given path.
     /// </summary>
     /// <param name="dataPath">Should be an absolute path.</param>
     /// <param name="tempPath">Temporary path for extracted data.</param>
-    public OpenAlexIndexer(string dataPath, string tempPath, DateOnly beginDate)
+    protected OpenAlexIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate)
     {
-        if (dataPath.StartsWith("/"))
+        if (dataPath.StartsWith('/'))
         {
             throw new IndexException($"Data path must be absolute: {dataPath}");
         }
@@ -30,8 +33,22 @@ class OpenAlexIndexer
         _dataPath = dataPath;
         _tempPath = tempPath;
         _beginDate = beginDate;
+        _endDate = endDate;
 
-        _manifest = Manifest.ReadManifest(_dataPath);
+        _logger = new IndexLogger("index.log");
+
+        try
+        {
+            _manifest = Manifest.ReadManifest(_dataPath);
+        }
+        catch (Exception e)
+        {
+            _logger.Log($"Failed to read manifest: {e.Message}");
+            throw new IndexException($"Failed to read manifest: {e.Message}", e);
+        }
+
+        _logger.Info($"Processing data from {_beginDate} to {_endDate}");
+        _logger.LogSub($"Found {_manifest.Count} entries in manifest");
     }
 
     /// <summary>
@@ -49,9 +66,14 @@ class OpenAlexIndexer
         do
         {
             entry = _manifest[_nextManifestEntryIndex++];
-        } while (_nextManifestEntryIndex < _manifest.Count && entry.UpdatedDate < _beginDate);
+        } while (_nextManifestEntryIndex < _manifest.Count && !IsInDateRange(entry.UpdatedDate));
 
-        return entry.UpdatedDate < _beginDate ? null : entry;
+        return IsInDateRange(entry.UpdatedDate) ? entry : null;
+    }
+
+    private bool IsInDateRange(DateOnly date)
+    {
+        return date >= _beginDate && date <= _endDate;
     }
 
 
@@ -69,17 +91,12 @@ class OpenAlexIndexer
             throw new IndexException($"Expected 1 file in archive, found {files.Count()}");
         }
 
-        var data = JsonConvert.DeserializeObject<List<JObject>>(File.ReadAllText(files.First()));
-        return data ?? throw new IndexException($"Empty data file: {files.First()}");
+        string dataFilename = files.First();
+        return File.ReadAllLines(dataFilename).Select(JObject.Parse).ToList();
     }
 
     protected bool NeedNextManifest()
     {
-        return currentManifestEntry == null;
-    }
-
-    protected T NotNull<T>(T? value) where T : class
-    {
-        return value ?? throw new IndexException("Unexpected null value");
+        return _currentManifestEntry == null;
     }
 }
