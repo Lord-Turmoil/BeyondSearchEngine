@@ -5,8 +5,8 @@ namespace Beyond.Shared.Indexer;
 
 public class OpenAlexIndexer
 {
-    private readonly DateOnly _beginDate;
-    private readonly DateOnly _endDate;
+    public DateOnly BeginDate { get; }
+    public DateOnly EndDate { get; }
 
     private readonly List<ManifestEntry> _manifest;
     private readonly string _tempPath;
@@ -32,8 +32,8 @@ public class OpenAlexIndexer
 
         _dataPath = dataPath;
         _tempPath = tempPath;
-        _beginDate = beginDate;
-        _endDate = endDate;
+        BeginDate = beginDate;
+        EndDate = endDate;
 
         _logger = new IndexLogger("index.log");
 
@@ -47,8 +47,18 @@ public class OpenAlexIndexer
             throw new IndexException($"Failed to read manifest: {e.Message}", e);
         }
 
-        _logger.Info($"Processing data from {_beginDate} to {_endDate}");
+        _logger.Info($"Processing data from {BeginDate} to {EndDate}");
         _logger.LogSub($"Found {_manifest.Count} entries in manifest");
+    }
+
+    public ManifestEntry? CurrentManifestEntry()
+    {
+        if (_currentManifestEntry == null)
+        {
+            _currentManifestEntry = NextManifestEntry();
+        }
+
+        return _currentManifestEntry;
     }
 
     /// <summary>
@@ -73,7 +83,7 @@ public class OpenAlexIndexer
 
     private bool IsInDateRange(DateOnly date)
     {
-        return date >= _beginDate && date <= _endDate;
+        return date >= BeginDate && date <= EndDate;
     }
 
 

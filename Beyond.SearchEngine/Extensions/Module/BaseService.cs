@@ -6,17 +6,16 @@ using AutoMapper;
 
 namespace Tonisoft.AspExtensions.Module;
 
-public class BaseService
+public class BaseService<TService>
 {
+    protected readonly ILogger<TService> _logger;
     protected readonly IMapper _mapper;
-    protected readonly IServiceProvider _provider;
     protected readonly IUnitOfWork _unitOfWork;
 
-
-    protected BaseService(IServiceProvider provider, IUnitOfWork unitOfWork, IMapper mapper)
+    protected BaseService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<TService> logger)
     {
-        _provider = provider;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _logger = logger;
     }
 }

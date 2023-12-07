@@ -64,9 +64,9 @@ public class Institution
     public int WorksCount { get; set; }
     public int CitationCount { get; set; }
 
-    
+
     /***               Other                   ***/
-    
+
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
 }

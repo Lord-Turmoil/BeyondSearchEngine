@@ -1,12 +1,10 @@
-﻿using System.Text;
-using Arch.EntityFrameworkCore.UnitOfWork;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules;
-using Tonisoft.AspExtensions.Module;
-using BeyondSearchEngine.Modules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Tonisoft.AspExtensions.Cors;
+using Tonisoft.AspExtensions.Module;
 
 namespace BeyondSearchEngine;
 
@@ -34,7 +32,6 @@ public class Startup
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "BeyondSearch.Api", Version = "v1" });
         });
 
-
         // AutoMapper
         var autoMapperConfig = new MapperConfiguration(config => { config.AddProfile(new AutoMapperProfile()); });
         services.AddSingleton(autoMapperConfig.CreateMapper());
@@ -54,15 +51,16 @@ public class Startup
                         }
                         else
                         {
-                            foreach (var origin in corsOptions.Origins)
+                            foreach (string origin in corsOptions.Origins)
                             {
                                 policy.WithOrigins(origin);
                             }
+
+                            policy.AllowCredentials();
                         }
 
                         policy.AllowAnyHeader()
                             .AllowAnyMethod();
-                        //.AllowCredentials();
                     });
             });
         }
@@ -81,7 +79,7 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BadgeBoard.Api v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BeyondSearch.Api v1"));
         }
 
         app.UseHttpsRedirection();

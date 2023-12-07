@@ -7,6 +7,10 @@ namespace Beyond.Shared.Data;
 /// </summary>
 public class AuthorData
 {
+    public AuthorData()
+    {
+    }
+
     public AuthorData(string data)
     {
         string[] values = data.Split(',');
@@ -17,16 +21,16 @@ public class AuthorData
     }
 
     [JsonProperty(PropertyName = "position")]
-    public string Position { get; set; }
+    public string Position { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "orcid")]
-    public string OrcId { get; set; }
+    public string OrcId { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public override string ToString()
     {

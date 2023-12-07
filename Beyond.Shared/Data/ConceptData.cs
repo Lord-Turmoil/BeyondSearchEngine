@@ -4,6 +4,10 @@ namespace Beyond.Shared.Data;
 
 public class ConceptData
 {
+    public ConceptData()
+    {
+    }
+
     public ConceptData(string data)
     {
         string[] values = data.Split(',');
@@ -13,15 +17,12 @@ public class ConceptData
         Score = double.Parse(values[3]);
     }
 
-    public ConceptData()
-    {
-    }
 
     [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "level")]
     public int Level { get; set; }

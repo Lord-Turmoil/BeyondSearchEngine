@@ -4,6 +4,10 @@ namespace Beyond.Shared.Data;
 
 public class InstitutionData
 {
+    public InstitutionData()
+    {
+    }
+
     public InstitutionData(string data)
     {
         string[] values = data.Split(',');
@@ -14,16 +18,16 @@ public class InstitutionData
     }
 
     [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "type")]
-    public string Type { get; set; }
+    public string Type { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "country")]
-    public string Country { get; set; }
+    public string Country { get; set; } = string.Empty;
 
     public override string ToString()
     {
