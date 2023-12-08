@@ -5,10 +5,6 @@ namespace Beyond.SearchEngine.Modules.Update.Models;
 
 public class UpdateHistory
 {
-    public DateTime? Completed { get; set; }
-
-    public DateTime Created { get; set; }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
@@ -18,6 +14,12 @@ public class UpdateHistory
 
     [Column(TypeName = "char(12)")]
     public string UpdatedTime { get; set; }
+
+    public int RecordCount { get; set; } = 0;
+
+    public DateTime? Completed { get; set; }
+
+    public DateTime Created { get; set; }
 
     public bool IsCompleted => Completed != null;
 }

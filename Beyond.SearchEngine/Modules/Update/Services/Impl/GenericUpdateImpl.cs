@@ -22,7 +22,7 @@ public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImp
     {
         if (!UpdateMutex.BeginUpdate(type))
         {
-            _logger.LogError($"Already updating {type}, failed to initiate new update");
+            _logger.LogError("Already updating {type}, failed to initiate new update", type);
             return;
         }
 
@@ -70,6 +70,7 @@ public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImp
             _logger.LogInformation("Updating {type} at {UpdatedDate}", type, entry.UpdatedDate);
 
             List<TDto>? chunk = indexer.NextDataChunk();
+            int recordCount = 0;
             if (chunk != null)
             {
                 foreach (TDto dto in chunk)
@@ -78,6 +79,7 @@ public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImp
                     {
                         TModel model = _mapper.Map<TDto, TModel>(dto);
                         await repo.InsertAsync(model);
+                        recordCount++;
                     }
                     catch (Exception e)
                     {
@@ -92,7 +94,7 @@ public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImp
                 _logger.LogWarning("Empty chunk for {entry}", entry);
             }
 
-            await PostUpdate(type, entry);
+            await PostUpdate(type, entry, recordCount);
 
             result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
         }

@@ -27,7 +27,7 @@ public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
         JToken? lastKnownInstitution = json["last_known_institution"];
         if (lastKnownInstitution != null)
         {
-            JObject? data = lastKnownInstitution.ToObject<JObject>();
+            var data = lastKnownInstitution.ToObject<JObject>();
             if (data != null)
             {
                 dto.InstitutionData = new InstitutionData {

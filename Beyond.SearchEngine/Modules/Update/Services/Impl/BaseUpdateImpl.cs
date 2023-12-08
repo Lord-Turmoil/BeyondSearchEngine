@@ -44,7 +44,7 @@ public class BaseUpdateImpl
         return true;
     }
 
-    private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time)
+    private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time, int recordCount)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
         string timeString = time.ToString("yyyy-MM-dd");
@@ -61,6 +61,7 @@ public class BaseUpdateImpl
             return false;
         }
 
+        history.RecordCount = recordCount;
         history.Completed = DateTime.UtcNow;
 
         return true;
@@ -80,20 +81,20 @@ public class BaseUpdateImpl
             return -1;
         }
 
-        if (!await AddUpdateHistory(type, entry.UpdatedDate))
+        if (await AddUpdateHistory(type, entry.UpdatedDate))
         {
-            _logger.LogWarning($"{type} updated at {entry.UpdatedDate} is already updated");
-            return 0;
+            return 1;
         }
 
-        return 1;
+        _logger.LogWarning("{type} updated at {UpdatedDate} is already updated", type, entry.UpdatedDate);
+        return 0;
     }
 
-    protected async ValueTask PostUpdate(string type, ManifestEntry entry)
+    protected async ValueTask PostUpdate(string type, ManifestEntry entry, int recordCount)
     {
-        if (!await CompleteUpdateHistory(type, entry.UpdatedDate))
+        if (!await CompleteUpdateHistory(type, entry.UpdatedDate, recordCount))
         {
-            _logger.LogError($"Failed to complete update of {type} at {entry.UpdatedDate}");
+            _logger.LogError("Failed to complete update of {type} at {UpdatedDate}", type, entry.UpdatedDate);
         }
         else
         {
