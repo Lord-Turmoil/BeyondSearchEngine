@@ -5,7 +5,6 @@ using Tonisoft.AspExtensions.Module;
 
 namespace Beyond.SearchEngine.Modules.Update;
 
-
 public class UpdateModule : BaseModule
 {
     public override IServiceCollection RegisterModule(IServiceCollection services)

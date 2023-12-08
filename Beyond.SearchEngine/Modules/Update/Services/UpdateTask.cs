@@ -7,15 +7,21 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IMapper _mapper;
     private readonly ILogger<UpdateTask> _logger;
+    private readonly IMapper _mapper;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public UpdateTask(IServiceScopeFactory serviceScopeFactory, IMapper mapper, ILogger<UpdateTask> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _mapper = mapper;
         _logger = logger;
+    }
+
+
+    public void Dispose()
+    {
+        // Nothing for now.
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -30,12 +36,6 @@ public class UpdateTask : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
-
-    public void Dispose()
-    {
-        // Nothing for now.
-    }
-
     public Task UpdateInstitutionAsync(string type, InitiateUpdateDto dto)
     {
         _logger.LogInformation($"Update of {type} begins");
@@ -45,7 +45,7 @@ public class UpdateTask : IHostedService, IDisposable
 
     private async Task UpdateInstitution(string type, InitiateUpdateDto dto)
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        using IServiceScope scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var impl = new InstitutionUpdateImpl(unitOfWork, _mapper, _logger);
 

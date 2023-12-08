@@ -1,22 +1,19 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer;
 
 public class OpenAlexIndexer
 {
-    public DateOnly BeginDate { get; }
-    public DateOnly EndDate { get; }
+    protected readonly string _dataPath;
 
     private readonly List<ManifestEntry> _manifest;
     private readonly string _tempPath;
-    protected readonly string _dataPath;
-
-    private int _nextManifestEntryIndex;
 
     protected ManifestEntry? _currentManifestEntry;
 
     protected IndexLogger _logger;
+
+    private int _nextManifestEntryIndex;
 
     /// <summary>
     ///     Index all data in a given path.
@@ -50,6 +47,9 @@ public class OpenAlexIndexer
         _logger.Info($"Processing data from {BeginDate} to {EndDate}");
         _logger.LogSub($"Found {_manifest.Count} entries in manifest");
     }
+
+    public DateOnly BeginDate { get; }
+    public DateOnly EndDate { get; }
 
     public ManifestEntry? CurrentManifestEntry()
     {

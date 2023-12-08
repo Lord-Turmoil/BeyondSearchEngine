@@ -27,7 +27,7 @@ public class InstitutionIndexer : OpenAlexIndexer
         List<JObject> data = ExtractData(archivePath);
         _currentManifestEntry = null;
 
-        List<InstitutionDto> dtos = new List<InstitutionDto>();
+        var dtos = new List<InstitutionDto>();
         foreach (JObject obj in data)
         {
             try

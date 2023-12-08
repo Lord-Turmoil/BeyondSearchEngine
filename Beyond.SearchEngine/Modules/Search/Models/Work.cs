@@ -90,6 +90,7 @@ public class Work
     ///     author;author;author;...
     /// </summary>
     public string Authors { get; set; }
+
     public List<AuthorData> AuthorList => Authors.Split(';').Select(x => new AuthorData(x)).ToList();
 
 

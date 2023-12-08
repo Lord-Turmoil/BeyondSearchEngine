@@ -2,7 +2,6 @@
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Models;
-using Beyond.SearchEngine.Modules.Update.Services.Impl;
 using Beyond.SearchEngine.Modules.Update.Services.Utils;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;

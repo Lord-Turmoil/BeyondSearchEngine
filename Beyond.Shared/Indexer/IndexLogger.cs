@@ -2,7 +2,7 @@
 
 public class IndexLogger
 {
-    private string _logPath;
+    private readonly string _logPath;
 
     public IndexLogger(string logPath)
     {
