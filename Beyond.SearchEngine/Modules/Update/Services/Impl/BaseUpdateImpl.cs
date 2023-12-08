@@ -18,16 +18,23 @@ public class BaseUpdateImpl
     protected async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
-        if (await repo.ExistsAsync(x => x.Type.Equals(type) && x.UpdatedTime.Equals(time)))
+        string timeString = time.ToString("yyyy-MM-dd");
+        UpdateHistory? history = await repo.GetFirstOrDefaultAsync(
+            predicate: x => x.Type == type && x.UpdatedTime.Equals(timeString));
+        if (history != null && history.IsCompleted)
         {
             return false;
         }
 
-        await repo.InsertAsync(new UpdateHistory {
-            Type = type,
-            UpdatedTime = time,
-            Created = DateTime.UtcNow
-        });
+        if (history == null)
+        {
+            await repo.InsertAsync(new UpdateHistory {
+                Type = type,
+                UpdatedTime = timeString,
+                Created = DateTime.UtcNow,
+                Completed = null
+            });
+        }
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -37,8 +44,10 @@ public class BaseUpdateImpl
     protected async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
+        string timeString = time.ToString("yyyy-MM-dd");
         UpdateHistory? history = await repo.GetFirstOrDefaultAsync(predicate:
-            x => x.Type.Equals(type) && x.UpdatedTime.Equals(time));
+            x => x.Type.Equals(type) && x.UpdatedTime.Equals(timeString),
+            disableTracking: false);
         if (history == null)
         {
             return false;

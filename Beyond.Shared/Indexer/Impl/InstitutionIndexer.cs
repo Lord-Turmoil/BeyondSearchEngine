@@ -16,8 +16,7 @@ public class InstitutionIndexer : OpenAlexIndexer
     {
         if (NeedNextManifest())
         {
-            _currentManifestEntry = NextManifestEntry();
-            if (_currentManifestEntry == null)
+            if (NextManifestEntry() == null)
             {
                 _logger.Info("No more manifest entries");
                 return null;

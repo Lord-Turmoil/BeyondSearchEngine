@@ -14,7 +14,7 @@ public class Institution
     [Column(TypeName = "char(12)")]
     public string Id { get; set; }
 
-    [Column(TypeName = "varchar(127)")]
+    [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
 
@@ -26,13 +26,18 @@ public class Institution
     [Column(TypeName = "char(8)")]
     public string Country { get; set; }
 
-    [Column(TypeName = "varchar(63)")]
+    /*
+     * These urls might be long.
+     * Reference: https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+     */
+
+    [Column(TypeName = "varchar(2083)")]
     public string HomepageUrl { get; set; }
 
-    [Column(TypeName = "varchar(127)")]
+    [Column(TypeName = "varchar(2083)")]
     public string ImageUrl { get; set; }
 
-    [Column(TypeName = "varchar(127)")]
+    [Column(TypeName = "varchar(2083)")]
     public string ThumbnailUrl { get; set; }
 
 
@@ -43,6 +48,7 @@ public class Institution
     /// </summary>
     public string Concepts { get; set; }
 
+    [NotMapped]
     public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
 
 
@@ -55,6 +61,7 @@ public class Institution
     /// </summary>
     public string AssociatedInstitutions { get; set; }
 
+    [NotMapped]
     public List<AssociatedInstitutionData> AssociatedInstitutionList =>
         AssociatedInstitutions.Split(';').Select(i => new AssociatedInstitutionData(i)).ToList();
 

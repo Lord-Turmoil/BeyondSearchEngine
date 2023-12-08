@@ -1,6 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules;
+using Beyond.SearchEngine.Modules.Update.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Tonisoft.AspExtensions.Cors;
@@ -64,6 +65,11 @@ public class Startup
                     });
             });
         }
+
+        // Background task
+        services.AddSingleton<UpdateTask>();
+        services.AddHostedService<UpdateTask>(provider
+            => provider.GetRequiredService<UpdateTask>());
     }
 
 

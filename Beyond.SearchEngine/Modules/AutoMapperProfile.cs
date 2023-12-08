@@ -9,6 +9,8 @@ public class AutoMapperProfile : MapperConfigurationExpression
     public AutoMapperProfile()
     {
         // Update module.
-        CreateMap<Institution, InstitutionDto>().ReverseMap();
+        CreateMap<InstitutionDto, Institution>()
+            .ForMember(inst => inst.AssociatedInstitutionList, act => act.Ignore())
+            .ReverseMap();
     }
 }

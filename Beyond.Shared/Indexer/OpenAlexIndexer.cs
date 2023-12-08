@@ -25,7 +25,7 @@ public class OpenAlexIndexer
     /// <param name="tempPath">Temporary path for extracted data.</param>
     protected OpenAlexIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate)
     {
-        if (dataPath.StartsWith('/'))
+        if (!Path.IsPathRooted(dataPath))
         {
             throw new IndexException($"Data path must be absolute: {dataPath}");
         }
@@ -55,7 +55,7 @@ public class OpenAlexIndexer
     {
         if (_currentManifestEntry == null)
         {
-            _currentManifestEntry = NextManifestEntry();
+            return NextManifestEntry();
         }
 
         return _currentManifestEntry;
@@ -65,7 +65,7 @@ public class OpenAlexIndexer
     ///     Get next manifest entry. null if no more entries.
     /// </summary>
     /// <returns></returns>
-    protected ManifestEntry? NextManifestEntry()
+    public ManifestEntry? NextManifestEntry()
     {
         if (_nextManifestEntryIndex >= _manifest.Count)
         {
@@ -78,7 +78,8 @@ public class OpenAlexIndexer
             entry = _manifest[_nextManifestEntryIndex++];
         } while (_nextManifestEntryIndex < _manifest.Count && !IsInDateRange(entry.UpdatedDate));
 
-        return IsInDateRange(entry.UpdatedDate) ? entry : null;
+        _currentManifestEntry = IsInDateRange(entry.UpdatedDate) ? entry : null;
+        return _currentManifestEntry;
     }
 
     private bool IsInDateRange(DateOnly date)

@@ -7,7 +7,7 @@ public class UpdateHistory
 {
     public DateTime? Completed { get; set; }
 
-    public DateTime Created  { get; set; }
+    public DateTime Created { get; set; }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,7 +16,8 @@ public class UpdateHistory
     [Column(TypeName = "varchar(15)")]
     public string Type { get; set; }
 
-    public DateOnly UpdatedTime { get; set; }
+    [Column(TypeName = "char(12)")]
+    public string UpdatedTime { get; set; }
 
     public bool IsCompleted => Completed != null;
 }

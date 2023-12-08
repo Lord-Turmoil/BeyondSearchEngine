@@ -11,9 +11,12 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateService : BaseService<UpdateService>, IUpdateService
 {
-    public UpdateService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateService> logger)
+    private readonly UpdateTask _task;
+
+    public UpdateService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateService> logger, UpdateTask task)
         : base(unitOfWork, mapper, logger)
     {
+        _task = task;
     }
 
     public async Task<ApiResponse> InitiateUpdate(string type, InitiateUpdateDto dto)
@@ -39,8 +42,7 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
         switch (type)
         {
             case "institution":
-                var impl = new InstitutionUpdateImpl(_unitOfWork, _mapper, _logger);
-                impl.Update(type, dto);
+                await _task.UpdateInstitutionAsync(type, dto);
                 break;
             default:
                 return new BadRequestResponse(new BadRequestDto("Invalid update type"));
