@@ -24,19 +24,15 @@ public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
         };
 
-        JToken? lastKnownInstitution = json["last_known_institution"];
+        JObject? lastKnownInstitution = json["last_known_institution"].ToJObjectNullable();
         if (lastKnownInstitution != null)
         {
-            var data = lastKnownInstitution.ToObject<JObject>();
-            if (data != null)
-            {
-                dto.InstitutionData = new InstitutionData {
-                    Id = data["id"].ToStringNotNull("last_known_institution.id").OpenAlexId(),
-                    Name = data["display_name"].ToStringNotNull("last_known_institution.name"),
-                    Type = data["type"].ToStringNotNull("last_known_institution.type"),
-                    Country = data["country_code"].ToStringNotNull("last_known_institution.country_code")
-                };
-            }
+            dto.InstitutionData = new InstitutionData {
+                Id = lastKnownInstitution["id"].ToStringNullable().OpenAlexId(),
+                Name = lastKnownInstitution["display_name"].ToStringNullable(),
+                Type = lastKnownInstitution["type"].ToStringNullable(),
+                Country = lastKnownInstitution["country_code"].ToStringNullable()
+            };
         }
 
         var conceptDataBuilder = new ConceptDataBuilder();

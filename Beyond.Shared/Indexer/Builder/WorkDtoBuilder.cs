@@ -23,8 +23,8 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             Doi = json["doi"].ToStringNullable().Doi(),
             Title = json["title"].ToStringNotNull("title"),
             Abstract = abstractText,
-            Type = json["type"].ToStringNotNull("type"),
-            Language = json["language"].ToStringNotNull("language"),
+            Type = json["type"].ToStringNullable(),
+            Language = json["language"].ToStringNullable("language"),
             SourceUrl = sourceUrl,
             PdfUrl = pdfUrl,
 
@@ -34,7 +34,7 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             ReferencedWorkList = new List<string>(),
             AuthorList = new List<AuthorData>(),
 
-            CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count"),
+            CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0),
             PublicationYear = json["publication_year"].ToIntNotNull("publication_year"),
             PublicationDate = json["publication_date"].ToDateTimeNotNull("publication_date", "yyyy-MM-dd"),
 

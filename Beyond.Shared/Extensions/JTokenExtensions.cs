@@ -75,15 +75,27 @@ static class JTokenExtensions
         }
     }
 
-    public static double ToDoubleNotNull(this JToken? token)
+    public static int ToIntNotNull(this JToken? token, string key, int defaultValue)
+    {
+        try
+        {
+            return token.NotNull(key).ToObject<int>();
+        }
+        catch (Exception)
+        {
+            return defaultValue;
+        }
+    }
+
+    public static double ToDoubleNotNull(this JToken? token, double defaultValue)
     {
         try
         {
             return token.NotNull().ToObject<double>();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            throw new IndexException($"Unexpected double value: {token}", e);
+            return defaultValue;
         }
     }
 
@@ -96,6 +108,18 @@ static class JTokenExtensions
         catch (Exception e)
         {
             throw new IndexException($"Unexpected double value of \"{key}\": {token}", e);
+        }
+    }
+
+    public static double ToDoubleNotNull(this JToken? token)
+    {
+        try
+        {
+            return token.NotNull().ToObject<double>();
+        }
+        catch (Exception e)
+        {
+            throw new IndexException($"Unexpected double value: {token}", e);
         }
     }
 
