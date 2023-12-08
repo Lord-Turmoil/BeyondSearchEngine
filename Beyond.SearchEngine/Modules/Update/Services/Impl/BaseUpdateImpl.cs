@@ -1,6 +1,8 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Models;
+using Beyond.Shared.Indexer.Impl;
+using Beyond.Shared.Indexer;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
 
@@ -8,11 +10,13 @@ public class BaseUpdateImpl
 {
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _unitOfWork;
+    protected readonly ILogger<UpdateTask> _logger;
 
-    protected BaseUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper)
+    protected BaseUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _logger = logger;
     }
 
     protected async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
@@ -61,5 +65,40 @@ public class BaseUpdateImpl
         history.Completed = DateTime.UtcNow;
 
         return true;
+    }
+
+    /// <summary>
+    ///     -1: No more
+    ///     0: Already updated
+    ///     1: Can update
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <returns></returns>
+    protected async ValueTask<int> UpdatePreamble(string type, ManifestEntry? entry)
+    {
+        if (entry == null)
+        {
+            return -1;
+        }
+
+        if (!await AddUpdateHistory(type, entry.UpdatedDate))
+        {
+            _logger.LogWarning($"{type} updated at {entry.UpdatedDate} is already updated");
+            return 0;
+        }
+
+        return 1;
+    }
+
+    protected async ValueTask PostUpdate(string type, ManifestEntry entry)
+    {
+        if (!await CompleteUpdateHistory(type, entry.UpdatedDate))
+        {
+            _logger.LogError($"Failed to complete update of {type} at {entry.UpdatedDate}");
+        }
+        else
+        {
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

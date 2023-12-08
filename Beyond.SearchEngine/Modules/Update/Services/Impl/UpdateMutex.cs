@@ -17,13 +17,7 @@ public static class UpdateMutex
     {
         lock (_updateMutex)
         {
-            if (_updatingType.Contains(type))
-            {
-                return false;
-            }
-
-            _updatingType.Add(type);
-            return true;
+            return _updatingType.Add(type);
         }
     }
 

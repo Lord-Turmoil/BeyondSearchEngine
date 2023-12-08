@@ -18,4 +18,9 @@ static class TypeExtensions
     {
         return fullId[(fullId.LastIndexOf('/') + 1)..];
     }
+
+    public static string OrcId(this string fullOrcId)
+    {
+        return fullOrcId[(fullOrcId.LastIndexOf('/') + 1)..];
+    }
 }

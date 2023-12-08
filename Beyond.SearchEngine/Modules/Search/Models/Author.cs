@@ -23,6 +23,7 @@ public class Author
     [Column(TypeName = "char(20)")]
     public string OrcId { get; set; }
 
+    [NotMapped]
     public string FullOrcId => "https://orcid.org/" + OrcId;
 
     /// <summary>
@@ -47,6 +48,7 @@ public class Author
     /// </summary>
     public string Institution { get; set; }
 
+    [NotMapped]
     public InstitutionData InstitutionData => new(Institution);
 
     /// <summary>
@@ -54,7 +56,9 @@ public class Author
     /// </summary>
     public string Concepts { get; set; }
 
+    [NotMapped]
     public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
+
 
     /***              Other                   ***/
 

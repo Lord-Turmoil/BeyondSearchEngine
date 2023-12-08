@@ -6,12 +6,13 @@ using Beyond.SearchEngine.Modules.Update.Services.Utils;
 using Beyond.Shared.Dtos;
 using Beyond.Shared.Indexer;
 using Beyond.Shared.Indexer.Impl;
+using SharpCompress.Common;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
 
-public class InstitutionUpdateImpl : BaseUpdateImpl
+public class AuthorUpdateImpl : BaseUpdateImpl
 {
-    public InstitutionUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
+    public AuthorUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
         : base(unitOfWork, mapper, logger)
     {
     }
@@ -26,7 +27,7 @@ public class InstitutionUpdateImpl : BaseUpdateImpl
 
         try
         {
-            InstitutionIndexer indexer = new(
+            AuthorIndexer indexer = new(
                 dto.DataPath,
                 dto.TempPath,
                 dto.Begin,
@@ -45,9 +46,9 @@ public class InstitutionUpdateImpl : BaseUpdateImpl
         }
     }
 
-    private async ValueTask UpdateImpl(string type, InstitutionIndexer indexer)
+    private async ValueTask UpdateImpl(string type, AuthorIndexer indexer)
     {
-        IRepository<Institution> repo = _unitOfWork.GetRepository<Institution>();
+        IRepository<Author> repo = _unitOfWork.GetRepository<Author>();
         int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
 
         while (result != -1)
@@ -62,32 +63,30 @@ public class InstitutionUpdateImpl : BaseUpdateImpl
             ManifestEntry entry = indexer.CurrentManifestEntry()!;
             _logger.LogInformation("Updating {type} at {UpdatedDate}", type, entry.UpdatedDate);
 
-            List<InstitutionDto>? chunk = indexer.NextDataChunk();
+            List<AuthorDto>? chunk = indexer.NextDataChunk();
             if (chunk != null)
             {
-                foreach (InstitutionDto dto in chunk)
+                foreach (AuthorDto dto in chunk)
                 {
                     try
                     {
-                        Institution institution = _mapper.Map<InstitutionDto, Institution>(dto);
-                        await repo.InsertAsync(institution);
+                        Author author = _mapper.Map<AuthorDto, Author>(dto);
+                        await repo.InsertAsync(author);
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError("Failed to insert Institution: {exception}", e);
+                        _logger.LogError("Failed to insert author: {exception}", e);
                     }
                 }
-
-                await _unitOfWork.SaveChangesAsync();
             }
             else
             {
                 _logger.LogWarning("Empty chunk for {entry}", entry);
             }
 
-            await PostUpdate(type, entry);
-
-            result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
+            await _unitOfWork.SaveChangesAsync();
         }
+
+        await CompleteUpdateHistory(type, indexer.EndDate);
     }
 }

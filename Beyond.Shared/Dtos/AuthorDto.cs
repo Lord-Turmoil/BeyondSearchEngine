@@ -1,7 +1,7 @@
 ﻿using Beyond.Shared.Data;
 using Newtonsoft.Json;
 
-namespace BeyondSearchEngine.Modules.Search.Dtos;
+namespace Beyond.Shared.Dtos;
 
 /// <summary>
 ///     Complete author information.
@@ -33,10 +33,10 @@ public class AuthorDto
     /***                Relation               ***/
 
     [JsonProperty(PropertyName = "institution")]
-    public InstitutionData InstitutionData { get; set; }
+    public InstitutionData? InstitutionData { get; set; }
 
     [JsonIgnore]
-    public string Institution => InstitutionData.ToString();
+    public string Institution => InstitutionData?.ToString() ?? "";
 
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }
