@@ -46,6 +46,9 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
             case "author":
                 await _task.UpdateAuthorAsync(type, dto);
                 break;
+            case "work":
+                await _task.UpdateWorkAsync(type, dto);
+                break;
             default:
                 return new BadRequestResponse(new BadRequestDto("Invalid update type"));
         }
