@@ -35,9 +35,14 @@ public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
             };
         }
 
+        var conceptDataBuilder = new ConceptDataBuilder();
         foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
         {
-            dto.ConceptList.Add(ConceptDataBuilder.Build(token.ToJObjectNotNull()));
+            ConceptData? data = conceptDataBuilder.Build(token.ToJObjectNotNull());
+            if (data != null)
+            {
+                dto.ConceptList.Add(data);
+            }
         }
 
         return dto;

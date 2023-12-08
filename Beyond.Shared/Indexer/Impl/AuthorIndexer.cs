@@ -1,6 +1,5 @@
 ﻿using Beyond.Shared.Dtos;
 using Beyond.Shared.Indexer.Builder;
-using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Impl;
 

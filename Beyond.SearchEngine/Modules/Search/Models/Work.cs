@@ -11,7 +11,7 @@ public class Work
     ///     of https://openalex.org/W1775749144
     /// </summary>
     [Key]
-    [Column(TypeName = "varchar(16)")]
+    [Column(TypeName = "char(12)")]
     public string Id { get; set; }
 
     public string FullId => "https://openalex.org/" + Id;
@@ -28,21 +28,27 @@ public class Work
 
     /***               Basics               ***/
 
-    [Column(TypeName = "varchar(127)")]
+    [Column(TypeName = "varchar(255)")]
     public string Title { get; set; }
 
     public string Abstract { get; set; }
 
-    [Column(TypeName = "varchar(15)")]
+    [Column(TypeName = "char(15)")]
     public string Type { get; set; }
 
     [Column(TypeName = "char(8)")]
     public string Language { get; set; }
 
     /// <summary>
+    ///     Source URL.
+    /// </summary>
+    [Column(TypeName = "varchar(2083)")]
+    public string SourceUrl { get; set; }
+
+    /// <summary>
     ///     Original PDF URL.
     /// </summary>
-    [Column(TypeName = "varchar(127)")]
+    [Column(TypeName = "varchar(2083)")]
     public string PdfUrl { get; set; }
 
 
@@ -56,6 +62,7 @@ public class Work
     /// </summary>
     public string Concepts { get; set; }
 
+    [NotMapped]
     public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
 
     /// <summary>
@@ -64,6 +71,7 @@ public class Work
     /// </summary>
     public string Keywords { get; set; }
 
+    [NotMapped]
     public List<string> KeywordList => Keywords.Split(',').ToList();
 
     /// <summary>
@@ -73,6 +81,7 @@ public class Work
     /// </summary>
     public string RelatedWorks { get; set; }
 
+    [NotMapped]
     public List<string> RelatedWorkList => RelatedWorks.Split(',').ToList();
 
     /// <summary>
@@ -80,6 +89,7 @@ public class Work
     /// </summary>
     public string ReferencedWorks { get; set; }
 
+    [NotMapped]
     public List<string> ReferencedWorkList => ReferencedWorks.Split(',').ToList();
 
     /// <summary>
@@ -91,6 +101,7 @@ public class Work
     /// </summary>
     public string Authors { get; set; }
 
+    [NotMapped]
     public List<AuthorData> AuthorList => Authors.Split(';').Select(x => new AuthorData(x)).ToList();
 
 
@@ -103,8 +114,7 @@ public class Work
 
     public int PublicationYear { get; set; }
 
-    [Column(TypeName = "char(12)")]
-    public string PublicationDate { get; set; }
+    public DateTime PublicationTime { get; set; }
 
     /***                Other                  ***/
 

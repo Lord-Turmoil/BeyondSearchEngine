@@ -31,12 +31,21 @@ public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
         var conceptDataBuilder = new ConceptDataBuilder();
         foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
         {
-            dto.ConceptList.Add(conceptDataBuilder.Build(token.ToJObjectNotNull()));
+            ConceptData? data = conceptDataBuilder.Build(token.ToJObjectNotNull());
+            if (data != null)
+            {
+                dto.ConceptList.Add(data);
+            }
         }
 
+        var associatedInstitutionDataBuilder = new AssociatedInstitutionDataBuilder();
         foreach (JToken token in json["associated_institutions"].ToJArrayNotNull("associated_institutions"))
         {
-            dto.AssociatedInstitutionList.Add(AssociatedInstitutionDataBuilder.Build(token.ToJObjectNotNull()));
+            AssociatedInstitutionData? data = associatedInstitutionDataBuilder.Build(token.ToJObjectNotNull());
+            if (data != null)
+            {
+                dto.AssociatedInstitutionList.Add(data);
+            }
         }
 
         return dto;

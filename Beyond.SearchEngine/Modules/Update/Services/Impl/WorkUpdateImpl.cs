@@ -7,10 +7,10 @@ using Beyond.Shared.Indexer.Impl;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
 
-public class AuthorUpdateImpl
-    : GenericUpdateImpl<AuthorIndexer, Author, AuthorDtoBuilder, AuthorDto>
+public class WorkUpdateImpl
+    : GenericUpdateImpl<WorkIndexer, Work, WorkDtoBuilder, WorkDto>
 {
-    public AuthorUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
+    public WorkUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
         : base(unitOfWork, mapper, logger)
     {
     }

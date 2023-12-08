@@ -1,16 +1,15 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Models;
-using Beyond.Shared.Indexer.Impl;
 using Beyond.Shared.Indexer;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
 
 public class BaseUpdateImpl
 {
+    protected readonly ILogger<UpdateTask> _logger;
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _unitOfWork;
-    protected readonly ILogger<UpdateTask> _logger;
 
     protected BaseUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
     {
@@ -19,7 +18,7 @@ public class BaseUpdateImpl
         _logger = logger;
     }
 
-    protected async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
+    private async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
         string timeString = time.ToString("yyyy-MM-dd");
@@ -45,7 +44,7 @@ public class BaseUpdateImpl
         return true;
     }
 
-    protected async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time)
+    private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
         string timeString = time.ToString("yyyy-MM-dd");

@@ -23,4 +23,10 @@ static class TypeExtensions
     {
         return fullOrcId[(fullOrcId.LastIndexOf('/') + 1)..];
     }
+
+    public static string Doi(this string fullDoi)
+    {
+        // https://doi.org/10.1103/physrevlett.77.3865
+        return fullDoi[16..];
+    }
 }

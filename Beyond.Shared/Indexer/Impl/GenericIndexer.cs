@@ -5,7 +5,8 @@ namespace Beyond.Shared.Indexer.Impl;
 
 public class GenericIndexer<TBuilder, TDto> : OpenAlexIndexer where TBuilder : IDtoBuilder<TDto>, new()
 {
-    protected GenericIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate) : base(dataPath, tempPath, beginDate, endDate)
+    protected GenericIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate) : base(dataPath,
+        tempPath, beginDate, endDate)
     {
         _logger.Info($"Indexing {typeof(TDto).Name}s");
     }
@@ -26,7 +27,7 @@ public class GenericIndexer<TBuilder, TDto> : OpenAlexIndexer where TBuilder : I
         _currentManifestEntry = null;
 
         var dtos = new List<TDto>();
-        TBuilder builder = new TBuilder();
+        var builder = new TBuilder();
         foreach (JObject json in data)
         {
             try

@@ -67,4 +67,20 @@ public class UpdateTask : IHostedService, IDisposable
 
         await impl.Update(type, dto);
     }
+
+    public Task UpdateWorkAsync(string type, InitiateUpdateDto dto)
+    {
+        _logger.LogInformation($"Update of {type} begins");
+        UpdateWork(type, dto);
+        return Task.CompletedTask;
+    }
+
+    private async Task UpdateWork(string type, InitiateUpdateDto dto)
+    {
+        using IServiceScope scope = _serviceScopeFactory.CreateScope();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var impl = new WorkUpdateImpl(unitOfWork, _mapper, _logger);
+
+        await impl.Update(type, dto);
+    }
 }
