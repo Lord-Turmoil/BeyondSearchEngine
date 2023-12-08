@@ -10,16 +10,17 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
 {
     public WorkDto? Build(JObject json)
     {
-        if (!HasAbstract(json))
+        JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
+        if (abstractJObject == null)
         {
             return null;
         }
 
-        BuildPdfUrl(json["primary_location"]?.ToObject<JObject>(), out string sourceUrl, out string pdfUrl);
-        string abstractText = BuildAbstract(json["abstract_inverted_index"]?.ToObject<JObject>());
+        BuildPdfUrl(json["primary_location"].ToJObjectNullable(), out string sourceUrl, out string pdfUrl);
+        string abstractText = BuildAbstract(abstractJObject);
         var dto = new WorkDto {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),
-            Doi = json["doi"].ToStringNotNull("doi").Doi(),
+            Doi = json["doi"].ToStringNullable().Doi(),
             Title = json["title"].ToStringNotNull("title"),
             Abstract = abstractText,
             Type = json["type"].ToStringNotNull("type"),
@@ -33,16 +34,16 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             ReferencedWorkList = new List<string>(),
             AuthorList = new List<AuthorData>(),
 
-            CitationCount = json["cited_by_count"].ToIntNotNull(),
-            PublicationYear = json["publication_year"].ToIntNotNull(),
-            PublicationDate = json["publication_date"].ToDateTimeNotNull(),
+            CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count"),
+            PublicationYear = json["publication_year"].ToIntNotNull("publication_year"),
+            PublicationDate = json["publication_date"].ToDateTimeNotNull("publication_date", "yyyy-MM-dd"),
 
             Created = json["created_date"].ToDateTimeNotNull("created_date"),
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
         };
 
         var conceptDataBuilder = new ConceptDataBuilder();
-        foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
+        foreach (JToken token in json["concepts"].ToJArrayNullable())
         {
             ConceptData? data = conceptDataBuilder.Build(token.ToJObjectNotNull());
             if (data != null)
@@ -52,7 +53,7 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
         }
 
         var keywordDataBuilder = new KeywordDataBuilder();
-        foreach (JToken token in json["keywords"].ToJArrayNotNull("keywords"))
+        foreach (JToken token in json["keywords"].ToJArrayNullable())
         {
             string? data = keywordDataBuilder.Build(token.ToJObjectNotNull());
             if (data != null)
@@ -61,22 +62,27 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             }
         }
 
-        foreach (JToken token in json["related_works"].ToJArrayNotNull("related_works"))
+        foreach (JToken token in json["related_works"].ToJArrayNullable())
         {
             dto.RelatedWorkList.Add(token.ToStringNotNull().OpenAlexId());
         }
 
-        foreach (JToken token in json["referenced_works"].ToJArrayNotNull("referenced_works"))
+        foreach (JToken token in json["referenced_works"].ToJArrayNullable())
         {
             dto.ReferencedWorkList.Add(token.ToStringNotNull().OpenAlexId());
         }
 
-        return dto;
-    }
+        var authorDataBuilder = new AuthorDataBuilder();
+        foreach (JToken token in json["authorships"].ToJArrayNullable())
+        {
+            AuthorData? data = authorDataBuilder.Build(token.ToJObjectNotNull());
+            if (data != null)
+            {
+                dto.AuthorList.Add(data);
+            }
+        }
 
-    private static bool HasAbstract(JObject json)
-    {
-        return json["abstract_inverted_index"] != null;
+        return dto;
     }
 
     private static string BuildAbstract(JObject? json)
@@ -89,7 +95,7 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
         SortedDictionary<int, string> invertedIndex = new();
         foreach (JProperty prop in json.Properties())
         {
-            foreach (JToken index in prop.ToJArrayNotNull())
+            foreach (JToken index in prop.Value.ToJArrayNotNull())
             {
                 invertedIndex.Add((int)index, prop.Name);
             }

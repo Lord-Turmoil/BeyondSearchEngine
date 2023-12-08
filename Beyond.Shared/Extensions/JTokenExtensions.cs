@@ -1,4 +1,5 @@
-﻿using Beyond.Shared.Indexer;
+﻿using System.Globalization;
+using Beyond.Shared.Indexer;
 using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Extensions;
@@ -108,9 +109,19 @@ static class JTokenExtensions
         return DateTime.Parse(token.ToStringNotNull(key));
     }
 
+    public static DateTime ToDateTimeNotNull(this JToken? token, string key, string format)
+    {
+        return DateTime.ParseExact(token.ToStringNotNull(key), format, CultureInfo.InvariantCulture);
+    }
+
     public static JObject ToJObjectNotNull(this JToken? token)
     {
         return token.NotNull().ToObject<JObject>().NotNull();
+    }
+
+    public static JObject? ToJObjectNullable(this JToken? token)
+    {
+        return token?.ToObject<JObject>();
     }
 
     public static JObject ToJObjectNotNull(this JToken? token, string key)
@@ -126,5 +137,10 @@ static class JTokenExtensions
     public static JArray ToJArrayNotNull(this JToken? token, string key)
     {
         return token.NotNull(key).ToObject<JArray>().NotNull(key);
+    }
+
+    public static JArray ToJArrayNullable(this JToken? token)
+    {
+        return token?.ToObject<JArray>() ?? new JArray();
     }
 }

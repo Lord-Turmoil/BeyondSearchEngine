@@ -29,7 +29,7 @@ public class Author
     /// <summary>
     ///     Only store one display name.
     /// </summary>
-    [Column(TypeName = "varchar(63)")]
+    [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
 

@@ -15,7 +15,7 @@ public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
             Name = json["display_name"].ToStringNotNull("name"),
             WorksCount = json["works_count"].ToIntNotNull("works_count"),
             CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count"),
-            HIndex = json["summary_stats"].ToJObjectNotNull()["h_index"].ToIntNotNull("h_index"),
+            HIndex = json["summary_stats"].NotNull()["h_index"].ToIntNotNull("h_index"),
 
             InstitutionData = null,
             ConceptList = new List<ConceptData>(),
@@ -27,12 +27,16 @@ public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
         JToken? lastKnownInstitution = json["last_known_institution"];
         if (lastKnownInstitution != null)
         {
-            dto.InstitutionData = new InstitutionData {
-                Id = lastKnownInstitution["id"].ToStringNotNull("last_known_institution.id").OpenAlexId(),
-                Name = lastKnownInstitution["display_name"].ToStringNotNull("last_known_institution.name"),
-                Type = lastKnownInstitution["type"].ToStringNotNull("last_known_institution.type"),
-                Country = lastKnownInstitution["country_code"].ToStringNotNull("last_known_institution.country_code")
-            };
+            JObject? data = lastKnownInstitution.ToObject<JObject>();
+            if (data != null)
+            {
+                dto.InstitutionData = new InstitutionData {
+                    Id = data["id"].ToStringNotNull("last_known_institution.id").OpenAlexId(),
+                    Name = data["display_name"].ToStringNotNull("last_known_institution.name"),
+                    Type = data["type"].ToStringNotNull("last_known_institution.type"),
+                    Country = data["country_code"].ToStringNotNull("last_known_institution.country_code")
+                };
+            }
         }
 
         var conceptDataBuilder = new ConceptDataBuilder();

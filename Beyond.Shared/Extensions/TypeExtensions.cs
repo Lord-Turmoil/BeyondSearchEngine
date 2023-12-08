@@ -26,6 +26,11 @@ static class TypeExtensions
 
     public static string Doi(this string fullDoi)
     {
+        if (string.IsNullOrEmpty(fullDoi))
+        {
+            return string.Empty;
+        }
+
         // https://doi.org/10.1103/physrevlett.77.3865
         return fullDoi[16..];
     }

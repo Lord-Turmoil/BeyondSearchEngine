@@ -114,7 +114,7 @@ public class Work
 
     public int PublicationYear { get; set; }
 
-    public DateTime PublicationTime { get; set; }
+    public DateTime PublicationDate { get; set; }
 
     /***                Other                  ***/
 
