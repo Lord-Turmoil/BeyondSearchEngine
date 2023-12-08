@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 Misc/
 Migrations/
+appsettings.*.json

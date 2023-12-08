@@ -93,9 +93,9 @@ public class InstitutionUpdateImpl : BaseUpdateImpl
     }
 
     /// <summary>
-    /// -1: No more
-    ///  0: Already updated
-    ///  1: Can update
+    ///     -1: No more
+    ///     0: Already updated
+    ///     1: Can update
     /// </summary>
     /// <param name="entry"></param>
     /// <returns></returns>
@@ -127,5 +127,4 @@ public class InstitutionUpdateImpl : BaseUpdateImpl
             await _unitOfWork.SaveChangesAsync();
         }
     }
-
 }
