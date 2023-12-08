@@ -5,9 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-static class AuthorDtoBuilder
+public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
 {
-    public static AuthorDto Build(JObject json)
+    public AuthorDto? Build(JObject json)
     {
         var dto = new AuthorDto {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),

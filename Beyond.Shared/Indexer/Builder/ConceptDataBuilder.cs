@@ -13,9 +13,9 @@ namespace Beyond.Shared.Indexer.Builder;
 ///     "score": 65.3
 ///     },
 /// </summary>
-static class ConceptDataBuilder
+public class ConceptDataBuilder : IDtoBuilder<ConceptData>
 {
-    public static ConceptData Build(JObject json)
+    public ConceptData? Build(JObject json)
     {
         return new ConceptData {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),

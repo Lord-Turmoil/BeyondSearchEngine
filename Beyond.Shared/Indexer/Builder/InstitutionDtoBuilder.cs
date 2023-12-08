@@ -5,9 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-static class InstitutionDtoBuilder
+public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
 {
-    public static InstitutionDto Build(JObject json)
+    public InstitutionDto? Build(JObject json)
     {
         var dto = new InstitutionDto {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),
@@ -28,9 +28,10 @@ static class InstitutionDtoBuilder
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
         };
 
+        var conceptDataBuilder = new ConceptDataBuilder();
         foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
         {
-            dto.ConceptList.Add(ConceptDataBuilder.Build(token.ToJObjectNotNull()));
+            dto.ConceptList.Add(conceptDataBuilder.Build(token.ToJObjectNotNull()));
         }
 
         foreach (JToken token in json["associated_institutions"].ToJArrayNotNull("associated_institutions"))
