@@ -6,6 +6,10 @@ namespace Beyond.SearchEngine.Modules;
 
 public class AutoMapperProfile : MapperConfigurationExpression
 {
+    /// <summary>
+    /// It seems that the auto mapper is not that smart. So we have to
+    /// manually set properties that is to be ignored.
+    /// </summary>
     public AutoMapperProfile()
     {
         // Update module.

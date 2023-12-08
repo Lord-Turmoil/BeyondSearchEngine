@@ -1,24 +1,23 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Dtos;
-using Beyond.SearchEngine.Modules.Update.Services.Utils;
 using Beyond.Shared.Indexer;
 using Beyond.Shared.Indexer.Builder;
 using Beyond.Shared.Indexer.Impl;
 
-namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
+namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
-public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImpl
+public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
     where TIndexer : GenericIndexer<TBuilder, TDto>
     where TBuilder : IDtoBuilder<TDto>, new()
     where TModel : class
 {
-    protected GenericUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
+    protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
         : base(unitOfWork, mapper, logger)
     {
     }
 
-    public async Task Update(string type, InitiateUpdateDto dto)
+    public override async Task Update(string type, InitiateUpdateDto dto)
     {
         if (!UpdateMutex.BeginUpdate(type))
         {
@@ -52,6 +51,14 @@ public class GenericUpdateImpl<TIndexer, TModel, TBuilder, TDto> : BaseUpdateImp
         }
     }
 
+    /// <summary>
+    /// Iterate through all manifest entries and update the database.
+    /// It bulks update the database, so the new data is either successfully
+    /// put into database, or completely not.
+    /// </summary>
+    /// <param name="type">Update type.</param>
+    /// <param name="indexer">Specific indexer.</param>
+    /// <returns></returns>
     private async ValueTask UpdateImpl(string type, TIndexer indexer)
     {
         IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();

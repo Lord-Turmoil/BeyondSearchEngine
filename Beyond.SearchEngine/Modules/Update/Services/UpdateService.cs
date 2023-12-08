@@ -2,7 +2,7 @@
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Models;
-using Beyond.SearchEngine.Modules.Update.Services.Utils;
+using Beyond.SearchEngine.Modules.Update.Services.Updater;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
 
@@ -38,20 +38,12 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
             return new UnauthorizedResponse(new UnauthorizedDto("Wrong password"));
         }
 
-        switch (type)
+        if (!_task.IsValidUpdateType(type))
         {
-            case "institution":
-                await _task.UpdateInstitutionAsync(type, dto);
-                break;
-            case "author":
-                await _task.UpdateAuthorAsync(type, dto);
-                break;
-            case "work":
-                await _task.UpdateWorkAsync(type, dto);
-                break;
-            default:
-                return new BadRequestResponse(new BadRequestDto("Invalid update type"));
+            return new BadRequestResponse(new BadRequestDto($"Invalid update type: {type}"));
         }
+
+        await _task.UpdateAsync(type, dto);
 
         return new OkResponse(new OkDto(data: new InitiateUpdateSuccessDto(type, dto.Begin, dto.End)));
     }

@@ -1,23 +1,35 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Models;
 using Beyond.Shared.Indexer;
 
-namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
+namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
-public class BaseUpdateImpl
+public abstract class BaseUpdater : IUpdater
 {
     protected readonly ILogger<UpdateTask> _logger;
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _unitOfWork;
 
-    protected BaseUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
+    protected BaseUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _logger = logger;
     }
 
+    public abstract Task Update(string type, InitiateUpdateDto dto);
+
+    /// <summary>
+    /// Create a new update history if not exists.
+    /// </summary>
+    /// <param name="type">Update type.</param>
+    /// <param name="time">Update time of the data, not update action.</param>
+    /// <returns>
+    /// Whether successfully added the history. Return false if already exists
+    /// and is completed.
+    /// </returns>
     private async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
@@ -44,6 +56,13 @@ public class BaseUpdateImpl
         return true;
     }
 
+    /// <summary>
+    /// Complete update history.
+    /// </summary>
+    /// <param name="type">Update type.</param>
+    /// <param name="time">Update time of the data.</param>
+    /// <param name="recordCount">How many record added.</param>
+    /// <returns>Whether successfully saved the history or not.</returns>
     private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time, int recordCount)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
@@ -90,6 +109,13 @@ public class BaseUpdateImpl
         return 0;
     }
 
+    /// <summary>
+    /// Save history after update.
+    /// </summary>
+    /// <param name="type">See <see cref="CompleteUpdateHistory"/></param>
+    /// <param name="entry">See <see cref="CompleteUpdateHistory"/></param>
+    /// <param name="recordCount">See <see cref="CompleteUpdateHistory"/></param>
+    /// <returns></returns>
     protected async ValueTask PostUpdate(string type, ManifestEntry entry, int recordCount)
     {
         if (!await CompleteUpdateHistory(type, entry.UpdatedDate, recordCount))

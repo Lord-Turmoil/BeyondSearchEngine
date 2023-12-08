@@ -5,12 +5,12 @@ using Beyond.Shared.Dtos;
 using Beyond.Shared.Indexer.Builder;
 using Beyond.Shared.Indexer.Impl;
 
-namespace Beyond.SearchEngine.Modules.Update.Services.Impl;
+namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 
-public class AuthorUpdateImpl
-    : GenericUpdateImpl<AuthorIndexer, Author, AuthorDtoBuilder, AuthorDto>
+public class WorkUpdater
+    : GenericUpdater<WorkIndexer, Work, WorkDtoBuilder, WorkDto>
 {
-    public AuthorUpdateImpl(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
+    public WorkUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
         : base(unitOfWork, mapper, logger)
     {
     }

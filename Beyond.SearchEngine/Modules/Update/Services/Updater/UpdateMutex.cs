@@ -1,13 +1,16 @@
-﻿namespace Beyond.SearchEngine.Modules.Update.Services.Utils;
+﻿namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
+/// <summary>
+/// Used to prevent multiple updates of the same type.
+/// </summary>
 public static class UpdateMutex
 {
-    private static readonly object _updateMutex = new();
+    private static readonly object _mutex = new();
     private static readonly HashSet<string> _updatingType = new();
 
     public static bool IsUpdating(string type)
     {
-        lock (_updateMutex)
+        lock (_mutex)
         {
             return _updatingType.Contains(type);
         }
@@ -15,7 +18,7 @@ public static class UpdateMutex
 
     public static bool BeginUpdate(string type)
     {
-        lock (_updateMutex)
+        lock (_mutex)
         {
             return _updatingType.Add(type);
         }
@@ -23,7 +26,7 @@ public static class UpdateMutex
 
     public static bool EndUpdate(string type)
     {
-        lock (_updateMutex)
+        lock (_mutex)
         {
             return _updatingType.Remove(type);
         }

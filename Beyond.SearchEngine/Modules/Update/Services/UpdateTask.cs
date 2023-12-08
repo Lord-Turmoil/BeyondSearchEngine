@@ -1,7 +1,8 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Dtos;
-using Beyond.SearchEngine.Modules.Update.Services.Impl;
+using Beyond.SearchEngine.Modules.Update.Services.Updater;
+using Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 
 namespace Beyond.SearchEngine.Modules.Update.Services;
 
@@ -36,51 +37,49 @@ public class UpdateTask : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
-    public Task UpdateInstitutionAsync(string type, InitiateUpdateDto dto)
+    private readonly HashSet<string> _availableUpdateTypes = new HashSet<string>() { "institution", "author", "work" };
+
+    public bool IsValidUpdateType(string type)
     {
-        _logger.LogInformation($"Update of {type} begins");
-        UpdateInstitution(type, dto);
+        return _availableUpdateTypes.Contains(type);
+    }
+
+    /// <summary>
+    /// A "pure" async method. It will not block the thread.
+    /// </summary>
+    /// <param name="type">Update type.</param>
+    /// <param name="dto">What to update.</param>
+    /// <returns></returns>
+    public Task UpdateAsync(string type, InitiateUpdateDto dto)
+    {
+        _logger.LogInformation("Update of {type} begins", type);
+        Update(type, dto);
+        _logger.LogInformation("Update of {type} ends", type);
+
         return Task.CompletedTask;
     }
 
-    private async Task UpdateInstitution(string type, InitiateUpdateDto dto)
+    private async Task Update(string type, InitiateUpdateDto dto)
     {
+        if (!IsValidUpdateType(type))
+        {
+            return;
+        }
+
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var impl = new InstitutionUpdateImpl(unitOfWork, _mapper, _logger);
+        IUpdater? updater = type switch {
+            "institution" => new InstitutionUpdater(unitOfWork, _mapper, _logger),
+            "author" => new AuthorUpdater(unitOfWork, _mapper, _logger),
+            "work" => new WorkUpdater(unitOfWork, _mapper, _logger),
+            _ => null
+        };
+        if (updater == null)
+        {
+            _logger.LogError("Unknown update type {type}", type);
+            return;
+        }
 
-        await impl.Update(type, dto);
-    }
-
-    public Task UpdateAuthorAsync(string type, InitiateUpdateDto dto)
-    {
-        _logger.LogInformation($"Update of {type} begins");
-        UpdateAuthor(type, dto);
-        return Task.CompletedTask;
-    }
-
-    private async Task UpdateAuthor(string type, InitiateUpdateDto dto)
-    {
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var impl = new AuthorUpdateImpl(unitOfWork, _mapper, _logger);
-
-        await impl.Update(type, dto);
-    }
-
-    public Task UpdateWorkAsync(string type, InitiateUpdateDto dto)
-    {
-        _logger.LogInformation($"Update of {type} begins");
-        UpdateWork(type, dto);
-        return Task.CompletedTask;
-    }
-
-    private async Task UpdateWork(string type, InitiateUpdateDto dto)
-    {
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var impl = new WorkUpdateImpl(unitOfWork, _mapper, _logger);
-
-        await impl.Update(type, dto);
+        await updater.Update(type, dto);
     }
 }
