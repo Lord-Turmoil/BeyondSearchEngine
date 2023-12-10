@@ -39,24 +39,16 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
         };
 
-        var conceptDataBuilder = new ConceptDataBuilder();
         foreach (JToken token in json["concepts"].ToJArrayNullable())
         {
-            ConceptData? data = conceptDataBuilder.Build(token.ToJObjectNotNull());
-            if (data != null)
-            {
-                dto.ConceptList.Add(data);
-            }
+            ConceptData data = ConceptDataBuilder.Build(token.ToJObjectNotNull());
+            dto.ConceptList.Add(data);
         }
 
-        var keywordDataBuilder = new KeywordDataBuilder();
         foreach (JToken token in json["keywords"].ToJArrayNullable())
         {
-            string? data = keywordDataBuilder.Build(token.ToJObjectNotNull());
-            if (data != null)
-            {
-                dto.KeywordList.Add(data);
-            }
+            string? data = KeywordDataBuilder.Build(token.ToJObjectNotNull());
+            dto.KeywordList.Add(data);
         }
 
         foreach (JToken token in json["related_works"].ToJArrayNullable())
@@ -69,10 +61,9 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             dto.ReferencedWorkList.Add(token.ToStringNotNull().OpenAlexId());
         }
 
-        var authorDataBuilder = new AuthorDataBuilder();
         foreach (JToken token in json["authorships"].ToJArrayNullable())
         {
-            AuthorData? data = authorDataBuilder.Build(token.ToJObjectNotNull());
+            AuthorData? data = AuthorDataBuilder.Build(token.ToJObjectNotNull());
             if (data != null)
             {
                 dto.AuthorList.Add(data);

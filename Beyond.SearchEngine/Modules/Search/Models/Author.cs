@@ -39,6 +39,12 @@ public class Author : ElasticModel
     public int CitationCount { get; set; }
     public int HIndex { get; set; }
 
+    public string CountsByYears { get; set; }
+
+    [NotMapped]
+    public List<CountsByYearData> CountsByYearList =>
+        CountsByYears.Split(';').Select(c => new CountsByYearData(c)).ToList();
+
 
     /***                Relation               ***/
 

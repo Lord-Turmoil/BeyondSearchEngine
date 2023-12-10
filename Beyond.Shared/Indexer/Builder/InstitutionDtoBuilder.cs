@@ -28,14 +28,10 @@ public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
         };
 
-        var conceptDataBuilder = new ConceptDataBuilder();
         foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
         {
-            ConceptData? data = conceptDataBuilder.Build(token.ToJObjectNotNull());
-            if (data != null)
-            {
-                dto.ConceptList.Add(data);
-            }
+            ConceptData data = ConceptDataBuilder.Build(token.ToJObjectNotNull());
+            dto.ConceptList.Add(data);
         }
 
         var associatedInstitutionDataBuilder = new AssociatedInstitutionDataBuilder();

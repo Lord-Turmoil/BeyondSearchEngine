@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class KeywordDataBuilder : IDtoBuilder<string>
+public static class KeywordDataBuilder
 {
-    public string? Build(JObject json)
+    public static string Build(JObject json)
     {
         return json["keyword"].ToStringNotNull("keyword");
     }

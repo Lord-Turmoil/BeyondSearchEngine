@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class AuthorDataBuilder : IDtoBuilder<AuthorData>
+public static class AuthorDataBuilder
 {
-    public AuthorData? Build(JObject json)
+    public static AuthorData? Build(JObject json)
     {
         JObject? authorJObject = json["author"].ToJObjectNullable();
         if (authorJObject == null)
