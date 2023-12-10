@@ -26,7 +26,7 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
             PdfUrl = pdfUrl,
 
             ConceptList = new List<ConceptData>(),
-            KeywordList = new List<string>(),
+            KeywordList = new List<KeywordData>(),
             RelatedWorkList = new List<string>(),
             ReferencedWorkList = new List<string>(),
             AuthorList = new List<AuthorData>(),
@@ -41,13 +41,13 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
 
         foreach (JToken token in json["concepts"].ToJArrayNullable())
         {
-            ConceptData data = ConceptDataBuilder.Build(token.ToJObjectNotNull());
+            var data = ConceptData.Build(token.ToJObjectNotNull());
             dto.ConceptList.Add(data);
         }
 
         foreach (JToken token in json["keywords"].ToJArrayNullable())
         {
-            string? data = KeywordDataBuilder.Build(token.ToJObjectNotNull());
+            var data = KeywordData.Build(token.ToJObjectNotNull());
             dto.KeywordList.Add(data);
         }
 
@@ -63,7 +63,7 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
 
         foreach (JToken token in json["authorships"].ToJArrayNullable())
         {
-            AuthorData? data = AuthorDataBuilder.Build(token.ToJObjectNotNull());
+            var data = AuthorData.Build(token.ToJObjectNotNull());
             if (data != null)
             {
                 dto.AuthorList.Add(data);

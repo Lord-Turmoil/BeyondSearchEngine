@@ -1,5 +1,4 @@
-﻿using System.Runtime;
-using Beyond.Shared.Data;
+﻿using Beyond.Shared.Data;
 using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;

@@ -42,10 +42,11 @@ public class WorkDto
     public string Concepts => string.Join(";", ConceptList.Select(c => c.ToString()));
 
     [JsonProperty(PropertyName = "keywords")]
-    public List<string> KeywordList { get; set; }
+    public List<KeywordData> KeywordList { get; set; }
 
     [JsonIgnore]
-    public string Keywords => string.Join(",", KeywordList);
+    public string Keywords => string.Join(";", KeywordList);
+
 
     [JsonProperty(PropertyName = "related_works")]
     public List<string> RelatedWorkList { get; set; }

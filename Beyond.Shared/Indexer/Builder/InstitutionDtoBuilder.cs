@@ -31,19 +31,19 @@ public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
 
         foreach (JToken token in json["x_concepts"].ToJArrayNotNull("x_concepts"))
         {
-            ConceptData data = ConceptDataBuilder.Build(token.ToJObjectNotNull());
+            var data = ConceptData.Build(token.ToJObjectNotNull());
             dto.ConceptList.Add(data);
         }
 
         foreach (JToken token in json["associated_institutions"].ToJArrayNotNull("associated_institutions"))
         {
-            AssociatedInstitutionData data = AssociatedInstitutionDataBuilder.Build(token.ToJObjectNotNull());
+            var data = AssociatedInstitutionData.Build(token.ToJObjectNotNull());
             dto.AssociatedInstitutionList.Add(data);
         }
 
         foreach (JToken token in json["counts_by_year"].ToJArrayNullable())
         {
-            CountsByYearData data = CountsByYearDataBuilder.Build(token.ToJObjectNotNull());
+            var data = CountsByYearData.Build(token.ToJObjectNotNull());
             dto.CountsByYearList.Add(data);
         }
 

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Data;
 
@@ -33,5 +35,15 @@ public class ConceptData
     public override string ToString()
     {
         return $"{Id},{Name},{Level},{Score}";
+    }
+
+    public static ConceptData Build(JObject json)
+    {
+        return new ConceptData {
+            Id = json["id"].ToStringNotNull("id").OpenAlexId(),
+            Name = json["display_name"].ToStringNotNull("display_name"),
+            Level = json["level"].ToIntNotNull("level"),
+            Score = json["score"].ToDoubleNotNull("score")
+        };
     }
 }

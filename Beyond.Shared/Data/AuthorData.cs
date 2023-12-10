@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Data;
 
@@ -35,5 +37,21 @@ public class AuthorData
     public override string ToString()
     {
         return $"{Position},{Id},{OrcId},{Name}";
+    }
+
+    public static AuthorData? Build(JObject json)
+    {
+        JObject? authorJObject = json["author"].ToJObjectNullable();
+        if (authorJObject == null)
+        {
+            return null;
+        }
+
+        return new AuthorData {
+            Position = json["author_position"].ToStringNullable("default"),
+            Id = authorJObject["id"].ToStringNullable().OpenAlexId(),
+            OrcId = json["orcid"].ToStringNullable().OrcId(),
+            Name = authorJObject["display_name"].ToStringNotNull("display_name")
+        };
     }
 }

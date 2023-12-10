@@ -60,7 +60,6 @@ public class InstitutionDto
     public string CountsByYears => string.Join(";", CountsByYearList.Select(c => c.ToString()));
 
 
-
     /***               Other                   ***/
 
     [JsonProperty(PropertyName = "created")]

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Data;
 
@@ -28,5 +30,14 @@ public class CountsByYearData
     public override string ToString()
     {
         return $"{Year},{WorksCount},{CitationCount}";
+    }
+
+    public static CountsByYearData Build(JObject json)
+    {
+        return new CountsByYearData {
+            Year = json["year"].ToIntNotNull("year", 0),
+            WorksCount = json["works_count"].ToIntNotNull("works_count", 0),
+            CitationCount = json["citation_count"].ToIntNotNull("citation_count", 0)
+        };
     }
 }
