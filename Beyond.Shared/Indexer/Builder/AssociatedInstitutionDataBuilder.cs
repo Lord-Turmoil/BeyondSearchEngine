@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class AssociatedInstitutionDataBuilder : IDtoBuilder<AssociatedInstitutionData>
+public static class AssociatedInstitutionDataBuilder
 {
-    public AssociatedInstitutionData? Build(JObject json)
+    public static AssociatedInstitutionData Build(JObject json)
     {
         return new AssociatedInstitutionData {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),

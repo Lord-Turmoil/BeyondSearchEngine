@@ -53,6 +53,13 @@ public class InstitutionDto
     [JsonProperty(PropertyName = "citation_count")]
     public int CitationCount { get; set; }
 
+    [JsonProperty(PropertyName = "counts_by_year")]
+    public List<CountsByYearData> CountsByYearList { get; set; }
+
+    [JsonIgnore]
+    public string CountsByYears => string.Join(";", CountsByYearList.Select(c => c.ToString()));
+
+
 
     /***               Other                   ***/
 

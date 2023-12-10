@@ -23,6 +23,7 @@ public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
 
             WorksCount = json["works_count"].ToIntNotNull("works_count", 0),
             CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0),
+            CountsByYearList = new List<CountsByYearData>(),
 
             Created = json["created_date"].ToDateTimeNotNull("created_date"),
             Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
@@ -34,14 +35,16 @@ public class InstitutionDtoBuilder : IDtoBuilder<InstitutionDto>
             dto.ConceptList.Add(data);
         }
 
-        var associatedInstitutionDataBuilder = new AssociatedInstitutionDataBuilder();
         foreach (JToken token in json["associated_institutions"].ToJArrayNotNull("associated_institutions"))
         {
-            AssociatedInstitutionData? data = associatedInstitutionDataBuilder.Build(token.ToJObjectNotNull());
-            if (data != null)
-            {
-                dto.AssociatedInstitutionList.Add(data);
-            }
+            AssociatedInstitutionData data = AssociatedInstitutionDataBuilder.Build(token.ToJObjectNotNull());
+            dto.AssociatedInstitutionList.Add(data);
+        }
+
+        foreach (JToken token in json["counts_by_year"].ToJArrayNullable())
+        {
+            CountsByYearData data = CountsByYearDataBuilder.Build(token.ToJObjectNotNull());
+            dto.CountsByYearList.Add(data);
         }
 
         return dto;
