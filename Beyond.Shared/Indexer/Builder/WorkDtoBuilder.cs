@@ -11,13 +11,10 @@ public class WorkDtoBuilder : IDtoBuilder<WorkDto>
     public WorkDto? Build(JObject json)
     {
         JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
-        if (abstractJObject == null)
-        {
-            return null;
-        }
+        string abstractText = BuildAbstract(abstractJObject);
 
         BuildPdfUrl(json["primary_location"].ToJObjectNullable(), out string sourceUrl, out string pdfUrl);
-        string abstractText = BuildAbstract(abstractJObject);
+
         var dto = new WorkDto {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),
             Doi = json["doi"].ToStringNullable().Doi(),
