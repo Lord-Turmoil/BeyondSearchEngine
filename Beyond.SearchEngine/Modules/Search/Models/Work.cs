@@ -4,7 +4,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Work
+public class Work : ElasticModel
 {
     /// <summary>
     ///     OpenAlex ID without leading url. e.g. W1775749144

@@ -4,7 +4,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Author
+public class Author : ElasticModel
 {
     /// <summary>
     ///     OpenAlex ID without prefix. e.g. A5040654425

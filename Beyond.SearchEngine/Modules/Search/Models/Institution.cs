@@ -4,7 +4,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Institution
+public class Institution : ElasticModel
 {
     /// <summary>
     ///     Institution ID without prefix. e.g. I4210087620
