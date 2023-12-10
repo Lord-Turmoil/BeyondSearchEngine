@@ -15,11 +15,13 @@ public class UpdateHistory
     [Column(TypeName = "char(12)")]
     public string UpdatedTime { get; set; }
 
-    public int RecordCount { get; set; } = 0;
+    public int RecordCount { get; set; }
+
+    public DateTime Created { get; set; }
 
     public DateTime? Completed { get; set; }
 
-    public DateTime Created { get; set; }
+    public double ElapsedSeconds { get; set; }
 
     public bool IsCompleted => Completed != null;
 }

@@ -82,6 +82,7 @@ public abstract class BaseUpdater : IUpdater
 
         history.RecordCount = recordCount;
         history.Completed = DateTime.UtcNow;
+        history.ElapsedSeconds = (history.Completed.Value - history.Created).TotalSeconds;
 
         return true;
     }
