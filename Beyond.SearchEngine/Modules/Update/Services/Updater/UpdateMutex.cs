@@ -1,7 +1,7 @@
 ﻿namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
 /// <summary>
-/// Used to prevent multiple updates of the same type.
+///     Used to prevent multiple updates of the same type.
 /// </summary>
 public static class UpdateMutex
 {

@@ -52,9 +52,9 @@ public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
     }
 
     /// <summary>
-    /// Iterate through all manifest entries and update the database.
-    /// It bulks update the database, so the new data is either successfully
-    /// put into database, or completely not.
+    ///     Iterate through all manifest entries and update the database.
+    ///     It bulks update the database, so the new data is either successfully
+    ///     put into database, or completely not.
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="indexer">Specific indexer.</param>

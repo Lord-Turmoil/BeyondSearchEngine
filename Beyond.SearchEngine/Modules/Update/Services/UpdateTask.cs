@@ -8,6 +8,7 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
+    private readonly HashSet<string> _availableUpdateTypes = new() { "institution", "author", "work" };
     private readonly ILogger<UpdateTask> _logger;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -37,15 +38,13 @@ public class UpdateTask : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
-    private readonly HashSet<string> _availableUpdateTypes = new HashSet<string>() { "institution", "author", "work" };
-
     public bool IsValidUpdateType(string type)
     {
         return _availableUpdateTypes.Contains(type);
     }
 
     /// <summary>
-    /// A "pure" async method. It will not block the thread.
+    ///     A "pure" async method. It will not block the thread.
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="dto">What to update.</param>

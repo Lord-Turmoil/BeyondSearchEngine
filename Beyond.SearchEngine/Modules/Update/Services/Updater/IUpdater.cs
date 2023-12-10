@@ -3,7 +3,7 @@
 namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
 /// <summary>
-/// Basic update interface.
+///     Basic update interface.
 /// </summary>
 public interface IUpdater
 {

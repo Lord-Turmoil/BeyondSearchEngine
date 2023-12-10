@@ -22,13 +22,13 @@ public abstract class BaseUpdater : IUpdater
     public abstract Task Update(string type, InitiateUpdateDto dto);
 
     /// <summary>
-    /// Create a new update history if not exists.
+    ///     Create a new update history if not exists.
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="time">Update time of the data, not update action.</param>
     /// <returns>
-    /// Whether successfully added the history. Return false if already exists
-    /// and is completed.
+    ///     Whether successfully added the history. Return false if already exists
+    ///     and is completed.
     /// </returns>
     private async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
     {
@@ -57,7 +57,7 @@ public abstract class BaseUpdater : IUpdater
     }
 
     /// <summary>
-    /// Complete update history.
+    ///     Complete update history.
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="time">Update time of the data.</param>
@@ -110,11 +110,11 @@ public abstract class BaseUpdater : IUpdater
     }
 
     /// <summary>
-    /// Save history after update.
+    ///     Save history after update.
     /// </summary>
-    /// <param name="type">See <see cref="CompleteUpdateHistory"/></param>
-    /// <param name="entry">See <see cref="CompleteUpdateHistory"/></param>
-    /// <param name="recordCount">See <see cref="CompleteUpdateHistory"/></param>
+    /// <param name="type">See <see cref="CompleteUpdateHistory" /></param>
+    /// <param name="entry">See <see cref="CompleteUpdateHistory" /></param>
+    /// <param name="recordCount">See <see cref="CompleteUpdateHistory" /></param>
     /// <returns></returns>
     protected async ValueTask PostUpdate(string type, ManifestEntry entry, int recordCount)
     {

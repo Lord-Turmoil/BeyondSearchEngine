@@ -8,7 +8,7 @@ using Beyond.Shared.Indexer.Impl;
 namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 
 /// <summary>
-/// The Updater that update Author.
+///     The Updater that update Author.
 /// </summary>
 public class AuthorUpdater
     : GenericUpdater<AuthorIndexer, Author, AuthorDtoBuilder, AuthorDto>
