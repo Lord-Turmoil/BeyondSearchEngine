@@ -78,6 +78,7 @@ public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
 
             List<TDto>? chunk = indexer.NextDataChunk();
             int recordCount = 0;
+            bool success = true;
             if (chunk != null)
             {
                 foreach (TDto dto in chunk)
@@ -94,14 +95,29 @@ public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
                     }
                 }
 
-                await _unitOfWork.SaveChangesAsync();
+                try
+                {
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Failed to save changes: {exception}", e.Message);
+                    success = false;
+                }
             }
             else
             {
                 _logger.LogWarning("Empty chunk for {entry}", entry);
             }
 
-            await PostUpdate(type, entry, recordCount);
+            if (success)
+            {
+                await PostUpdate(type, entry, recordCount);
+            }
+            else
+            {
+                _logger.LogError("Failed to update {type} at {UpdatedDate}", type, entry.UpdatedDate);
+            }
 
             result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
         }

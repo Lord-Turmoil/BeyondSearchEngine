@@ -14,5 +14,5 @@ public class ElasticModel
     ///     by MySQL automatically. Should not be mapped to DTO.
     /// </summary>
     [Column(TypeName = "timestamp")]
-    public DateTime TrackingTime { get; set; }
+    public DateTime TrackingTime { get; set; } = DateTime.UtcNow;
 }
