@@ -1,4 +1,4 @@
-namespace BeyondSearchEngine;
+namespace Beyond.SearchEngine;
 
 public class Program
 {

@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 using Tonisoft.AspExtensions.Cors;
 using Tonisoft.AspExtensions.Module;
 
-namespace BeyondSearchEngine;
+namespace Beyond.SearchEngine;
 
 public class Startup
 {
@@ -79,7 +79,7 @@ public class Startup
     /// </summary>
     /// <param name="app"></param>
     /// <param name="env"></param>
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
         if (env.IsDevelopment())
         {
@@ -102,6 +102,8 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapSwagger();
         });
+
+        loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\BeyondSearch.Api.log");
     }
 
 
