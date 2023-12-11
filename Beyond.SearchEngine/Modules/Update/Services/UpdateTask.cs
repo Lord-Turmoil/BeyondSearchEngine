@@ -71,6 +71,7 @@ public class UpdateTask : IHostedService, IDisposable
             "institution" => new InstitutionUpdater(unitOfWork, _mapper, _logger),
             "author" => new AuthorUpdater(unitOfWork, _mapper, _logger),
             "work" => new WorkUpdater(unitOfWork, _mapper, _logger),
+            "concept" => new ConceptUpdater(unitOfWork, _mapper, _logger),
             _ => null
         };
         if (updater == null)

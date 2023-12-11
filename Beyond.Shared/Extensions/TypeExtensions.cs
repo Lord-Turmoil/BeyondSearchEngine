@@ -24,6 +24,11 @@ static class TypeExtensions
         return fullOrcId[(fullOrcId.LastIndexOf('/') + 1)..];
     }
 
+    public static string WikiDataId(this string fullWikiDataId)
+    {
+        return fullWikiDataId[(fullWikiDataId.LastIndexOf('/') + 1)..];
+    }
+
     public static string Doi(this string fullDoi)
     {
         if (string.IsNullOrEmpty(fullDoi))
