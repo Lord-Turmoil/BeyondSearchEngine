@@ -45,6 +45,11 @@ public class Work : ElasticModel
 
     /***               Relations              ***/
 
+    public string Source { get; set; }
+
+    [NotMapped]
+    public SourceData SourceData => new(Source);
+
     /// <summary>
     ///     It is the area of the work. <see cref="ConceptData" />
     ///     It is stored as a string of semi-colon separated concepts.

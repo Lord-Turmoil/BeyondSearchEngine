@@ -31,6 +31,11 @@ public class WorkDto : ElasticDto
 
 
     /***               Relations              ***/
+    [JsonProperty(PropertyName = "source")]
+    public SourceData SourceData { get; set; }
+
+    [JsonIgnore]
+    public string Source => SourceData.ToString();
 
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }

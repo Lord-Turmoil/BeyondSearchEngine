@@ -15,7 +15,8 @@ public class WorkDtoBuilder : ElasticDtoBuilder<WorkDto>
         JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
         string abstractText = BuildAbstract(abstractJObject);
 
-        BuildPdfUrl(json["primary_location"].ToJObjectNullable(), out string sourceUrl, out string pdfUrl);
+        var primaryLocation = json["primary_location"].ToJObjectNotNull("primary_location");
+        BuildPdfUrl(primaryLocation, out string sourceUrl, out string pdfUrl);
 
         dto.Doi = json["doi"].ToStringNullable().Doi();
         dto.Title = json["title"].ToStringNotNull("title");
@@ -24,6 +25,8 @@ public class WorkDtoBuilder : ElasticDtoBuilder<WorkDto>
         dto.Language = json["language"].ToStringNullable("language");
         dto.SourceUrl = sourceUrl;
         dto.PdfUrl = pdfUrl;
+
+        dto.SourceData = SourceData.Build(primaryLocation["source"].ToJObjectNotNull());
 
         dto.ConceptList = [];
         foreach (JToken token in json["concepts"].ToJArrayNullable())
