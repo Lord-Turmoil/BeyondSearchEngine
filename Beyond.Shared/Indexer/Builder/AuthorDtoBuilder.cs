@@ -7,9 +7,9 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public class AuthorDtoBuilder : ElasticDtoBuilder<AuthorDto>
 {
-    public override AuthorDto BuildNotNull(JObject json)
+    public override AuthorDto Build(JObject json)
     {
-        AuthorDto dto = base.BuildNotNull(json);
+        AuthorDto dto = base.Build(json);
 
         dto.OrcId = json["orcid"].ToStringNullable().OrcId();
         dto.Name = json["display_name"].ToStringNotNull("name");

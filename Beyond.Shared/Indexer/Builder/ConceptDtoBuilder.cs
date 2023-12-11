@@ -7,9 +7,9 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public class ConceptDtoBuilder : ElasticDtoBuilder<ConceptDto>
 {
-    public override ConceptDto? Build(JObject json)
+    public override ConceptDto Build(JObject json)
     {
-        ConceptDto dto = base.BuildNotNull(json);
+        ConceptDto dto = base.Build(json);
 
         dto.WikiDataId = json["wikidata"].ToStringNullable().WikiDataId();
         dto.Name = json["display_name"].ToStringNotNull("display_name");

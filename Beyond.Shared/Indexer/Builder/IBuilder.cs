@@ -4,6 +4,5 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public interface IDtoBuilder<TDto>
 {
-    TDto? Build(JObject json);
-    TDto BuildNotNull(JObject json);
+    TDto Build(JObject json);
 }

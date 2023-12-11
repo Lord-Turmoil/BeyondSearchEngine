@@ -6,12 +6,7 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public class ElasticDtoBuilder<TDto> : IDtoBuilder<TDto> where TDto : ElasticDto, new()
 {
-    public virtual TDto? Build(JObject json)
-    {
-        return BuildNotNull(json);
-    }
-
-    public virtual TDto BuildNotNull(JObject json)
+    public virtual TDto Build(JObject json)
     {
         TDto dto = new() {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),

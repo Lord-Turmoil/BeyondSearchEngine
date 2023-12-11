@@ -7,9 +7,9 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public class InstitutionDtoBuilder : ElasticDtoBuilder<InstitutionDto>
 {
-    public override InstitutionDto BuildNotNull(JObject json)
+    public override InstitutionDto Build(JObject json)
     {
-        InstitutionDto dto = base.BuildNotNull(json);
+        InstitutionDto dto = base.Build(json);
         dto.Name = json["display_name"].ToStringNotNull("display_name");
         dto.Type = json["type"].ToStringNullable();
         dto.Country = json["country_code"].ToStringNullable();

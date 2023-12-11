@@ -8,9 +8,9 @@ namespace Beyond.Shared.Indexer.Builder;
 
 public class WorkDtoBuilder : ElasticDtoBuilder<WorkDto>
 {
-    public override WorkDto BuildNotNull(JObject json)
+    public override WorkDto Build(JObject json)
     {
-        WorkDto dto = base.BuildNotNull(json);
+        WorkDto dto = base.Build(json);
 
         JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
         string abstractText = BuildAbstract(abstractJObject);
