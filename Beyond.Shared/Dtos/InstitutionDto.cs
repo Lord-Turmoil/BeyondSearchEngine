@@ -3,11 +3,8 @@ using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
-public class InstitutionDto
+public class InstitutionDto : ElasticDto
 {
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
-
     [JsonProperty(PropertyName = "name")]
     public string Name { get; set; }
 
@@ -58,13 +55,4 @@ public class InstitutionDto
 
     [JsonIgnore]
     public string CountsByYears => string.Join(";", CountsByYearList.Select(c => c.ToString()));
-
-
-    /***               Other                   ***/
-
-    [JsonProperty(PropertyName = "created")]
-    public DateTime Created { get; set; }
-
-    [JsonProperty(PropertyName = "updated")]
-    public DateTime Updated { get; set; }
 }

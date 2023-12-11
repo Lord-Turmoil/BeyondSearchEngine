@@ -3,11 +3,8 @@ using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
-public class WorkDto
+public class WorkDto : ElasticDto
 {
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
-
     [JsonProperty(PropertyName = "doi")]
     public string Doi { get; set; }
 
@@ -77,13 +74,4 @@ public class WorkDto
 
     [JsonProperty(PropertyName = "publication_date")]
     public DateTime PublicationDate { get; set; }
-
-
-    /***              Other                   ***/
-
-    [JsonProperty(PropertyName = "created")]
-    public DateTime Created { get; set; }
-
-    [JsonProperty(PropertyName = "updated")]
-    public DateTime Updated { get; set; }
 }

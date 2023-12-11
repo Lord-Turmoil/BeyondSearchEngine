@@ -6,11 +6,8 @@ namespace Beyond.Shared.Dtos;
 /// <summary>
 ///     Complete author information.
 /// </summary>
-public class AuthorDto
+public class AuthorDto : ElasticDto
 {
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
-
     [JsonProperty(PropertyName = "orcid")]
     public string OrcId { get; set; }
 
@@ -48,13 +45,4 @@ public class AuthorDto
 
     [JsonIgnore]
     public string Concepts => string.Join(";", ConceptList.Select(c => c.ToString()));
-
-
-    /***              Other                   ***/
-
-    [JsonProperty(PropertyName = "created")]
-    public DateTime Created { get; set; }
-
-    [JsonProperty(PropertyName = "updated")]
-    public DateTime Updated { get; set; }
 }

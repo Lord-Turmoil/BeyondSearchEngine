@@ -7,22 +7,13 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 public class Work : ElasticModel
 {
     /// <summary>
-    ///     OpenAlex ID without leading url. e.g. W1775749144
-    ///     of https://openalex.org/W1775749144
-    /// </summary>
-    [Key]
-    [Column(TypeName = "char(12)")]
-    public string Id { get; set; }
-
-    public string FullId => "https://openalex.org/" + Id;
-
-    /// <summary>
     ///     DOI without leading url. e.g. 10.1016/s0021-9258(19)52451-6
     ///     of https://doi.org/10.1016/s0021-9258(19)52451-6
     /// </summary>
     [Column(TypeName = "varchar(63)")]
     public string Doi { get; set; }
 
+    [NotMapped]
     public string FullDoi => "https://doi.org/" + Doi;
 
 
@@ -115,9 +106,4 @@ public class Work : ElasticModel
     public int PublicationYear { get; set; }
 
     public DateTime PublicationDate { get; set; }
-
-    /***                Other                  ***/
-
-    public DateTime Created { get; set; }
-    public DateTime Updated { get; set; }
 }

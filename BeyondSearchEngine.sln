@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{27D70702-4BB1-49EC-B134-03EEE6B76065}"
 	ProjectSection(SolutionItems) = preProject
 		Misc\Author.json = Misc\Author.json
+		Misc\Concept.json = Misc\Concept.json
 		Misc\Institution.json = Misc\Institution.json
 		Misc\Work.json = Misc\Work.json
 	EndProjectSection

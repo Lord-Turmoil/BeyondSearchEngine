@@ -7,16 +7,6 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 public class Author : ElasticModel
 {
     /// <summary>
-    ///     OpenAlex ID without prefix. e.g. A5040654425
-    ///     of https://openalex.org/A5040654425
-    /// </summary>
-    [Key]
-    [Column(TypeName = "char(12)")]
-    public string Id { get; set; }
-
-    public string FullId => "https://openalex.org/" + Id;
-
-    /// <summary>
     ///     ORC ID without prefix. e.g. 0000-0002-4465-7034
     ///     of https://orcid.org/0000-0002-4465-7034
     /// </summary>
@@ -64,10 +54,4 @@ public class Author : ElasticModel
 
     [NotMapped]
     public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
-
-
-    /***              Other                   ***/
-
-    public DateTime Created { get; set; }
-    public DateTime Updated { get; set; }
 }

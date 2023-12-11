@@ -6,14 +6,6 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 
 public class Institution : ElasticModel
 {
-    /// <summary>
-    ///     Institution ID without prefix. e.g. I4210087620
-    ///     of https://openalex.org/I4210087620
-    /// </summary>
-    [Key]
-    [Column(TypeName = "char(12)")]
-    public string Id { get; set; }
-
     [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
@@ -74,10 +66,4 @@ public class Institution : ElasticModel
     public string CountsByYears { get; set; }
     [NotMapped]
     public List<CountsByYearData> CountsByYearList => CountsByYears.Split(';').Select(c => new CountsByYearData(c)).ToList();
-
-
-    /***               Other                   ***/
-
-    public DateTime Created { get; set; }
-    public DateTime Updated { get; set; }
 }

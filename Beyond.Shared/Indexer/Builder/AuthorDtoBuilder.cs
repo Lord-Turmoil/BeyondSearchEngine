@@ -5,43 +5,37 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class AuthorDtoBuilder : IDtoBuilder<AuthorDto>
+public class AuthorDtoBuilder : ElasticDtoBuilder<AuthorDto>
 {
-    public AuthorDto? Build(JObject json)
+    public override AuthorDto BuildNotNull(JObject json)
     {
-        var dto = new AuthorDto {
-            Id = json["id"].ToStringNotNull("id").OpenAlexId(),
-            OrcId = json["orcid"].ToStringNullable().OrcId(),
-            Name = json["display_name"].ToStringNotNull("name"),
+        AuthorDto dto = base.BuildNotNull(json);
 
-            WorksCount = json["works_count"].ToIntNotNull("works_count"),
-            CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count"),
-            HIndex = json["summary_stats"].NotNull()["h_index"].ToIntNotNull("h_index"),
-            CountsByYearList = new List<CountsByYearData>(),
+        dto.OrcId = json["orcid"].ToStringNullable().OrcId();
+        dto.Name = json["display_name"].ToStringNotNull("name");
 
-            InstitutionData = null,
-            ConceptList = new List<ConceptData>(),
+        dto.WorksCount = json["works_count"].ToIntNotNull("works_count");
+        dto.CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count");
+        dto.HIndex = json["summary_stats"].NotNull("summary_stats")["h_index"].ToIntNotNull("h_index");
+        dto.CountsByYearList = [];
+        foreach (JToken token in json["counts_by_year"].ToJArrayNullable())
+        {
+            var data = CountsByYearData.Build(token.ToJObjectNotNull());
+            dto.CountsByYearList.Add(data);
+        }
 
-            Created = json["created_date"].ToDateTimeNotNull("created_date"),
-            Updated = json["updated_date"].ToDateTimeNotNull("updated_date")
-        };
-
+        dto.InstitutionData = null;
         JObject? lastKnownInstitution = json["last_known_institution"].ToJObjectNullable();
         if (lastKnownInstitution != null)
         {
             dto.InstitutionData = InstitutionData.Build(lastKnownInstitution);
         }
 
+        dto.ConceptList = [];
         foreach (JToken token in json["x_concepts"].ToJArrayNullable())
         {
             var data = ConceptData.Build(token.ToJObjectNotNull());
             dto.ConceptList.Add(data);
-        }
-
-        foreach (JToken token in json["counts_by_year"].ToJArrayNullable())
-        {
-            var data = CountsByYearData.Build(token.ToJObjectNotNull());
-            dto.CountsByYearList.Add(data);
         }
 
         return dto;
