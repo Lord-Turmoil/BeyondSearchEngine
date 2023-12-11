@@ -30,5 +30,10 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(work => work.ReferencedWorkList, act => act.Ignore())
             .ForMember(work => work.AuthorList, act => act.Ignore())
             .ReverseMap();
+
+        CreateMap<ConceptDto, Concept>()
+            .ForMember(concept => concept.RelatedConceptList, act => act.Ignore())
+            .ForMember(concept => concept.CountsByYearList, act => act.Ignore())
+            .ReverseMap();
     }
 }
