@@ -1,5 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Services.Updater;
 using Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
@@ -72,6 +73,7 @@ public class UpdateTask : IHostedService, IDisposable
             "author" => new AuthorUpdater(unitOfWork, _mapper, _logger),
             "work" => new WorkUpdater(unitOfWork, _mapper, _logger),
             "concept" => new ConceptUpdater(unitOfWork, _mapper, _logger),
+            "source" => new SourceUpdater(unitOfWork, _mapper, _logger),
             _ => null
         };
         if (updater == null)

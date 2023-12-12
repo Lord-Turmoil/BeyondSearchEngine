@@ -46,4 +46,13 @@ public class ConceptData
             Score = json["score"].ToDoubleNotNull("score")
         };
     }
+
+    public static List<ConceptData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+        return data.Split(';').Select(c => new ConceptData(c)).ToList();
+    }
 }
