@@ -24,7 +24,7 @@ public class Startup
         _ConfigureDatabase<BeyondContext>(services);
         services.AddUnitOfWork<BeyondContext>();
         services.RegisterModules();
-
+        
         // Controllers
         services.AddControllers().AddNewtonsoftJson();
 

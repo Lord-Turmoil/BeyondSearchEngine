@@ -47,7 +47,7 @@ public class WorkDto : ElasticDto
     public List<KeywordData> KeywordList { get; set; }
 
     [JsonIgnore]
-    public string Keywords => string.Join(";", KeywordList);
+    public string Keywords => string.Join(";", KeywordList.Select(c => c.ToString()));
 
 
     [JsonProperty(PropertyName = "related_works")]

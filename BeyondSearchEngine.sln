@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{27D70702-4
 		Misc\Author.json = Misc\Author.json
 		Misc\Concept.json = Misc\Concept.json
 		Misc\Institution.json = Misc\Institution.json
+		Misc\Publisher.json = Misc\Publisher.json
 		Misc\Source.json = Misc\Source.json
 		Misc\Work.json = Misc\Work.json
 	EndProjectSection

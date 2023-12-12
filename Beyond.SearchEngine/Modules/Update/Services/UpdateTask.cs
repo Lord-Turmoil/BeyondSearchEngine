@@ -8,7 +8,7 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
-    private readonly HashSet<string> _availableUpdateTypes = new() { "institution", "author", "work" };
+    private readonly HashSet<string> _availableUpdateTypes = new() { "institution", "author", "work", "concept", "source", "publisher" };
     private readonly ILogger<UpdateTask> _logger;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -73,6 +73,7 @@ public class UpdateTask : IHostedService, IDisposable
             "work" => new WorkUpdater(unitOfWork, _mapper, _logger),
             "concept" => new ConceptUpdater(unitOfWork, _mapper, _logger),
             "source" => new SourceUpdater(unitOfWork, _mapper, _logger),
+            "publisher" => new PublisherUpdater(unitOfWork, _mapper, _logger),
             _ => null
         };
         if (updater == null)
