@@ -3,7 +3,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Author : ElasticModel
+public class Author : OpenAlexStatisticsModel
 {
     /// <summary>
     ///     ORC ID without prefix. e.g. 0000-0002-4465-7034
@@ -20,19 +20,6 @@ public class Author : ElasticModel
     /// </summary>
     [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
-
-
-    /***              Statistics               ***/
-
-    public int WorksCount { get; set; }
-    public int CitationCount { get; set; }
-    public int HIndex { get; set; }
-
-    public string CountsByYears { get; set; }
-
-    [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
-
 
     /***                Relation               ***/
 

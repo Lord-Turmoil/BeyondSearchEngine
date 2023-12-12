@@ -8,7 +8,7 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 ///     timestamp is used to store the time of the last update of the model.
 ///     It is required for Logstash to work properly.
 /// </summary>
-public class ElasticModel
+public class OpenAlexModel
 {
     /// <summary>
     ///     OpenAlex ID without prefix. e.g. A5040654425

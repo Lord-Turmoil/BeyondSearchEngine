@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
-public class PublisherDto : ElasticDto
+public class PublisherDto : OpenAlexStatisticsDto
 {
     [JsonProperty(PropertyName = "name")]
     public string Name { get; set; }
@@ -41,22 +41,4 @@ public class PublisherDto : ElasticDto
 
     [JsonIgnore]
     public string Roles => string.Join(';', RoleList.Select(c => c.ToString()));
-
-
-    /***             Statistics               ***/
-
-    [JsonProperty(PropertyName = "works_count")]
-    public int WorksCount { get; set; }
-
-    [JsonProperty(PropertyName = "citation_count")]
-    public int CitationCount { get; set; }
-
-    [JsonProperty(PropertyName = "h_index")]
-    public int HIndex { get; set; }
-
-    [JsonProperty(PropertyName = "counts_by_year")]
-    public List<CountsByYearData> CountsByYearList;
-
-    [JsonIgnore]
-    public string CountsByYears => string.Join(';', CountsByYearList.Select(c => c.ToString()));
 }

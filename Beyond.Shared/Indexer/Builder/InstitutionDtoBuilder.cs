@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class InstitutionDtoBuilder : ElasticDtoBuilder<InstitutionDto>
+public class InstitutionDtoBuilder : OpenAlexStatisticsDtoBuilder<InstitutionDto>
 {
     public override InstitutionDto Build(JObject json)
     {
@@ -30,15 +30,6 @@ public class InstitutionDtoBuilder : ElasticDtoBuilder<InstitutionDto>
         {
             var data = AssociatedInstitutionData.Build(token.ToJObjectNotNull());
             dto.AssociatedInstitutionList.Add(data);
-        }
-
-        dto.WorksCount = json["works_count"].ToIntNotNull("works_count", 0);
-        dto.CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0);
-        dto.CountsByYearList = [];
-        foreach (JToken token in json["counts_by_year"].ToJArrayNullable())
-        {
-            var data = CountsByYearData.Build(token.ToJObjectNotNull());
-            dto.CountsByYearList.Add(data);
         }
 
         return dto;

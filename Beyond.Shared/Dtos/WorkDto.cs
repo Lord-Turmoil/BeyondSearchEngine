@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
-public class WorkDto : ElasticDto
+public class WorkDto : OpenAlexDto
 {
     [JsonProperty(PropertyName = "doi")]
     public string Doi { get; set; }

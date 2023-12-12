@@ -3,7 +3,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Institution : ElasticModel
+public class Institution : OpenAlexStatisticsModel
 {
     [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
@@ -55,16 +55,4 @@ public class Institution : ElasticModel
     [NotMapped]
     public List<AssociatedInstitutionData> AssociatedInstitutionList =>
         AssociatedInstitutionData.BuildList(AssociatedInstitutions);
-
-
-    /***              Statistics               ***/
-
-    public int WorksCount { get; set; }
-
-    public int CitationCount { get; set; }
-
-    public string CountsByYears { get; set; }
-
-    [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
 }

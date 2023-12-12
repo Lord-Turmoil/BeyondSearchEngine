@@ -3,7 +3,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Concept : ElasticModel
+public class Concept : OpenAlexStatisticsModel
 {
     /// <summary>
     ///     Wikidata ID without prefix. e.g. Q21198
@@ -37,16 +37,4 @@ public class Concept : ElasticModel
 
     [NotMapped]
     public List<ConceptData> RelatedConceptList => ConceptData.BuildList(RelatedConcepts);
-
-
-    /***              Statistics               ***/
-
-    public int WorksCount { get; set; }
-    public int CitationCount { get; set; }
-    public int HIndex { get; set; }
-
-    public string CountsByYears { get; set; }
-
-    [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
 }

@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class ElasticDtoBuilder<TDto> : IDtoBuilder<TDto> where TDto : ElasticDto, new()
+public class OpenAlexDtoBuilder<TDto> : IDtoBuilder<TDto> where TDto : OpenAlexDto, new()
 {
     public virtual TDto Build(JObject json)
     {

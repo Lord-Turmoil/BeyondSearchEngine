@@ -3,7 +3,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Work : ElasticModel
+public class Work : OpenAlexModel
 {
     /// <summary>
     ///     DOI without leading url. e.g. 10.1016/s0021-9258(19)52451-6

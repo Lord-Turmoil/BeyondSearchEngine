@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Builder;
 
-public class WorkDtoBuilder : ElasticDtoBuilder<WorkDto>
+public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
 {
     public override WorkDto Build(JObject json)
     {

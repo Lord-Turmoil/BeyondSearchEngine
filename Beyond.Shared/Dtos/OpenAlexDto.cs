@@ -2,7 +2,7 @@
 
 namespace Beyond.Shared.Dtos;
 
-public class ElasticDto
+public class OpenAlexDto
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }

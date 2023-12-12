@@ -3,7 +3,7 @@ using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
-public class Source : ElasticModel
+public class Source : OpenAlexStatisticsModel
 {
     [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
@@ -30,16 +30,4 @@ public class Source : ElasticModel
 
     [NotMapped]
     public List<ConceptData> ConceptList => ConceptData.BuildList(Concepts);
-
-
-    /***              Statistics               ***/
-
-    public int WorksCount { get; set; }
-    public int CitationCount { get; set; }
-    public int HIndex { get; set; }
-
-    public string CountsByYears { get; set; }
-
-    [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
 }
