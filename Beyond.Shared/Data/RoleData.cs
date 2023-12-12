@@ -1,4 +1,5 @@
 ﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Data;
@@ -17,9 +18,14 @@ public class RoleData
         WorksCount = int.Parse(values[2]);
     }
 
-    public string Type;
-    public string Id;
-    public int WorksCount;
+    [JsonProperty(PropertyName = "role")]
+    public string Type { get; set; }
+
+    [JsonProperty(PropertyName = "id")]
+    public string Id { get; set; }
+
+    [JsonProperty(PropertyName = "works_count")]
+    public int WorksCount { get; set; }
 
     public override string ToString()
     {
@@ -29,9 +35,9 @@ public class RoleData
     public static RoleData Build(JObject json)
     {
         return new RoleData {
-            Type = json["type"].ToStringNotNull("type"),
-            Id = json["id"].ToStringNotNull("id"),
-            WorksCount = json["worksCount"].ToIntNotNull("worksCount")
+            Type = json["role"].ToStringNotNull("role"),
+            Id = json["id"].ToStringNullable().OpenAlexId(),
+            WorksCount = json["works_count"].ToIntNotNull("works_count", 0)
         };
     }
 

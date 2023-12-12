@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Beyond.SearchEngine.Modules.Update.Models;
 
 public class UpdateConfiguration
 {
     /// <summary>
-    /// This ID should always be 1.
+    ///     This ID should always be 1.
     /// </summary>
     [Key]
     public int Id { get; set; }

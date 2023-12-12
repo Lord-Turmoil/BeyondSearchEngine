@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Beyond.Shared.Dtos;
 
 public class OpenAlexStatisticsDto : OpenAlexDto
-{ 
+{
     [JsonProperty(PropertyName = "works_count")]
     public int WorksCount { get; set; }
 

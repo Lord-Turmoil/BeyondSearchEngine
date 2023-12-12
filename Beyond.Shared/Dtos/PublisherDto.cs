@@ -1,19 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Beyond.Shared.Data;
+﻿using Beyond.Shared.Data;
 using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
 public class PublisherDto : OpenAlexStatisticsDto
 {
-    [JsonProperty(PropertyName = "name")]
-    public string Name { get; set; }
-
-
     /***            Basics               ***/
 
     [JsonProperty(PropertyName = "countries")]
     public List<string> CountryList;
+
+
+    /***              Relations                ***/
+
+    [JsonProperty(PropertyName = "parent")]
+    public PublisherData? ParentPublisherData;
+
+    [JsonProperty(PropertyName = "roles")]
+    public List<RoleData> RoleList;
+
+    [JsonProperty(PropertyName = "name")]
+    public string Name { get; set; }
 
     [JsonIgnore]
     public string Countries => string.Join(';', CountryList);
@@ -27,17 +34,8 @@ public class PublisherDto : OpenAlexStatisticsDto
     [JsonProperty(PropertyName = "thumbnail_url")]
     public string ThumbnailUrl { get; set; }
 
-
-    /***              Relations                ***/
-
-    [JsonProperty(PropertyName = "parent")]
-    public PublisherData? ParentPublisherData;
-
     [JsonIgnore]
     public string ParentPublisher => ParentPublisherData?.ToString() ?? string.Empty;
-
-    [JsonProperty(PropertyName = "roles")]
-    public List<RoleData> RoleList;
 
     [JsonIgnore]
     public string Roles => string.Join(';', RoleList.Select(c => c.ToString()));

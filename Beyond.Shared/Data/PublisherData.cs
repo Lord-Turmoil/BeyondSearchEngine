@@ -1,13 +1,11 @@
 ﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Data;
 
 public class PublisherData
 {
-    public string Id;
-    public string Name;
-
     public PublisherData()
     {
     }
@@ -18,6 +16,12 @@ public class PublisherData
         Id = values[0];
         Name = values[1];
     }
+
+    [JsonProperty(PropertyName = "id")]
+    public string Id { get; set; }
+
+    [JsonProperty(PropertyName = "name")]
+    public string Name { get; set; }
 
     public override string ToString()
     {

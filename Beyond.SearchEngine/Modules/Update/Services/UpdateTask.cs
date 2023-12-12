@@ -9,7 +9,9 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
-    private readonly HashSet<string> _availableUpdateTypes = new() { "institutions", "authors", "works", "concepts", "sources", "publishers" };
+    private readonly HashSet<string> _availableUpdateTypes =
+        new() { "institutions", "authors", "works", "concepts", "sources", "publishers" };
+
     private readonly ILogger<UpdateTask> _logger;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -91,6 +93,6 @@ public class UpdateTask : IHostedService, IDisposable
             return;
         }
 
-        await updater.Update(type, dto, Path.Join(config.DataPath, type), Path.Join(config.DataPath, type));
+        await updater.Update(type, dto, Path.Join(config.DataPath, type), Path.Join(config.TempPath, type));
     }
 }

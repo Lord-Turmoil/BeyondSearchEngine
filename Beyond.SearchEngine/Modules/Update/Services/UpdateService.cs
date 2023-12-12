@@ -80,6 +80,7 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
             config.TempPath = dto.TempPath;
             configRepo.Update(config);
         }
+
         await _unitOfWork.SaveChangesAsync();
 
         return new OkResponse(new OkDto("Update configuration saved."));

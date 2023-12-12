@@ -4,11 +4,11 @@ namespace Beyond.SearchEngine.Modules.Update.Dtos;
 
 public class ConfigureUpdateDto : ApiRequestDto
 {
-    public string Username;
-    public string Password;
+    public string Username { get; set; }
+    public string Password { get; set; }
 
-    public string DataPath;
-    public string TempPath;
+    public string DataPath { get; set; }
+    public string TempPath { get; set; }
 
     public override bool Verify()
     {

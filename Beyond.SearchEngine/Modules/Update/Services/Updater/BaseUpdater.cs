@@ -50,6 +50,11 @@ public abstract class BaseUpdater : IUpdater
                 Completed = null
             });
         }
+        else
+        {
+            history.Created = DateTime.UtcNow;
+            repo.Update(history);
+        }
 
         await _unitOfWork.SaveChangesAsync();
 

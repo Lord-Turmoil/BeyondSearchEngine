@@ -1,6 +1,5 @@
 ﻿using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;

@@ -16,3 +16,10 @@ public class UpdateHistoryRepository : Repository<UpdateHistory>
     {
     }
 }
+
+public class UpdateConfigurationRepository : Repository<UpdateConfiguration>
+{
+    public UpdateConfigurationRepository(BeyondContext dbContext) : base(dbContext)
+    {
+    }
+}

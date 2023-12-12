@@ -9,7 +9,10 @@ public class SearchModule : BaseModule
     public override IServiceCollection RegisterModule(IServiceCollection services)
     {
         services.AddCustomRepository<Author, AuthorRepository>()
+            .AddCustomRepository<Concept, ConceptRepository>()
             .AddCustomRepository<Institution, InstitutionRepository>()
+            .AddCustomRepository<Publisher, PublisherRepository>()
+            .AddCustomRepository<Source, SourceRepository>()
             .AddCustomRepository<Work, WorkRepository>();
 
         return services;

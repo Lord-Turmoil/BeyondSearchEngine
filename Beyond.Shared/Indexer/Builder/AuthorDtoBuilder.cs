@@ -14,12 +14,7 @@ public class AuthorDtoBuilder : OpenAlexStatisticsDtoBuilder<AuthorDto>
         dto.OrcId = json["orcid"].ToStringNullable().OrcId();
         dto.Name = json["display_name"].ToStringNotNull("name");
 
-        dto.InstitutionData = null;
-        JObject? lastKnownInstitution = json["last_known_institution"].ToJObjectNullable();
-        if (lastKnownInstitution != null)
-        {
-            dto.InstitutionData = InstitutionData.Build(lastKnownInstitution);
-        }
+        dto.InstitutionData = InstitutionData.Build(json["last_known_institution"].ToJObjectNullable());
 
         dto.ConceptList = [];
         foreach (JToken token in json["x_concepts"].ToJArrayNullable())

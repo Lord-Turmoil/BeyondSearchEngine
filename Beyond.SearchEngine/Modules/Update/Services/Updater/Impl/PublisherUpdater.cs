@@ -10,7 +10,8 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 public class PublisherUpdater
     : GenericUpdater<PublisherIndexer, Publisher, PublisherDtoBuilder, PublisherDto>
 {
-    public PublisherUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger) : base(unitOfWork, mapper,
+    public PublisherUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger) : base(unitOfWork,
+        mapper,
         logger)
     {
     }

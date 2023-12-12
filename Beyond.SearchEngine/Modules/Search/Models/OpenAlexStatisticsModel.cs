@@ -1,10 +1,10 @@
-﻿using Beyond.Shared.Data;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
 /// <summary>
-/// Base class for models with statistics.
+///     Base class for models with statistics.
 /// </summary>
 public class OpenAlexStatisticsModel : OpenAlexModel
 {

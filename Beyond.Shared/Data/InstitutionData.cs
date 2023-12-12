@@ -36,13 +36,18 @@ public class InstitutionData
         return $"{Id},{Name},{Type},{Country}";
     }
 
-    public static InstitutionData Build(JObject json)
+    public static InstitutionData? Build(JObject? json)
     {
+        if (json == null)
+        {
+            return null;
+        }
+
         return new InstitutionData {
             Id = json["id"].ToStringNotNull("id").OpenAlexId(),
             Name = json["display_name"].ToStringNotNull("display_name"),
             Type = json["type"].ToStringNotNull("type"),
-            Country = json["country"].ToStringNotNull("country")
+            Country = json["country_code"].ToStringNullable("country_code")
         };
     }
 

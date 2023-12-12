@@ -10,9 +10,30 @@ public class AuthorRepository : Repository<Author>
     }
 }
 
+public class ConceptRepository : Repository<Concept>
+{
+    public ConceptRepository(BeyondContext dbContext) : base(dbContext)
+    {
+    }
+}
+
 public class InstitutionRepository : Repository<Institution>
 {
     public InstitutionRepository(BeyondContext dbContext) : base(dbContext)
+    {
+    }
+}
+
+public class PublisherRepository : Repository<Publisher>
+{
+    public PublisherRepository(BeyondContext dbContext) : base(dbContext)
+    {
+    }
+}
+
+public class SourceRepository : Repository<Source>
+{
+    public SourceRepository(BeyondContext dbContext) : base(dbContext)
     {
     }
 }

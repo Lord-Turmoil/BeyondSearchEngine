@@ -10,7 +10,8 @@ public class UpdateModule : BaseModule
     public override IServiceCollection RegisterModule(IServiceCollection services)
     {
         services.AddCustomRepository<User, UserRepository>()
-            .AddCustomRepository<UpdateHistory, UpdateHistoryRepository>();
+            .AddCustomRepository<UpdateHistory, UpdateHistoryRepository>()
+            .AddCustomRepository<UpdateConfiguration, UpdateConfigurationRepository>();
 
         services.AddScoped<IUpdateService, UpdateService>();
 
