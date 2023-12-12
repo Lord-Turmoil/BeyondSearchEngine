@@ -40,4 +40,14 @@ public class CountsByYearData
             CitationCount = json["citation_count"].ToIntNotNull("citation_count", 0)
         };
     }
+
+    public static List<CountsByYearData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+
+        return data.Split(';').Select(c => new CountsByYearData(c)).ToList();
+    }
 }

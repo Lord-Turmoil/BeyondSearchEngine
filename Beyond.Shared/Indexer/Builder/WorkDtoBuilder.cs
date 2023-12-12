@@ -15,7 +15,7 @@ public class WorkDtoBuilder : ElasticDtoBuilder<WorkDto>
         JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
         string abstractText = BuildAbstract(abstractJObject);
 
-        var primaryLocation = json["primary_location"].ToJObjectNotNull("primary_location");
+        JObject primaryLocation = json["primary_location"].ToJObjectNotNull("primary_location");
         BuildPdfUrl(primaryLocation, out string sourceUrl, out string pdfUrl);
 
         dto.Doi = json["doi"].ToStringNullable().Doi();

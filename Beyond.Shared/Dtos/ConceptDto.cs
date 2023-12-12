@@ -1,11 +1,19 @@
 ﻿using Beyond.Shared.Data;
-using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;
 
 public class ConceptDto : ElasticDto
 {
+    [JsonProperty(PropertyName = "counts_by_year")]
+    public List<CountsByYearData> CountsByYearList;
+
+
+    /***              Relation               ***/
+
+    [JsonProperty(PropertyName = "related_concepts")]
+    public List<ConceptData> RelatedConceptList;
+
     [JsonProperty(PropertyName = "wikidata")]
     public string WikiDataId { get; set; }
 
@@ -26,12 +34,6 @@ public class ConceptDto : ElasticDto
     [JsonProperty(PropertyName = "thumbnail_url")]
     public string ThumbnailUrl { get; set; }
 
-
-    /***              Relation               ***/
-
-    [JsonProperty(PropertyName = "related_concepts")]
-    public List<ConceptData> RelatedConceptList;
-
     [JsonIgnore]
     public string RelatedConcepts => string.Join(";", RelatedConceptList.Select(c => c.ToString()));
 
@@ -46,10 +48,6 @@ public class ConceptDto : ElasticDto
 
     [JsonProperty(PropertyName = "h_index")]
     public int HIndex { get; set; }
-
-
-    [JsonProperty(PropertyName = "counts_by_year")]
-    public List<CountsByYearData> CountsByYearList;
 
     [JsonIgnore]
     public string CountsByYears => string.Join(";", CountsByYearList.Select(c => c.ToString()));

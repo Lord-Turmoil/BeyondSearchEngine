@@ -36,4 +36,14 @@ public class KeywordData
             Score = json["score"].ToDoubleNotNull("score")
         };
     }
+
+    public static List<KeywordData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+
+        return data.Split(';').Select(c => new KeywordData(c)).ToList();
+    }
 }

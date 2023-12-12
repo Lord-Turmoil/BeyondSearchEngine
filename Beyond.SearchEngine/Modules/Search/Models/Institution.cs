@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
@@ -41,7 +40,7 @@ public class Institution : ElasticModel
     public string Concepts { get; set; }
 
     [NotMapped]
-    public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
+    public List<ConceptData> ConceptList => ConceptData.BuildList(Concepts);
 
 
     /// <summary>
@@ -55,7 +54,7 @@ public class Institution : ElasticModel
 
     [NotMapped]
     public List<AssociatedInstitutionData> AssociatedInstitutionList =>
-        AssociatedInstitutions.Split(';').Select(i => new AssociatedInstitutionData(i)).ToList();
+        AssociatedInstitutionData.BuildList(AssociatedInstitutions);
 
 
     /***              Statistics               ***/
@@ -67,5 +66,5 @@ public class Institution : ElasticModel
     public string CountsByYears { get; set; }
 
     [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYears.Split(';').Select(c => new CountsByYearData(c)).ToList();
+    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
 }

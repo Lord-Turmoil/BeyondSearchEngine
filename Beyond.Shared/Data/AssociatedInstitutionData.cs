@@ -49,4 +49,14 @@ public class AssociatedInstitutionData
             Relation = json["type"].ToStringNotNull("type")
         };
     }
+
+    public static List<AssociatedInstitutionData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+
+        return data.Split(';').Select(c => new AssociatedInstitutionData(c)).ToList();
+    }
 }

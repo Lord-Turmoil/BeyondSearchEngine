@@ -1,6 +1,5 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
-using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Services.Updater;
 using Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;

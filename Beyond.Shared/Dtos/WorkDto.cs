@@ -54,13 +54,13 @@ public class WorkDto : ElasticDto
     public List<string> RelatedWorkList { get; set; }
 
     [JsonIgnore]
-    public string RelatedWorks => string.Join(",", RelatedWorkList);
+    public string RelatedWorks => string.Join(";", RelatedWorkList);
 
     [JsonProperty(PropertyName = "referenced_works")]
     public List<string> ReferencedWorkList { get; set; }
 
     [JsonIgnore]
-    public string ReferencedWorks => string.Join(",", ReferencedWorkList);
+    public string ReferencedWorks => string.Join(";", ReferencedWorkList);
 
     [JsonProperty(PropertyName = "authors")]
     public List<AuthorData> AuthorList { get; set; }

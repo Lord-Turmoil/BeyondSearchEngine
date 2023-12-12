@@ -54,4 +54,14 @@ public class AuthorData
             Name = authorJObject["display_name"].ToStringNotNull("display_name")
         };
     }
+
+    public static List<AuthorData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+
+        return data.Split(';').Select(c => new AuthorData(c)).ToList();
+    }
 }

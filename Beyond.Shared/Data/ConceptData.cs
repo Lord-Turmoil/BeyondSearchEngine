@@ -53,6 +53,7 @@ public class ConceptData
         {
             return [];
         }
+
         return data.Split(';').Select(c => new ConceptData(c)).ToList();
     }
 }

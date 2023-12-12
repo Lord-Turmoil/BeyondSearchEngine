@@ -12,7 +12,7 @@ public class SourceData
 
     public SourceData(string source)
     {
-        var parts = source.Split(',');
+        string[] parts = source.Split(',');
         Id = parts[0];
         Name = parts[1];
         HostId = parts[2];
@@ -27,7 +27,7 @@ public class SourceData
     public string Name { get; set; }
 
     /// <summary>
-    /// Maybe an Institution ID or Publisher ID.
+    ///     Maybe an Institution ID or Publisher ID.
     /// </summary>
     [JsonProperty(PropertyName = "host_id")]
     public string HostId { get; set; }
@@ -36,7 +36,7 @@ public class SourceData
     public string HostName { get; set; }
 
     /// <summary>
-    /// Type of host.
+    ///     Type of host.
     /// </summary>
     [JsonProperty(PropertyName = "type")]
     public string Type { get; set; }
@@ -55,5 +55,15 @@ public class SourceData
             HostName = json["host_name"].ToStringNullable(),
             Type = json["type"].ToStringNullable()
         };
+    }
+
+    public static List<SourceData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return new List<SourceData>();
+        }
+
+        return data.Split(';').Select(c => new SourceData(c)).ToList();
     }
 }

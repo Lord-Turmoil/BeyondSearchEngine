@@ -41,5 +41,5 @@ public class Source : ElasticModel
     public string CountsByYears { get; set; }
 
     [NotMapped]
-    public List<CountsByYearData> CountsByYearList => CountsByYears.Split(';').Select(c => new CountsByYearData(c)).ToList();
+    public List<CountsByYearData> CountsByYearList => CountsByYearData.BuildList(CountsByYears);
 }

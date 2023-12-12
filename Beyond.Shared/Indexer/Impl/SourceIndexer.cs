@@ -5,7 +5,8 @@ namespace Beyond.Shared.Indexer.Impl;
 
 public class SourceIndexer : GenericIndexer<SourceDtoBuilder, SourceDto>
 {
-    protected SourceIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate) : base(dataPath, tempPath, beginDate, endDate)
+    protected SourceIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate) : base(dataPath,
+        tempPath, beginDate, endDate)
     {
     }
 }

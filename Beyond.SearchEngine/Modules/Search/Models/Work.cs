@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
@@ -59,7 +58,7 @@ public class Work : ElasticModel
     public string Concepts { get; set; }
 
     [NotMapped]
-    public List<ConceptData> ConceptList => Concepts.Split(';').Select(c => new ConceptData(c)).ToList();
+    public List<ConceptData> ConceptList => ConceptData.BuildList(Concepts);
 
     /// <summary>
     ///     Keywords are stored as a string of comma separated words.
@@ -68,7 +67,7 @@ public class Work : ElasticModel
     public string Keywords { get; set; }
 
     [NotMapped]
-    public List<string> KeywordList => Keywords.Split(',').ToList();
+    public List<KeywordData> KeywordList => KeywordData.BuildList(Keywords);
 
     /// <summary>
     ///     It is stored as a string of comma separated works.
@@ -78,7 +77,7 @@ public class Work : ElasticModel
     public string RelatedWorks { get; set; }
 
     [NotMapped]
-    public List<string> RelatedWorkList => RelatedWorks.Split(',').ToList();
+    public List<string> RelatedWorkList => string.IsNullOrEmpty(RelatedWorks) ? [] : RelatedWorks.Split(';').ToList();
 
     /// <summary>
     ///     The same as <see cref="RelatedWorks" />.
@@ -86,7 +85,8 @@ public class Work : ElasticModel
     public string ReferencedWorks { get; set; }
 
     [NotMapped]
-    public List<string> ReferencedWorkList => ReferencedWorks.Split(',').ToList();
+    public List<string> ReferencedWorkList =>
+        string.IsNullOrEmpty(ReferencedWorks) ? [] : ReferencedWorks.Split(';').ToList();
 
     /// <summary>
     ///     It is stored as a string of semi-colon separated authors.
@@ -98,7 +98,7 @@ public class Work : ElasticModel
     public string Authors { get; set; }
 
     [NotMapped]
-    public List<AuthorData> AuthorList => Authors.Split(';').Select(x => new AuthorData(x)).ToList();
+    public List<AuthorData> AuthorList => AuthorData.BuildList(Authors);
 
 
     /***              Statistics               ***/

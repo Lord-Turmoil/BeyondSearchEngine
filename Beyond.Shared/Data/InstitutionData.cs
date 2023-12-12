@@ -45,4 +45,24 @@ public class InstitutionData
             Country = json["country"].ToStringNotNull("country")
         };
     }
+
+    public static InstitutionData? Build(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return null;
+        }
+
+        return new InstitutionData(data);
+    }
+
+    public static List<InstitutionData> BuildList(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return [];
+        }
+
+        return data.Split(';').Select(c => new InstitutionData(c)).ToList();
+    }
 }
