@@ -1,6 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Update.Dtos;
+using Beyond.SearchEngine.Modules.Update.Models;
 using Beyond.SearchEngine.Modules.Update.Services.Updater;
 using Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 
@@ -8,7 +9,7 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
-    private readonly HashSet<string> _availableUpdateTypes = new() { "institution", "author", "work", "concept", "source", "publisher" };
+    private readonly HashSet<string> _availableUpdateTypes = new() { "institutions", "authors", "works", "concepts", "sources", "publishers" };
     private readonly ILogger<UpdateTask> _logger;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -67,13 +68,21 @@ public class UpdateTask : IHostedService, IDisposable
 
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        IRepository<UpdateConfiguration> repo = unitOfWork.GetRepository<UpdateConfiguration>();
+        UpdateConfiguration? config = await repo.GetFirstOrDefaultAsync(predicate: x => x.Id == 1);
+        if (config == null || !config.IsConfigured)
+        {
+            _logger.LogError("Update configuration is not set up");
+            return;
+        }
+
         IUpdater? updater = type switch {
-            "institution" => new InstitutionUpdater(unitOfWork, _mapper, _logger),
-            "author" => new AuthorUpdater(unitOfWork, _mapper, _logger),
-            "work" => new WorkUpdater(unitOfWork, _mapper, _logger),
-            "concept" => new ConceptUpdater(unitOfWork, _mapper, _logger),
-            "source" => new SourceUpdater(unitOfWork, _mapper, _logger),
-            "publisher" => new PublisherUpdater(unitOfWork, _mapper, _logger),
+            "institutions" => new InstitutionUpdater(unitOfWork, _mapper, _logger),
+            "authors" => new AuthorUpdater(unitOfWork, _mapper, _logger),
+            "works" => new WorkUpdater(unitOfWork, _mapper, _logger),
+            "concepts" => new ConceptUpdater(unitOfWork, _mapper, _logger),
+            "sources" => new SourceUpdater(unitOfWork, _mapper, _logger),
+            "publishers" => new PublisherUpdater(unitOfWork, _mapper, _logger),
             _ => null
         };
         if (updater == null)
@@ -82,6 +91,6 @@ public class UpdateTask : IHostedService, IDisposable
             return;
         }
 
-        await updater.Update(type, dto);
+        await updater.Update(type, dto, Path.Join(config.DataPath, type), Path.Join(config.DataPath, type));
     }
 }

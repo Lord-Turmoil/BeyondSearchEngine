@@ -7,5 +7,7 @@ public interface IUpdateService
 {
     Task<ApiResponse> InitiateUpdate(string type, InitiateUpdateDto dto);
 
+    Task<ApiResponse> ConfigureUpdate(ConfigureUpdateDto dto);
+
     ApiResponse QueryUpdateStatus(string type);
 }

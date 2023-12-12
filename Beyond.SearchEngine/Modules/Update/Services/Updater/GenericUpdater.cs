@@ -17,7 +17,7 @@ public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
     {
     }
 
-    public override async Task Update(string type, InitiateUpdateDto dto)
+    public override async Task Update(string type, InitiateUpdateDto dto, string dataPath, string tempPath)
     {
         if (!UpdateMutex.BeginUpdate(type))
         {
@@ -29,8 +29,8 @@ public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
         {
             var indexer = (TIndexer?)Activator.CreateInstance(
                 typeof(TIndexer),
-                dto.DataPath,
-                dto.TempPath,
+                dataPath,
+                tempPath,
                 dto.Begin,
                 dto.End);
             if (indexer == null)

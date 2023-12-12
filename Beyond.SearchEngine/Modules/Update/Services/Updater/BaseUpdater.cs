@@ -19,7 +19,7 @@ public abstract class BaseUpdater : IUpdater
         _logger = logger;
     }
 
-    public abstract Task Update(string type, InitiateUpdateDto dto);
+    public abstract Task Update(string type, InitiateUpdateDto dto, string dataPath, string tempPath);
 
     /// <summary>
     ///     Create a new update history if not exists.

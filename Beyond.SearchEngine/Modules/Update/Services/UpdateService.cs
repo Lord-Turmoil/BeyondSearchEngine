@@ -48,6 +48,43 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
         return new OkResponse(new OkDto(data: new InitiateUpdateSuccessDto(type, dto.Begin, dto.End)));
     }
 
+    public async Task<ApiResponse> ConfigureUpdate(ConfigureUpdateDto dto)
+    {
+        // Verify user.
+        IRepository<User> repo = _unitOfWork.GetRepository<User>();
+        User? user = await repo.GetFirstOrDefaultAsync(predicate: x => x.Username.Equals(dto.Username));
+        if (user == null)
+        {
+            return new UnauthorizedResponse(new UnauthorizedDto());
+        }
+
+        if (!user.Password.Equals(dto.Password))
+        {
+            return new UnauthorizedResponse(new UnauthorizedDto("Wrong password"));
+        }
+
+        IRepository<UpdateConfiguration> configRepo = _unitOfWork.GetRepository<UpdateConfiguration>();
+        UpdateConfiguration? config = await configRepo.GetFirstOrDefaultAsync(predicate: x => x.Id == 1);
+        if (config == null)
+        {
+            config = new UpdateConfiguration {
+                Id = 1,
+                DataPath = dto.DataPath,
+                TempPath = dto.TempPath
+            };
+            configRepo.Insert(config);
+        }
+        else
+        {
+            config.DataPath = dto.DataPath;
+            config.TempPath = dto.TempPath;
+            configRepo.Update(config);
+        }
+        await _unitOfWork.SaveChangesAsync();
+
+        return new OkResponse(new OkDto("Update configuration saved."));
+    }
+
     public ApiResponse QueryUpdateStatus(string type)
     {
         bool status = UpdateMutex.IsUpdating(type);

@@ -8,13 +8,6 @@ public class InitiateUpdateDto : ApiRequestDto
     public string Password { get; set; }
 
     /// <summary>
-    ///     Absolute path of the data directory.
-    /// </summary>
-    public string DataPath { get; set; }
-
-    public string TempPath => Path.Join(DataPath, "tmp");
-
-    /// <summary>
     ///     Begin date of the update. Inclusive.
     /// </summary>
     public DateOnly Begin { get; set; }
