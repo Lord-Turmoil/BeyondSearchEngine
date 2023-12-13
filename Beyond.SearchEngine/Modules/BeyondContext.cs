@@ -1,5 +1,4 @@
-﻿using Beyond.SearchEngine.Modules.Search.Models;
-using Beyond.SearchEngine.Modules.Update.Models;
+﻿using Beyond.SearchEngine.Modules.Update.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beyond.SearchEngine.Modules;

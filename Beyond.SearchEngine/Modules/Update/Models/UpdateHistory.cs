@@ -16,7 +16,7 @@ public class UpdateHistory
     public string UpdatedTime { get; set; }
 
     /// <summary>
-    /// Together with UpdatedTime, to mark one update.
+    ///     Together with UpdatedTime, to mark one update.
     /// </summary>
     public int PartId { get; set; }
 
