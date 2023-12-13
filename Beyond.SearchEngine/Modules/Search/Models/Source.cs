@@ -5,7 +5,6 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 
 public class Source : OpenAlexStatisticsModel
 {
-    [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
     [Column(TypeName = "varchar(15)")]
@@ -23,7 +22,6 @@ public class Source : OpenAlexStatisticsModel
     [Column(TypeName = "char(12)")]
     public string HostId { get; set; }
 
-    [Column(TypeName = "varchar(127)")]
     public string HostName { get; set; }
 
     public string Concepts { get; set; }

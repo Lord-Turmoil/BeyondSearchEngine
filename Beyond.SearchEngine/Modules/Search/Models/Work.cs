@@ -18,7 +18,6 @@ public class Work : OpenAlexModel
 
     /***               Basics               ***/
 
-    [Column(TypeName = "varchar(255)")]
     public string Title { get; set; }
 
     public string Abstract { get; set; }

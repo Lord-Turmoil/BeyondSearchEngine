@@ -5,7 +5,6 @@ namespace Beyond.SearchEngine.Modules.Search.Models;
 
 public class Funder : OpenAlexStatisticsModel
 {
-    [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
 

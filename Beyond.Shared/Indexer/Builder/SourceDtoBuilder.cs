@@ -12,11 +12,6 @@ public class SourceDtoBuilder : OpenAlexStatisticsDtoBuilder<SourceDto>
         SourceDto dto = base.Build(json);
 
         dto.Name = json["display_name"].ToStringNotNull("display_name");
-        if (dto.Name.Length > 255)
-        {
-            dto.Name = dto.Name[..255];
-        }
-
         dto.Type = json["type"].ToStringNullable();
         dto.Country = json["country_code"].ToStringNullable();
         dto.HomepageUrl = json["homepage_url"].ToStringNullable();
