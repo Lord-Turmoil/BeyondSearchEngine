@@ -37,7 +37,7 @@ public class PublisherData
 
         return new PublisherData {
             Id = json["id"].ToStringNotNull("id"),
-            Name = json["name"].ToStringNotNull("name")
+            Name = json["display_name"].ToStringNotNull("display_name")
         };
     }
 

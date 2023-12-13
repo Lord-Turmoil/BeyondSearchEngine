@@ -39,8 +39,13 @@ public class AuthorData
         return $"{Position},{Id},{OrcId},{Name}";
     }
 
-    public static AuthorData? Build(JObject json)
+    public static AuthorData? Build(JObject? json)
     {
+        if (json == null)
+        {
+            return null;
+        }
+
         JObject? authorJObject = json["author"].ToJObjectNullable();
         if (authorJObject == null)
         {

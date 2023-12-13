@@ -10,6 +10,7 @@ public class SearchModule : BaseModule
     {
         services.AddCustomRepository<Author, AuthorRepository>()
             .AddCustomRepository<Concept, ConceptRepository>()
+            .AddCustomRepository<Funder, FunderRepository>()
             .AddCustomRepository<Institution, InstitutionRepository>()
             .AddCustomRepository<Publisher, PublisherRepository>()
             .AddCustomRepository<Source, SourceRepository>()

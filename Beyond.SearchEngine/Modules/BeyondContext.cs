@@ -18,6 +18,7 @@ public class BeyondContext : DbContext
     // Search Module
     public DbSet<Author> Authors { get; set; }
     public DbSet<Concept> Concepts { get; set; }
+    public DbSet<Funder> Funders { get; set; }
     public DbSet<Institution> Institutions { get; set; }
     public DbSet<Publisher> Publishers { get; set; }
     public DbSet<Source> Sources { get; set; }

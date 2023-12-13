@@ -31,15 +31,15 @@ public class UpdateController : BaseController<UpdateController>
     }
 
     [HttpGet]
-    [Route("status/{type}")]
-    public ApiResponse QueryUpdateStatus([FromRoute] string type)
+    [Route("status")]
+    public ApiResponse QueryUpdateStatus([FromQuery] string type)
     {
         return _updateService.QueryUpdateStatus(type);
     }
 
     [HttpPost]
-    [Route("{type}")]
-    public async Task<ApiResponse> InitiateUpdate([FromRoute] string type, [FromBody] InitiateUpdateDto dto)
+    [Route("initiate")]
+    public async Task<ApiResponse> InitiateUpdate([FromBody] InitiateUpdateDto dto)
     {
         if (!dto.Format().Verify())
         {
@@ -48,7 +48,7 @@ public class UpdateController : BaseController<UpdateController>
 
         try
         {
-            return await _updateService.InitiateUpdate(type, dto);
+            return await _updateService.InitiateUpdate(dto.Type, dto);
         }
         catch (Exception e)
         {

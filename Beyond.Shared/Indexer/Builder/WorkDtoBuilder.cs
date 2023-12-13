@@ -15,7 +15,7 @@ public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
         JObject? abstractJObject = json["abstract_inverted_index"].ToJObjectNullable();
         string abstractText = BuildAbstract(abstractJObject);
 
-        JObject primaryLocation = json["primary_location"].ToJObjectNotNull("primary_location");
+        JObject? primaryLocation = json["primary_location"].ToJObjectNullable();
         BuildPdfUrl(primaryLocation, out string sourceUrl, out string pdfUrl);
 
         dto.Doi = json["doi"].ToStringNullable().Doi();
@@ -26,38 +26,38 @@ public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
         dto.SourceUrl = sourceUrl;
         dto.PdfUrl = pdfUrl;
 
-        dto.SourceData = SourceData.Build(primaryLocation["source"].ToJObjectNotNull());
+        dto.SourceData = SourceData.Build(primaryLocation?["source"].ToJObjectNullable());
 
         dto.ConceptList = [];
         foreach (JToken token in json["concepts"].ToJArrayNullable())
         {
-            var data = ConceptData.Build(token.ToJObjectNotNull());
+            var data = ConceptData.Build(token.ToJObjectNotNull("concept"));
             dto.ConceptList.Add(data);
         }
 
         dto.KeywordList = [];
         foreach (JToken token in json["keywords"].ToJArrayNullable())
         {
-            var data = KeywordData.Build(token.ToJObjectNotNull());
+            var data = KeywordData.Build(token.ToJObjectNotNull("keyword"));
             dto.KeywordList.Add(data);
         }
 
         dto.RelatedWorkList = [];
         foreach (JToken token in json["related_works"].ToJArrayNullable())
         {
-            dto.RelatedWorkList.Add(token.ToStringNotNull().OpenAlexId());
+            dto.RelatedWorkList.Add(token.ToStringNullable().OpenAlexId());
         }
 
         dto.ReferencedWorkList = [];
         foreach (JToken token in json["referenced_works"].ToJArrayNullable())
         {
-            dto.ReferencedWorkList.Add(token.ToStringNotNull().OpenAlexId());
+            dto.ReferencedWorkList.Add(token.ToStringNullable().OpenAlexId());
         }
 
         dto.AuthorList = [];
         foreach (JToken token in json["authorships"].ToJArrayNullable())
         {
-            var data = AuthorData.Build(token.ToJObjectNotNull());
+            var data = AuthorData.Build(token.ToJObjectNullable());
             if (data != null)
             {
                 dto.AuthorList.Add(data);
@@ -67,13 +67,13 @@ public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
         dto.FunderList = [];
         foreach (JToken token in json["funders"].ToJArrayNullable())
         {
-            var data = FunderData.Build(token.ToJObjectNotNull());
+            var data = FunderData.Build(token.ToJObjectNotNull("funder"));
             dto.FunderList.Add(data);
         }
 
         dto.CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0);
-        dto.PublicationYear = json["publication_year"].ToIntNotNull("publication_year");
-        dto.PublicationDate = json["publication_date"].ToDateTimeNotNull("publication_date", "yyyy-MM-dd");
+        dto.PublicationYear = json["publication_year"].ToIntNotNull("publication_year", 0);
+        dto.PublicationDate = json["publication_date"].ToDateTimeNullable("publication_date", "yyyy-MM-dd");
 
         return dto;
     }

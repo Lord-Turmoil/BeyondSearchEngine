@@ -69,16 +69,19 @@ public class OpenAlexIndexer
     {
         if (_nextManifestEntryIndex >= _manifest.Count)
         {
-            return null;
+            _currentManifestEntry = null;
+        }
+        else
+        {
+            ManifestEntry entry;
+            do
+            {
+                entry = _manifest[_nextManifestEntryIndex++];
+            } while (_nextManifestEntryIndex < _manifest.Count && !IsInDateRange(entry.UpdatedDate));
+
+            _currentManifestEntry = IsInDateRange(entry.UpdatedDate) ? entry : null;
         }
 
-        ManifestEntry entry;
-        do
-        {
-            entry = _manifest[_nextManifestEntryIndex++];
-        } while (_nextManifestEntryIndex < _manifest.Count && !IsInDateRange(entry.UpdatedDate));
-
-        _currentManifestEntry = IsInDateRange(entry.UpdatedDate) ? entry : null;
         return _currentManifestEntry;
     }
 

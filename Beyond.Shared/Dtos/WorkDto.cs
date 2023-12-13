@@ -33,10 +33,10 @@ public class WorkDto : OpenAlexDto
     /***               Relations              ***/
 
     [JsonProperty(PropertyName = "source")]
-    public SourceData SourceData { get; set; }
+    public SourceData? SourceData { get; set; }
 
     [JsonIgnore]
-    public string Source => SourceData.ToString();
+    public string Source => SourceData?.ToString() ?? string.Empty;
 
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }
@@ -84,5 +84,5 @@ public class WorkDto : OpenAlexDto
     public int PublicationYear { get; set; }
 
     [JsonProperty(PropertyName = "publication_date")]
-    public DateTime PublicationDate { get; set; }
+    public DateTime? PublicationDate { get; set; }
 }

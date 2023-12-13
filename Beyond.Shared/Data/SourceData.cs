@@ -46,8 +46,13 @@ public class SourceData
         return $"{Id},{Name},{HostId},{HostName},{Type}";
     }
 
-    public static SourceData Build(JObject json)
+    public static SourceData? Build(JObject? json)
     {
+        if (json == null)
+        {
+            return null;
+        }
+
         return new SourceData {
             Id = json["id"].ToStringNullable().OpenAlexId(),
             Name = json["name"].ToStringNullable(),

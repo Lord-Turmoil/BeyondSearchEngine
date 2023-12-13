@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Beyond.Shared.Indexer;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Extensions;
@@ -136,6 +137,16 @@ static class JTokenExtensions
     public static DateTime ToDateTimeNotNull(this JToken? token, string key, string format)
     {
         return DateTime.ParseExact(token.ToStringNotNull(key), format, CultureInfo.InvariantCulture);
+    }
+
+    public static DateTime? ToDateTimeNullable(this JToken? token, string key, string format)
+    {
+        string value = token.ToStringNullable(key);
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+        return DateTime.ParseExact(value, format, CultureInfo.InvariantCulture);
     }
 
     public static JObject ToJObjectNotNull(this JToken? token)

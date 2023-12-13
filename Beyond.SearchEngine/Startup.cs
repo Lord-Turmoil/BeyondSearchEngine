@@ -88,15 +88,15 @@ public class Startup
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BeyondSearch.Api v1"));
         }
 
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        // app.UseHttpsRedirection();
+        // app.UseStaticFiles();
         app.UseRouting();
 
         // Must be placed between UseRouting and UseEndpoints
         app.UseCors(CorsOptions.CorsPolicyName);
 
-        app.UseAuthentication();
-        app.UseAuthorization();
+        // app.UseAuthentication();
+        // app.UseAuthorization();
 
         app.UseEndpoints(endpoints => {
             endpoints.MapControllers();

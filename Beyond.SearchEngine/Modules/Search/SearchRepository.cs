@@ -17,6 +17,13 @@ public class ConceptRepository : Repository<Concept>
     }
 }
 
+public class FunderRepository : Repository<Funder>
+{
+    public FunderRepository(BeyondContext dbContext) : base(dbContext)
+    {
+    }
+}
+
 public class InstitutionRepository : Repository<Institution>
 {
     public InstitutionRepository(BeyondContext dbContext) : base(dbContext)

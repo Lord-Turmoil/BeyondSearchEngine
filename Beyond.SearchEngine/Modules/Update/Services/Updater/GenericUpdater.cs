@@ -1,5 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.Shared.Indexer;
 using Beyond.Shared.Indexer.Builder;
@@ -10,7 +11,7 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     where TIndexer : GenericIndexer<TDtoBuilder, TDto>
     where TDtoBuilder : IDtoBuilder<TDto>, new()
-    where TModel : class
+    where TModel : OpenAlexModel
 {
     protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
         : base(unitOfWork, mapper, logger)
@@ -86,6 +87,21 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                     try
                     {
                         TModel model = _mapper.Map<TDto, TModel>(dto);
+
+                        //
+                        // 2023/12/13 TS:
+                        //   We don't need to check if the record exists in database.
+                        //   If needed, uncomment this.
+                        //   
+                        // if (await repo.ExistsAsync(x => x.Id == model.Id))
+                        // {
+                        //     repo.Update(model);
+                        // }
+                        // else
+                        // {
+                        //     await repo.InsertAsync(model);
+                        // }
+                        
                         await repo.InsertAsync(model);
                         recordCount++;
                     }
