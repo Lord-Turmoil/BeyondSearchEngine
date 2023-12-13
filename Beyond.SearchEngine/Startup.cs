@@ -103,7 +103,7 @@ public class Startup
             endpoints.MapSwagger();
         });
 
-        loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\BeyondSearch.Api.log");
+        // loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\BeyondSearch.Api.log");
     }
 
 
