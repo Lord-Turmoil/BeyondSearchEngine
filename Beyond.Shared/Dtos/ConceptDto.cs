@@ -5,15 +5,6 @@ namespace Beyond.Shared.Dtos;
 
 public class ConceptDto : OpenAlexStatisticsDto
 {
-    [JsonProperty(PropertyName = "counts_by_year")]
-    public List<CountsByYearData> CountsByYearList;
-
-
-    /***              Relation               ***/
-
-    [JsonProperty(PropertyName = "related_concepts")]
-    public List<ConceptData> RelatedConceptList;
-
     [JsonProperty(PropertyName = "wikidata")]
     public string WikiDataId { get; set; }
 
@@ -34,6 +25,12 @@ public class ConceptDto : OpenAlexStatisticsDto
     [JsonProperty(PropertyName = "thumbnail_url")]
     public string ThumbnailUrl { get; set; }
 
+
+    /***              Relation               ***/
+
+    [JsonProperty(PropertyName = "related_concepts")]
+    public List<ConceptData> RelatedConceptList { get; set; }
+    
     [JsonIgnore]
     public string RelatedConcepts => string.Join(";", RelatedConceptList.Select(c => c.ToString()));
 }
