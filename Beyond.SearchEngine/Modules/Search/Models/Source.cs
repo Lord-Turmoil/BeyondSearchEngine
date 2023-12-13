@@ -11,7 +11,7 @@ public class Source : OpenAlexStatisticsModel
     [Column(TypeName = "varchar(15)")]
     public string Type { get; set; }
 
-    [Column(TypeName = "char(8)")]
+    [Column(TypeName = "char(3)")]
     public string Country { get; set; }
 
     [Column(TypeName = "varchar(2083)")]
