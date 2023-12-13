@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Models.Elastic;
 using Beyond.Shared.Dtos;
 
 namespace Beyond.SearchEngine.Modules;
@@ -20,6 +21,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.InstitutionData, opt => opt.Ignore())
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore());
+        CreateMap<AuthorDto, ElasticAuthor>();
 
         CreateMap<Concept, ConceptDto>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
@@ -27,6 +29,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
         CreateMap<ConceptDto, Concept>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.RelatedConceptList, opt => opt.Ignore());
+        CreateMap<ConceptDto, ElasticConcept>();
 
         CreateMap<Funder, FunderDto>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
@@ -34,6 +37,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
         CreateMap<FunderDto, Funder>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.RoleList, opt => opt.Ignore());
+        CreateMap<FunderDto, ElasticFunder>();
 
         CreateMap<Institution, InstitutionDto>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
@@ -43,6 +47,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore())
             .ForMember(dest => dest.AssociatedInstitutionList, opt => opt.Ignore());
+        CreateMap<InstitutionDto, ElasticInstitution>();
 
         CreateMap<Publisher, PublisherDto>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
@@ -54,6 +59,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.CountryList, opt => opt.Ignore())
             .ForMember(dest => dest.ParentPublisherData, opt => opt.Ignore())
             .ForMember(dest => dest.RoleList, opt => opt.Ignore());
+        CreateMap<PublisherDto, ElasticPublisher>();
 
         CreateMap<Source, SourceDto>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
@@ -61,6 +67,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
         CreateMap<SourceDto, Source>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore());
+        CreateMap<SourceDto, ElasticSource>();
 
         CreateMap<Work, WorkDto>()
             .ForMember(dest => dest.SourceData, opt => opt.Ignore())
@@ -78,5 +85,6 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.ReferencedWorkList, opt => opt.Ignore())
             .ForMember(dest => dest.AuthorList, opt => opt.Ignore())
             .ForMember(dest => dest.FunderList, opt => opt.Ignore());
+        CreateMap<WorkDto, ElasticWork>();
     }
 }

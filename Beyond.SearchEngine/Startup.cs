@@ -1,9 +1,12 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Extensions.Elastic;
 using Beyond.SearchEngine.Modules;
 using Beyond.SearchEngine.Modules.Update.Services;
+using Elasticsearch.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Nest;
 using Tonisoft.AspExtensions.Cors;
 using Tonisoft.AspExtensions.Module;
 
@@ -24,7 +27,7 @@ public class Startup
         _ConfigureDatabase<BeyondContext>(services);
         services.AddUnitOfWork<BeyondContext>();
         services.RegisterModules();
-        
+
         // Controllers
         services.AddControllers().AddNewtonsoftJson();
 
@@ -65,6 +68,13 @@ public class Startup
                     });
             });
         }
+
+        // Elasticsearch
+        var elasticOptions = new ElasticOptions();
+        Configuration.GetRequiredSection(ElasticOptions.ElasticSection).Bind(elasticOptions);
+        var pool = new SingleNodeConnectionPool(new Uri(elasticOptions.DefaultConnection));
+        var client = new ElasticClient(new ConnectionSettings(pool));
+        services.AddSingleton<IElasticClient>(client);
 
         // Background task
         services.AddSingleton<UpdateTask>();

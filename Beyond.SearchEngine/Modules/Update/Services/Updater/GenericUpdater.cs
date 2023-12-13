@@ -1,25 +1,29 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Update;
-using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Models.Elastic;
 using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.Shared.Indexer;
 using Beyond.Shared.Indexer.Builder;
 using Beyond.Shared.Indexer.Impl;
+using Nest;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
 public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     where TIndexer : GenericIndexer<TDtoBuilder, TDto>
     where TDtoBuilder : IDtoBuilder<TDto>, new()
-    where TModel : OpenAlexModel
+    where TModel : ElasticModel
     where TDto : class
 {
+    private readonly IElasticClient _client;
     private readonly UpdateOptions _options = new();
 
-    protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration)
+    protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger,
+        IConfiguration configuration, IElasticClient client)
         : base(unitOfWork, mapper, logger)
     {
+        _client = client;
         configuration.GetRequiredSection(UpdateOptions.UpdateSection).Bind(_options);
     }
 
@@ -69,7 +73,7 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     [Obsolete("This will cause memory and performance issues. Use UpdateImplWithYield() instead")]
     private async ValueTask UpdateImpl(string type, TIndexer indexer)
     {
-        IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
+        Arch.EntityFrameworkCore.UnitOfWork.IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
         int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
 
         while (result != -1)
@@ -176,7 +180,7 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     /// <returns></returns>
     private async ValueTask UpdateImplWithYield(string type, TIndexer indexer)
     {
-        IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
+        Arch.EntityFrameworkCore.UnitOfWork.IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
         int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
 
         while (result != -1)
@@ -194,12 +198,17 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
             int recordCount = 0;
             int bulkSaveSize = 0;
             bool success = true;
+            var bulkDescriptor = new BulkDescriptor();
             foreach (TDto dto in indexer.AllDto())
             {
                 try
                 {
                     TModel model = _mapper.Map<TDto, TModel>(dto);
-                    await repo.InsertAsync(model);
+                    bulkDescriptor.Index<TModel>(op => op
+                        .Document(model)
+                        .Id(model.Id)
+                        .Index(type)
+                    );
                     recordCount++;
                     bulkSaveSize++;
                 }
@@ -208,31 +217,24 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                     _logger.LogError("Failed to build {name}: {exception}", typeof(TModel).Name, e);
                 }
 
-                if (bulkSaveSize == _options.BulkUpdateSize)
+                if (bulkSaveSize < _options.BulkUpdateSize)
                 {
-                    bulkSaveSize = 0;
-                    try
-                    {
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError("Failed to save changes: {exception}", e.Message);
-                        success = false;
-                        break;
-                    }
+                    continue;
+                }
+
+                bulkSaveSize = 0;
+                bulkDescriptor = new BulkDescriptor();
+                if (!await BulkUpdate(bulkDescriptor))
+                {
+                    success = false;
+                    break;
                 }
             }
 
             if (bulkSaveSize > 0)
             {
-                try
+                if (!await BulkUpdate(bulkDescriptor))
                 {
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Failed to save changes: {exception}", e.Message);
                     success = false;
                 }
             }
@@ -248,5 +250,22 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
 
             result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
         }
+    }
+
+    private async ValueTask<bool> BulkUpdate(IBulkRequest bulkDescriptor)
+    {
+        BulkResponse? response = await _client.BulkAsync(bulkDescriptor);
+        if (!response.Errors)
+        {
+            return true;
+        }
+
+        _logger.LogError("Failed to bulk update: {response}", response.DebugInformation);
+        foreach (BulkResponseItemBase item in response.ItemsWithErrors)
+        {
+            _logger.LogError("Failed to index {type} with {id}", item.Index, item.Id);
+        }
+
+        return false;
     }
 }

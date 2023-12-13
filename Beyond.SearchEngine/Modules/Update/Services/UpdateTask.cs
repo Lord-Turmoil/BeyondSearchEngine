@@ -1,10 +1,9 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
-using Beyond.SearchEngine.Extensions.Update;
 using Beyond.SearchEngine.Modules.Update.Dtos;
-using Beyond.SearchEngine.Modules.Update.Models;
 using Beyond.SearchEngine.Modules.Update.Services.Updater;
 using Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
+using Nest;
 
 namespace Beyond.SearchEngine.Modules.Update.Services;
 
@@ -21,16 +20,21 @@ public class UpdateTask : IHostedService, IDisposable
             "funders"
         };
 
+    private readonly IConfiguration _configuration;
+    private readonly IElasticClient _elasticClient;
+
     private readonly ILogger<UpdateTask> _logger;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IConfiguration _configuration;
-    public UpdateTask(IServiceScopeFactory serviceScopeFactory, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration)
+
+    public UpdateTask(IServiceScopeFactory serviceScopeFactory, IMapper mapper, ILogger<UpdateTask> logger,
+        IConfiguration configuration, IElasticClient elasticClient)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _mapper = mapper;
         _logger = logger;
         _configuration = configuration;
+        _elasticClient = elasticClient;
     }
 
 
@@ -82,13 +86,13 @@ public class UpdateTask : IHostedService, IDisposable
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         IUpdater? updater = type switch {
-            "institutions" => new InstitutionUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "authors" => new AuthorUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "works" => new WorkUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "concepts" => new ConceptUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "sources" => new SourceUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "publishers" => new PublisherUpdater(unitOfWork, _mapper, _logger, _configuration),
-            "funders" => new FunderUpdater(unitOfWork, _mapper, _logger, _configuration),
+            "institutions" => new InstitutionUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "authors" => new AuthorUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "works" => new WorkUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "concepts" => new ConceptUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "sources" => new SourceUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "publishers" => new PublisherUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
+            "funders" => new FunderUpdater(unitOfWork, _mapper, _logger, _configuration, _elasticClient),
             _ => null
         };
         if (updater == null)
