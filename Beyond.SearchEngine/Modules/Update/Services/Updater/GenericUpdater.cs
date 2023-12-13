@@ -1,8 +1,8 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Update;
-using Beyond.SearchEngine.Modules.Search.Models.Elastic;
 using Beyond.SearchEngine.Modules.Update.Dtos;
+using Beyond.SearchEngine.Modules.Update.Models.Elastic;
 using Beyond.Shared.Indexer;
 using Beyond.Shared.Indexer.Builder;
 using Beyond.Shared.Indexer.Impl;
@@ -48,8 +48,7 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                 throw new Exception($"Failed to create indexer for {type}");
             }
 
-            // await UpdateImpl(type, indexer);
-            await UpdateImplWithYield(type, indexer);
+            await UpdateImpl(type, indexer);
         }
         catch (Exception e)
         {
@@ -63,122 +62,13 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     }
 
     /// <summary>
-    ///     Iterate through all manifest entries and update the database.
-    ///     It bulks update the database, so the new data is either successfully
-    ///     put into database, or completely not.
-    /// </summary>
-    /// <param name="type">Update type.</param>
-    /// <param name="indexer">Specific indexer.</param>
-    /// <returns></returns>
-    [Obsolete("This will cause memory and performance issues. Use UpdateImplWithYield() instead")]
-    private async ValueTask UpdateImpl(string type, TIndexer indexer)
-    {
-        Arch.EntityFrameworkCore.UnitOfWork.IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
-        int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
-
-        while (result != -1)
-        {
-            if (result == 0)
-            {
-                indexer.NextManifestEntry();
-                result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
-                continue;
-            }
-
-            ManifestEntry entry = indexer.CurrentManifestEntry()!;
-            _logger.LogInformation("Updating {type} at {UpdatedDate}", type, entry.UpdatedDate);
-
-            List<TDto>? chunk = indexer.NextDataChunk();
-            int recordCount = 0;
-            int bulkSaveSize = 0;
-            bool success = true;
-            if (chunk != null)
-            {
-                foreach (TDto dto in chunk)
-                {
-                    try
-                    {
-                        TModel model = _mapper.Map<TDto, TModel>(dto);
-
-                        //
-                        // 2023/12/13 TS:
-                        //   We don't need to check if the record exists in database.
-                        //   If needed, uncomment this.
-                        //   
-                        // if (await repo.ExistsAsync(x => x.Id == model.Id))
-                        // {
-                        //     repo.Update(model);
-                        // }
-                        // else
-                        // {
-                        //     await repo.InsertAsync(model);
-                        // }
-
-                        await repo.InsertAsync(model);
-                        recordCount++;
-                        bulkSaveSize++;
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError("Failed to build {name}: {exception}", typeof(TModel).Name, e);
-                    }
-
-                    if (bulkSaveSize == _options.BulkUpdateSize)
-                    {
-                        try
-                        {
-                            await _unitOfWork.SaveChangesAsync();
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError("Failed to save changes: {exception}", e.Message);
-                            success = false;
-                        }
-
-                        bulkSaveSize = 0;
-                    }
-                }
-
-                if (bulkSaveSize > 0)
-                {
-                    try
-                    {
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError("Failed to save changes: {exception}", e.Message);
-                        success = false;
-                    }
-                }
-            }
-            else
-            {
-                _logger.LogWarning("Empty chunk for {entry}", entry);
-            }
-
-            if (success)
-            {
-                await PostUpdate(type, entry, recordCount);
-            }
-            else
-            {
-                _logger.LogError("Failed to update {type} at {UpdatedDate}", type, entry.UpdatedDate);
-            }
-
-            result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
-        }
-    }
-
-
-    /// <summary>
     ///     This one will update the database with yield return, which
     ///     reduces the memory usage and improves the performance.
     /// </summary>
     /// <param name="type"></param>
     /// <param name="indexer"></param>
     /// <returns></returns>
-    private async ValueTask UpdateImplWithYield(string type, TIndexer indexer)
+    private async ValueTask UpdateImpl(string type, TIndexer indexer)
     {
         Arch.EntityFrameworkCore.UnitOfWork.IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
         int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
@@ -222,15 +112,19 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                     continue;
                 }
 
-                bulkSaveSize = 0;
-                bulkDescriptor = new BulkDescriptor();
+                // Update when reach bulk update size.
                 if (!await BulkUpdate(bulkDescriptor))
                 {
                     success = false;
                     break;
                 }
+
+                // Reset bulk save size.
+                bulkSaveSize = 0;
+                bulkDescriptor = new BulkDescriptor();
             }
 
+            // Update the rest of the records.
             if (bulkSaveSize > 0)
             {
                 if (!await BulkUpdate(bulkDescriptor))

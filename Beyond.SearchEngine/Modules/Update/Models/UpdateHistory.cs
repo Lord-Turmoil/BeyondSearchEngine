@@ -15,6 +15,11 @@ public class UpdateHistory
     [Column(TypeName = "char(12)")]
     public string UpdatedTime { get; set; }
 
+    /// <summary>
+    /// Together with UpdatedTime, to mark one update.
+    /// </summary>
+    public int PartId { get; set; }
+
     public int RecordCount { get; set; }
 
     public DateTime Created { get; set; }

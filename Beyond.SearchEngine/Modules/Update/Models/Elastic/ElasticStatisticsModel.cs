@@ -1,4 +1,4 @@
-﻿namespace Beyond.SearchEngine.Modules.Search.Models.Elastic;
+﻿namespace Beyond.SearchEngine.Modules.Update.Models.Elastic;
 
 public class ElasticStatisticsModel : ElasticModel
 {

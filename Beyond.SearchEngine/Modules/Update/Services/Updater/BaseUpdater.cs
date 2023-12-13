@@ -26,16 +26,17 @@ public abstract class BaseUpdater : IUpdater
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="time">Update time of the data, not update action.</param>
+    /// <param name="partId"></param>
     /// <returns>
     ///     Whether successfully added the history. Return false if already exists
     ///     and is completed.
     /// </returns>
-    private async ValueTask<bool> AddUpdateHistory(string type, DateOnly time)
+    private async ValueTask<bool> AddUpdateHistory(string type, DateOnly time, int partId)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
         string timeString = time.ToString("yyyy-MM-dd");
         UpdateHistory? history = await repo.GetFirstOrDefaultAsync(
-            predicate: x => x.Type == type && x.UpdatedTime.Equals(timeString));
+            predicate: x => x.Type == type && x.UpdatedTime.Equals(timeString) && x.PartId == partId);
         if (history != null && history.IsCompleted)
         {
             return false;
@@ -46,6 +47,7 @@ public abstract class BaseUpdater : IUpdater
             await repo.InsertAsync(new UpdateHistory {
                 Type = type,
                 UpdatedTime = timeString,
+                PartId = partId,
                 Created = DateTime.UtcNow,
                 Completed = null
             });
@@ -66,14 +68,15 @@ public abstract class BaseUpdater : IUpdater
     /// </summary>
     /// <param name="type">Update type.</param>
     /// <param name="time">Update time of the data.</param>
+    /// <param name="partId">Part ID.</param>
     /// <param name="recordCount">How many record added.</param>
     /// <returns>Whether successfully saved the history or not.</returns>
-    private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time, int recordCount)
+    private async ValueTask<bool> CompleteUpdateHistory(string type, DateOnly time, int partId, int recordCount)
     {
         IRepository<UpdateHistory> repo = _unitOfWork.GetRepository<UpdateHistory>();
         string timeString = time.ToString("yyyy-MM-dd");
         UpdateHistory? history = await repo.GetFirstOrDefaultAsync(predicate:
-            x => x.Type.Equals(type) && x.UpdatedTime.Equals(timeString),
+            x => x.Type.Equals(type) && x.UpdatedTime.Equals(timeString) && x.PartId == partId,
             disableTracking: false);
         if (history == null)
         {
@@ -106,7 +109,7 @@ public abstract class BaseUpdater : IUpdater
             return -1;
         }
 
-        if (await AddUpdateHistory(type, entry.UpdatedDate))
+        if (await AddUpdateHistory(type, entry.UpdatedDate, entry.PartId))
         {
             return 1;
         }
@@ -124,7 +127,7 @@ public abstract class BaseUpdater : IUpdater
     /// <returns></returns>
     protected async ValueTask PostUpdate(string type, ManifestEntry entry, int recordCount)
     {
-        if (!await CompleteUpdateHistory(type, entry.UpdatedDate, recordCount))
+        if (!await CompleteUpdateHistory(type, entry.UpdatedDate, entry.PartId, recordCount))
         {
             _logger.LogError("Failed to complete update of {type} at {UpdatedDate}", type, entry.UpdatedDate);
         }

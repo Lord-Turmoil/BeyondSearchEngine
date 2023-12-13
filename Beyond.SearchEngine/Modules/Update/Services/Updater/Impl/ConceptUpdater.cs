@@ -1,6 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
-using Beyond.SearchEngine.Modules.Search.Models.Elastic;
+using Beyond.SearchEngine.Modules.Update.Models.Elastic;
 using Beyond.Shared.Dtos;
 using Beyond.Shared.Indexer.Builder;
 using Beyond.Shared.Indexer.Impl;

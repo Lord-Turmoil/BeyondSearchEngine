@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Models;
-using Beyond.SearchEngine.Modules.Search.Models.Elastic;
+using Beyond.SearchEngine.Modules.Update.Models.Elastic;
 using Beyond.Shared.Dtos;
 
 namespace Beyond.SearchEngine.Modules;

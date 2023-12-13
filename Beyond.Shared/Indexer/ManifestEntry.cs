@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Beyond.Shared.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer;
 
@@ -18,22 +19,26 @@ public class ManifestEntry
     /// <param name="json"></param>
     public ManifestEntry(JObject json)
     {
-        string url = (string)json["url"];
-        int pos = url.IndexOf("updated_date=");
+        string url = json["url"].ToStringNotNull();
+        int pos = url.IndexOf("updated_date=", StringComparison.Ordinal);
         RelativePath = url.Substring(pos);
         UpdatedDate = DateOnly.ParseExact(RelativePath.Substring(13, 10), "yyyy-MM-dd", null);
 
+        string filename = Path.GetFileNameWithoutExtension(url);
+        PartId = int.Parse(filename.Substring(filename.Length - 3));
+
         var meta = json["meta"] as JObject;
-        RecordCount = (int)meta["record_count"];
+        RecordCount = meta["record_count"].ToIntNotNull();
     }
 
     public string RelativePath { get; }
     public int RecordCount { get; }
     public DateOnly UpdatedDate { get; }
+    public int PartId { get; }
 
 
     public override string ToString()
     {
-        return $"{RelativePath} ({RecordCount} records) {UpdatedDate.ToString()}";
+        return $"{RelativePath} ({RecordCount} records) {UpdatedDate.ToString()}[{PartId}]";
     }
 }
