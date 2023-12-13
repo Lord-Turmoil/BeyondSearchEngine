@@ -89,16 +89,25 @@ public class Work : OpenAlexModel
         string.IsNullOrEmpty(ReferencedWorks) ? [] : ReferencedWorks.Split(';').ToList();
 
     /// <summary>
-    ///     It is stored as a string of semi-colon separated authors.
+    ///     It is stored as a string of semicolon separated authors.
     ///     Each author is represented in a quadruple separated by comma.
     ///     position,OpenAlexId,OrcId,name
-    ///     All authors are separated by semi-colon.
+    ///     All authors are separated by semicolon.
     ///     author;author;author;...
     /// </summary>
     public string Authors { get; set; }
 
     [NotMapped]
     public List<AuthorData> AuthorList => AuthorData.BuildList(Authors);
+
+    /// <summary>
+    ///     It is stored as a triplet of semicolon separated values.
+    ///     id,name,award;id,name,award;...
+    /// </summary>
+    public string Funders { get; set; }
+
+    [NotMapped]
+    public List<FunderData> FunderList => FunderData.BuildList(Funders);
 
 
     /***              Statistics               ***/

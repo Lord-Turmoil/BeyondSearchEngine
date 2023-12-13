@@ -64,6 +64,13 @@ public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
             }
         }
 
+        dto.FunderList = [];
+        foreach (JToken token in json["funders"].ToJArrayNullable())
+        {
+            var data = FunderData.Build(token.ToJObjectNotNull());
+            dto.FunderList.Add(data);
+        }
+
         dto.CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0);
         dto.PublicationYear = json["publication_year"].ToIntNotNull("publication_year");
         dto.PublicationDate = json["publication_date"].ToDateTimeNotNull("publication_date", "yyyy-MM-dd");

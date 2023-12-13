@@ -31,6 +31,7 @@ public class WorkDto : OpenAlexDto
 
 
     /***               Relations              ***/
+
     [JsonProperty(PropertyName = "source")]
     public SourceData SourceData { get; set; }
 
@@ -49,7 +50,6 @@ public class WorkDto : OpenAlexDto
     [JsonIgnore]
     public string Keywords => string.Join(";", KeywordList.Select(c => c.ToString()));
 
-
     [JsonProperty(PropertyName = "related_works")]
     public List<string> RelatedWorkList { get; set; }
 
@@ -67,6 +67,12 @@ public class WorkDto : OpenAlexDto
 
     [JsonIgnore]
     public string Authors => string.Join(";", AuthorList.Select(a => a.ToString()));
+
+    [JsonProperty(PropertyName = "funders")]
+    public List<FunderData> FunderList { get; set; }
+
+    [JsonIgnore]
+    public string Funders => string.Join(";", FunderList.Select(f => f.ToString()));
 
 
     /***              Statistics               ***/
