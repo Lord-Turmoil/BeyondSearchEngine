@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using Beyond.Shared.Indexer;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Extensions;
@@ -146,6 +145,7 @@ static class JTokenExtensions
         {
             return null;
         }
+
         return DateTime.ParseExact(value, format, CultureInfo.InvariantCulture);
     }
 

@@ -109,6 +109,26 @@ public class OpenAlexIndexer
         return File.ReadAllLines(dataFilename).Select(JObject.Parse).ToList();
     }
 
+    protected IEnumerable<JObject> AllData(string archivePath)
+    {
+        Extractor.Extract(archivePath, _tempPath);
+        IEnumerable<string> files = Directory.EnumerateFiles(_tempPath).ToList();
+        if (files.Count() != 1)
+        {
+            throw new IndexException($"Expected 1 file in archive, found {files.Count()}");
+        }
+
+        using var reader = new StreamReader(files.First());
+        string? line = reader.ReadLine();
+        while (line != null)
+        {
+            JObject json = JObject.Parse(line);
+            yield return json;
+            line = reader.ReadLine();
+        }
+    }
+
+
     protected bool NeedNextManifest()
     {
         return _currentManifestEntry == null;

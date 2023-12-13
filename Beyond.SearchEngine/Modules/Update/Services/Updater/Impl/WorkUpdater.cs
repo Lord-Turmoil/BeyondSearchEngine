@@ -9,9 +9,9 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 
 public class WorkUpdater
     : GenericUpdater<WorkIndexer, Work, WorkDtoBuilder, WorkDto>
-{
-    public WorkUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
-        : base(unitOfWork, mapper, logger)
+{ 
+    public WorkUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration)
+        : base(unitOfWork, mapper, logger, configuration)
     {
     }
 }

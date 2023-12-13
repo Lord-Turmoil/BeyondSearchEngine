@@ -7,5 +7,5 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 /// </summary>
 public interface IUpdater
 {
-    Task Update(string type, InitiateUpdateDto dto, string dataPath, string tempPath);
+    Task Update(string type, InitiateUpdateDto dto);
 }

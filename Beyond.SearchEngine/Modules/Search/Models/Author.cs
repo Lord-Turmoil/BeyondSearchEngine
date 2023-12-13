@@ -18,7 +18,6 @@ public class Author : OpenAlexStatisticsModel
     /// <summary>
     ///     Only store one display name.
     /// </summary>
-    [Column(TypeName = "varchar(255)")]
     public string Name { get; set; }
 
     /***                Relation               ***/

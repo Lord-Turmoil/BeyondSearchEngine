@@ -15,7 +15,7 @@ public class Concept : OpenAlexStatisticsModel
     [NotMapped]
     public string FullWikiDataId => "https://www.wikidata.org/wiki/" + WikiDataId;
 
-    
+
     /***             Basics               ***/
 
     public string Name { get; set; }

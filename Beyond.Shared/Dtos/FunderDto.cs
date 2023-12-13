@@ -1,5 +1,4 @@
 ﻿using Beyond.Shared.Data;
-using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Beyond.Shared.Dtos;

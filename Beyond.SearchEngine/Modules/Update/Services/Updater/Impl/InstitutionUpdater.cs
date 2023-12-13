@@ -10,8 +10,8 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 public class InstitutionUpdater
     : GenericUpdater<InstitutionIndexer, Institution, InstitutionDtoBuilder, InstitutionDto>
 {
-    public InstitutionUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
-        : base(unitOfWork, mapper, logger)
+    public InstitutionUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration)
+        : base(unitOfWork, mapper, logger, configuration)
     {
     }
 }

@@ -10,13 +10,11 @@
     },
     "http Release": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Release"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5252"
+      "applicationUrl": ""
     },
     "http Debug": {
       "commandName": "Project",

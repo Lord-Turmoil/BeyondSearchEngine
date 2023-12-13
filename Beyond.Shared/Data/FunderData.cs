@@ -50,5 +50,4 @@ public class FunderData
 
         return data.Split(';').Select(c => new FunderData(c)).ToList();
     }
-
 }

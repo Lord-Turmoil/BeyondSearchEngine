@@ -30,7 +30,7 @@ public class ConceptDto : OpenAlexStatisticsDto
 
     [JsonProperty(PropertyName = "related_concepts")]
     public List<ConceptData> RelatedConceptList { get; set; }
-    
+
     [JsonIgnore]
     public string RelatedConcepts => string.Join(";", RelatedConceptList.Select(c => c.ToString()));
 }

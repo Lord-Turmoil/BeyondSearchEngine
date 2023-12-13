@@ -10,7 +10,8 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 public class FunderUpdater
     : GenericUpdater<FunderIndexer, Funder, FunderDtoBuilder, FunderDto>
 {
-    public FunderUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger) : base(unitOfWork, mapper, logger)
+    public FunderUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration) 
+        : base(unitOfWork, mapper, logger, configuration)
     {
     }
 }

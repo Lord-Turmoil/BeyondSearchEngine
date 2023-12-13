@@ -10,8 +10,8 @@ namespace Beyond.SearchEngine.Modules.Update.Services.Updater.Impl;
 public class ConceptUpdater
     : GenericUpdater<ConceptIndexer, Concept, ConceptDtoBuilder, ConceptDto>
 {
-    public ConceptUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
-        : base(unitOfWork, mapper, logger)
+    public ConceptUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger, IConfiguration configuration)
+        : base(unitOfWork, mapper, logger, configuration)
     {
     }
 }
