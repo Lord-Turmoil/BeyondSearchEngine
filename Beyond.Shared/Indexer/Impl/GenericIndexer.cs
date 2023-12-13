@@ -3,7 +3,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Beyond.Shared.Indexer.Impl;
 
-public class GenericIndexer<TBuilder, TDto> : OpenAlexIndexer where TBuilder : IDtoBuilder<TDto>, new()
+public class GenericIndexer<TDtoBuilder, TDto> : OpenAlexIndexer
+    where TDtoBuilder : IDtoBuilder<TDto>, new()
 {
     protected GenericIndexer(string dataPath, string tempPath, DateOnly beginDate, DateOnly endDate) : base(dataPath,
         tempPath, beginDate, endDate)
@@ -27,7 +28,7 @@ public class GenericIndexer<TBuilder, TDto> : OpenAlexIndexer where TBuilder : I
         _currentManifestEntry = null;
 
         var dtos = new List<TDto>();
-        var builder = new TBuilder();
+        var builder = new TDtoBuilder();
         foreach (JObject json in data)
         {
             try

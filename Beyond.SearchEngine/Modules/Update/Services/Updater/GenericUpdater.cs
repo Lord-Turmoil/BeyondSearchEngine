@@ -7,9 +7,9 @@ using Beyond.Shared.Indexer.Impl;
 
 namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
-public class GenericUpdater<TIndexer, TModel, TBuilder, TDto> : BaseUpdater
-    where TIndexer : GenericIndexer<TBuilder, TDto>
-    where TBuilder : IDtoBuilder<TDto>, new()
+public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
+    where TIndexer : GenericIndexer<TDtoBuilder, TDto>
+    where TDtoBuilder : IDtoBuilder<TDto>, new()
     where TModel : class
 {
     protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
