@@ -16,11 +16,11 @@ public class BeyondContext : DbContext
     public DbSet<UpdateConfiguration> UpdateConfigurations { get; set; }
 
     // Search Module
-    public DbSet<Author> Authors { get; set; }
-    public DbSet<Concept> Concepts { get; set; }
-    public DbSet<Funder> Funders { get; set; }
-    public DbSet<Institution> Institutions { get; set; }
-    public DbSet<Publisher> Publishers { get; set; }
-    public DbSet<Source> Sources { get; set; }
-    public DbSet<Work> Works { get; set; }
+    // public DbSet<Author> Authors { get; set; }
+    // public DbSet<Concept> Concepts { get; set; }
+    // public DbSet<Funder> Funders { get; set; }
+    // public DbSet<Institution> Institutions { get; set; }
+    // public DbSet<Publisher> Publishers { get; set; }
+    // public DbSet<Source> Sources { get; set; }
+    // public DbSet<Work> Works { get; set; }
 }
