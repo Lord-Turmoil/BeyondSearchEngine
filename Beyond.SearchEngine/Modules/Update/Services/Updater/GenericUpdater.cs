@@ -19,12 +19,19 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     private readonly IElasticClient _client;
     private readonly UpdateOptions _options = new();
 
-    protected GenericUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger,
-        IConfiguration configuration, IElasticClient client)
+    private readonly Task[] _updateTasks;
+
+    protected GenericUpdater(
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        ILogger<UpdateTask> logger,
+        IConfiguration configuration,
+        IElasticClient client)
         : base(unitOfWork, mapper, logger)
     {
         _client = client;
         configuration.GetRequiredSection(UpdateOptions.UpdateSection).Bind(_options);
+        _updateTasks = new Task[_options.ConcurrentUpdate];
     }
 
     public override async Task Update(string type, InitiateUpdateDto dto)
@@ -68,11 +75,16 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     /// <param name="type"></param>
     /// <param name="indexer"></param>
     /// <returns></returns>
-    private async ValueTask UpdateImpl(string type, TIndexer indexer)
+    private async Task UpdateImpl(string type, TIndexer indexer)
     {
-        Arch.EntityFrameworkCore.UnitOfWork.IRepository<TModel> repo = _unitOfWork.GetRepository<TModel>();
-        int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
+        // Initialize the update tasks.
+        for (int i = 0; i < _options.ConcurrentUpdate; i++)
+        {
+            _updateTasks[i] = Task.CompletedTask;
+        }
+        int currentTask = 0;
 
+        int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
         while (result != -1)
         {
             if (result == 0)
@@ -87,7 +99,6 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
 
             int recordCount = 0;
             int bulkSaveSize = 0;
-            bool success = true;
             var bulkDescriptor = new BulkDescriptor();
             foreach (TDto dto in indexer.AllDto())
             {
@@ -113,11 +124,9 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                 }
 
                 // Update when reach bulk update size.
-                if (!await BulkUpdate(bulkDescriptor))
-                {
-                    success = false;
-                    break;
-                }
+                await _updateTasks[currentTask];
+                _updateTasks[currentTask] = BulkUpdate(bulkDescriptor);
+                currentTask = (currentTask + 1) % _options.ConcurrentUpdate;
 
                 // Reset bulk save size.
                 bulkSaveSize = 0;
@@ -127,39 +136,25 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
             // Update the rest of the records.
             if (bulkSaveSize > 0)
             {
-                if (!await BulkUpdate(bulkDescriptor))
-                {
-                    success = false;
-                }
+                await _updateTasks[currentTask];
+                _updateTasks[currentTask] = BulkUpdate(bulkDescriptor);
             }
 
-            if (success)
-            {
-                await PostUpdate(type, entry, recordCount);
-            }
-            else
-            {
-                _logger.LogError("Failed to update {type} at {UpdatedDate}", type, entry.UpdatedDate);
-            }
+            // Wait for all the tasks to finish.
+            await Task.WhenAll(_updateTasks);
+            await PostUpdate(type, entry, recordCount);
 
             result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
         }
     }
 
-    private async ValueTask<bool> BulkUpdate(IBulkRequest bulkDescriptor)
+    private async Task BulkUpdate(IBulkRequest bulkDescriptor)
     {
         BulkResponse? response = await _client.BulkAsync(bulkDescriptor);
-        if (!response.Errors)
-        {
-            return true;
-        }
-
         _logger.LogError("Failed to bulk update: {response}", response.DebugInformation);
         foreach (BulkResponseItemBase item in response.ItemsWithErrors)
         {
             _logger.LogError("Failed to index {type} with {id}", item.Index, item.Id);
         }
-
-        return false;
     }
 }
