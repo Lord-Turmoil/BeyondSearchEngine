@@ -73,11 +73,15 @@ public class Startup
         var elasticOptions = new ElasticOptions();
         Configuration.GetRequiredSection(ElasticOptions.ElasticSection).Bind(elasticOptions);
         var pool = new SingleNodeConnectionPool(new Uri(elasticOptions.DefaultConnection));
-        var settings = new ConnectionSettings(pool);
+        ConnectionSettings settings = new ConnectionSettings(pool)
+            .EnableHttpPipelining()
+            .DisableDirectStreaming()
+            .EnableApiVersioningHeader();
         if (elasticOptions.EnableBasicAuth)
         {
             settings.BasicAuthentication(elasticOptions.Username, elasticOptions.Password);
         }
+
         var client = new ElasticClient(settings);
         services.AddSingleton<IElasticClient>(client);
 

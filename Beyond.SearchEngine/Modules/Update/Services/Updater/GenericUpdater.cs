@@ -151,6 +151,11 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
     private async Task BulkUpdate(IBulkRequest bulkDescriptor)
     {
         BulkResponse? response = await _client.BulkAsync(bulkDescriptor);
+        if (response.IsValid)
+        {
+            return;
+        }
+
         _logger.LogError("Failed to bulk update: {response}", response.DebugInformation);
         foreach (BulkResponseItemBase item in response.ItemsWithErrors)
         {
