@@ -114,7 +114,7 @@ public abstract class BaseUpdater : IUpdater
             return 1;
         }
 
-        _logger.LogWarning("{type} updated at {UpdatedDate} is already updated", type, entry.UpdatedDate);
+        _logger.LogWarning("{type} updated at {UpdatedDate}:{Id} is already updated", type, entry.UpdatedDate, entry.PartId);
         return 0;
     }
 
