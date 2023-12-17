@@ -10,7 +10,7 @@ public abstract class BaseUpdater : IUpdater
 {
     protected readonly ILogger<UpdateTask> _logger;
     protected readonly IMapper _mapper;
-    protected readonly IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
     protected BaseUpdater(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateTask> logger)
     {

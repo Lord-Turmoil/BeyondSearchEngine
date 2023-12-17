@@ -141,7 +141,7 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
             }
 
             // Wait for all the tasks to finish.
-            await Task.WhenAll(_updateTasks);
+            Task.WaitAll(_updateTasks);
             await PostUpdate(type, entry, recordCount);
 
             result = await UpdatePreamble(type, indexer.CurrentManifestEntry());
