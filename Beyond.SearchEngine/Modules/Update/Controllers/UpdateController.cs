@@ -50,9 +50,9 @@ public class UpdateController : BaseController<UpdateController>
         {
             return await _updateService.InitiateUpdate(dto.Type, dto);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return new InternalServerErrorResponse(new InternalServerErrorDto(e.Message));
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
 }

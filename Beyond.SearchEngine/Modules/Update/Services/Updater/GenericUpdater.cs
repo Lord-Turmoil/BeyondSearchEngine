@@ -57,9 +57,9 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
 
             await UpdateImpl(type, indexer);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError("Failed to update: {exception}", e);
+            _logger.LogError("Failed to update: {exception}", ex);
         }
         finally
         {
@@ -113,9 +113,9 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
                     recordCount++;
                     bulkSaveSize++;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    _logger.LogError("Failed to build {name}: {exception}", typeof(TModel).Name, e);
+                    _logger.LogError("Failed to build {name}: {exception}", typeof(TModel).Name, ex);
                 }
 
                 if (bulkSaveSize < _options.BulkUpdateSize)

@@ -22,10 +22,10 @@ public class BaseController<TController> : Controller where TController : Contro
         {
             return await task;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError(e, "Error occurred when processing request.");
-            return new InternalServerErrorResponse(new InternalServerErrorDto(e.Message));
+            _logger.LogError(ex, "Error occurred when processing request.");
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
 }

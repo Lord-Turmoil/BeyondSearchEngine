@@ -56,6 +56,14 @@ public class ForbiddenDto : ApiResponseDto
     }
 }
 
+public class NotFoundDto : ApiResponseDto
+{
+    public NotFoundDto(string? message = "Not found", object? data = null)
+        : base(StatusCodes.Status404NotFound, message, data)
+    {
+    }
+}
+
 public class InternalServerErrorDto : ApiResponseDto
 {
     public InternalServerErrorDto(string? message = "Unexpected error", object? data = null)

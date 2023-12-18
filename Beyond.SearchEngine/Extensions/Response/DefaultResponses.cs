@@ -31,6 +31,13 @@ public class ForbiddenResponse : ApiResponse
     }
 }
 
+public class NotFoundResponse : ApiResponse
+{
+    public NotFoundResponse(object? value) : base(StatusCodes.Status404NotFound, value)
+    {
+    }
+}
+
 public class InternalServerErrorResponse : ApiResponse
 {
     public InternalServerErrorResponse(object? value) : base(StatusCodes.Status500InternalServerError, value)
