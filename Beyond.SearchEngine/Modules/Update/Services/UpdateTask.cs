@@ -9,17 +9,6 @@ namespace Beyond.SearchEngine.Modules.Update.Services;
 
 public class UpdateTask : IHostedService, IDisposable
 {
-    private readonly HashSet<string> _availableUpdateTypes =
-        new() {
-            "institutions",
-            "authors",
-            "works",
-            "concepts",
-            "sources",
-            "publishers",
-            "funders"
-        };
-
     private readonly IConfiguration _configuration;
     private readonly IElasticClient _elasticClient;
 
@@ -57,7 +46,7 @@ public class UpdateTask : IHostedService, IDisposable
 
     public bool IsValidUpdateType(string type)
     {
-        return _availableUpdateTypes.Contains(type);
+        return Globals.AvailableTypes.Contains(type);
     }
 
     /// <summary>
