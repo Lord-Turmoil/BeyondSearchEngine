@@ -37,7 +37,7 @@ public class CountsByYearData
         return new CountsByYearData {
             Year = json["year"].ToIntNotNull("year", 0),
             WorksCount = json["works_count"].ToIntNotNull("works_count", 0),
-            CitationCount = json["citation_count"].ToIntNotNull("citation_count", 0)
+            CitationCount = json["cited_by_count"].ToIntNotNull("cited_by_count", 0)
         };
     }
 

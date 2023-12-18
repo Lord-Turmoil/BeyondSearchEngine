@@ -38,9 +38,9 @@ public class GenericIndexer<TDtoBuilder, TDto> : OpenAlexIndexer
                 TDto dto = builder.Build(json);
                 dtos.Add(dto);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.Log($"Failed to build {typeof(TDto).Name}: {e.Message}");
+                _logger.Log($"Failed to build {typeof(TDto).Name}: {ex.Message}");
             }
         }
 
@@ -67,9 +67,9 @@ public class GenericIndexer<TDtoBuilder, TDto> : OpenAlexIndexer
             {
                 dto = builder.Build(json);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.Log($"Failed to build {typeof(TDto).Name}: {e.Message}");
+                _logger.Log($"Failed to build {typeof(TDto).Name}: {ex.Message}");
                 continue;
             }
 

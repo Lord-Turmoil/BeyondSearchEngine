@@ -38,10 +38,10 @@ public class OpenAlexIndexer
         {
             _manifest = Manifest.ReadManifest(_dataPath);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.Log($"Failed to read manifest: {e.Message}");
-            throw new IndexException($"Failed to read manifest: {e.Message}", e);
+            _logger.Log($"Failed to read manifest: {ex.Message}");
+            throw new IndexException($"Failed to read manifest: {ex.Message}", ex);
         }
 
         _logger.Info($"Processing data from {BeginDate} to {EndDate}");
