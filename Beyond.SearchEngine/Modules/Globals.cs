@@ -11,4 +11,9 @@ public static class Globals
         "sources",
         "works",
     ];
+
+    public const int DefaultPageSize = 20;
+    public const int DefaultPage = 1;
+    public const int MaxPageSize = 100;
+    public const int MaxPagePressure = 1000;
 }

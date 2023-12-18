@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Update.Models.Elastic;
 using Beyond.Shared.Dtos;
@@ -25,6 +26,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.RelatedConceptList, opt => opt.Ignore());
         CreateMap<ConceptDto, ElasticConcept>();
+        CreateMap<Concept, DehydratedConceptDto>();
 
         CreateMap<Funder, FunderDto>();
         CreateMap<FunderDto, Funder>()
