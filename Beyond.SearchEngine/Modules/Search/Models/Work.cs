@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Beyond.Shared.Data;
+﻿using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
@@ -9,35 +8,27 @@ public class Work : OpenAlexModel
     ///     DOI without leading url. e.g. 10.1016/s0021-9258(19)52451-6
     ///     of https://doi.org/10.1016/s0021-9258(19)52451-6
     /// </summary>
-    [Column(TypeName = "varchar(63)")]
     public string Doi { get; set; }
 
-    [NotMapped]
     public string FullDoi => "https://doi.org/" + Doi;
 
 
     /***               Basics               ***/
 
-    public string Title { get; set; }
-
     public string Abstract { get; set; }
 
-    [Column(TypeName = "char(15)")]
     public string Type { get; set; }
 
-    [Column(TypeName = "char(8)")]
     public string Language { get; set; }
 
     /// <summary>
     ///     Source URL.
     /// </summary>
-    [Column(TypeName = "varchar(2083)")]
     public string SourceUrl { get; set; }
 
     /// <summary>
     ///     Original PDF URL.
     /// </summary>
-    [Column(TypeName = "varchar(2083)")]
     public string PdfUrl { get; set; }
 
 
@@ -45,7 +36,6 @@ public class Work : OpenAlexModel
 
     public string Source { get; set; }
 
-    [NotMapped]
     public SourceData SourceData => new(Source);
 
     /// <summary>
@@ -56,7 +46,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string Concepts { get; set; }
 
-    [NotMapped]
     public List<ConceptData> ConceptList => ConceptData.BuildList(Concepts);
 
     /// <summary>
@@ -65,7 +54,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string Keywords { get; set; }
 
-    [NotMapped]
     public List<KeywordData> KeywordList => KeywordData.BuildList(Keywords);
 
     /// <summary>
@@ -75,7 +63,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string RelatedWorks { get; set; }
 
-    [NotMapped]
     public List<string> RelatedWorkList => string.IsNullOrEmpty(RelatedWorks) ? [] : RelatedWorks.Split(';').ToList();
 
     /// <summary>
@@ -83,7 +70,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string ReferencedWorks { get; set; }
 
-    [NotMapped]
     public List<string> ReferencedWorkList =>
         string.IsNullOrEmpty(ReferencedWorks) ? [] : ReferencedWorks.Split(';').ToList();
 
@@ -96,7 +82,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string Authors { get; set; }
 
-    [NotMapped]
     public List<AuthorData> AuthorList => AuthorData.BuildList(Authors);
 
     /// <summary>
@@ -105,7 +90,6 @@ public class Work : OpenAlexModel
     /// </summary>
     public string Funders { get; set; }
 
-    [NotMapped]
     public List<FunderData> FunderList => FunderData.BuildList(Funders);
 
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
-using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 

@@ -1,5 +1,4 @@
-﻿using Arch.EntityFrameworkCore.UnitOfWork;
-using AutoMapper;
+﻿using AutoMapper;
 using Nest;
 
 namespace Beyond.SearchEngine.Modules.Search.Services;

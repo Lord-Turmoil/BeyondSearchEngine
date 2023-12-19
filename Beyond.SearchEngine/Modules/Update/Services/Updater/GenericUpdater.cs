@@ -82,6 +82,7 @@ public class GenericUpdater<TIndexer, TModel, TDtoBuilder, TDto> : BaseUpdater
         {
             _updateTasks[i] = Task.CompletedTask;
         }
+
         int currentTask = 0;
 
         int result = await UpdatePreamble(type, indexer.CurrentManifestEntry());

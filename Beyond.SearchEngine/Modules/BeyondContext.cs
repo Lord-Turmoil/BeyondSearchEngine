@@ -11,6 +11,7 @@ public class BeyondContext : DbContext
 
     // Update Module
     public DbSet<User> Users { get; set; }
+
     public DbSet<UpdateHistory> UpdateHistories { get; set; }
     // public DbSet<UpdateConfiguration> UpdateConfigurations { get; set; }
 

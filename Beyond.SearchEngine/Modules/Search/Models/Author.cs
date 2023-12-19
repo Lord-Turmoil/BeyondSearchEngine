@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Beyond.Shared.Data;
+﻿using Beyond.Shared.Data;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 
@@ -9,16 +8,9 @@ public class Author : OpenAlexStatisticsModel
     ///     ORC ID without prefix. e.g. 0000-0002-4465-7034
     ///     of https://orcid.org/0000-0002-4465-7034
     /// </summary>
-    [Column(TypeName = "char(20)")]
     public string OrcId { get; set; }
 
-    [NotMapped]
     public string FullOrcId => "https://orcid.org/" + OrcId;
-
-    /// <summary>
-    ///     Only store one display name.
-    /// </summary>
-    public string Name { get; set; }
 
     /***                Relation               ***/
 
@@ -28,7 +20,6 @@ public class Author : OpenAlexStatisticsModel
     /// </summary>
     public string Institution { get; set; }
 
-    [NotMapped]
     public InstitutionData? InstitutionData => InstitutionData.Build(Institution);
 
     /// <summary>
@@ -36,6 +27,5 @@ public class Author : OpenAlexStatisticsModel
     /// </summary>
     public string Concepts { get; set; }
 
-    [NotMapped]
     public List<ConceptData> ConceptList => ConceptData.BuildList(Concepts);
 }

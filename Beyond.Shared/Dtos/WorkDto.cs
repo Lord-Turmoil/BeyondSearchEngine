@@ -12,7 +12,7 @@ public class WorkDto : OpenAlexDto
     /***               Basics               ***/
 
     [JsonProperty(PropertyName = "title")]
-    public string Title { get; set; }
+    public string Name { get; set; }
 
     [JsonProperty(PropertyName = "abstract")]
     public string Abstract { get; set; }

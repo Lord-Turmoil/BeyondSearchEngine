@@ -19,7 +19,7 @@ public class WorkDtoBuilder : OpenAlexDtoBuilder<WorkDto>
         BuildPdfUrl(primaryLocation, out string sourceUrl, out string pdfUrl);
 
         dto.Doi = json["doi"].ToStringNullable().Doi();
-        dto.Title = json["title"].ToStringNullable();
+        dto.Name = json["title"].ToStringNullable();
         dto.Abstract = abstractText;
         dto.Type = json["type"].ToStringNullable();
         dto.Language = json["language"].ToStringNullable("language");
