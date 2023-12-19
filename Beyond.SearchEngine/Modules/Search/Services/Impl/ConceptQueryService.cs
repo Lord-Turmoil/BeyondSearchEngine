@@ -29,7 +29,7 @@ public class ConceptQueryService : ElasticService<ConceptQueryService>, IConcept
         }
 
         var dto = new PagedDto(
-            response.HitsMetadata.Total.Value,
+            response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Concept, DehydratedStatisticsModelDto>).ToList()

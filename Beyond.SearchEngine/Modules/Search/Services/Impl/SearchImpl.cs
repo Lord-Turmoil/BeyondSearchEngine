@@ -81,7 +81,7 @@ public class SearchImpl<TService>
         }
 
         var dto = new PagedDto(
-            response.HitsMetadata.Total.Value,
+            response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<TModel, DehydratedStatisticsModelDto>).ToList());
@@ -109,7 +109,7 @@ public class SearchImpl<TService>
         }
 
         var dto = new PagedDto(
-            response.HitsMetadata.Total.Value,
+            response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Work, DehydratedWorkDto>).ToList());

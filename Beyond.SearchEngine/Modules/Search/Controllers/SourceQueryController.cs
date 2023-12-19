@@ -8,21 +8,19 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("api/search/concepts")]
-public class ConceptQueryController : BaseController<ConceptQueryController>
+[Route("api/search/query/sources")]
+public class SourceQueryController : BaseController<SourceQueryController>
 {
-    private readonly IConceptQueryService _service;
-
-    public ConceptQueryController(ILogger<ConceptQueryController> logger, IConceptQueryService service)
+    private readonly ISourceQueryService _service;
+    public SourceQueryController(ILogger<SourceQueryController> logger, ISourceQueryService service)
         : base(logger)
     {
         _service = service;
     }
 
     [HttpGet]
-    [Route("prefix")]
-    public async Task<ApiResponse> GetAllWithPrefix(
-        [FromQuery] string prefix,
+    [Route("")]
+    public async Task<ApiResponse> GetAll(
         [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
         [FromQuery(Name = "p")] int page = Globals.DefaultPage)
     {
@@ -31,13 +29,13 @@ public class ConceptQueryController : BaseController<ConceptQueryController>
             return new BadRequestResponse(new InvalidPaginationDto());
         }
 
-        try
-        {
-            return await _service.GetAllWithPrefix(prefix, pageSize, page);
-        }
-        catch (Exception ex)
-        {
-            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
-        }
+        return await _service.GetAll(pageSize, page);
+    }
+
+    [HttpGet]
+    [Route("host")]
+    public Task<ApiResponse> GetHost([FromQuery] string id)
+    {
+        return _service.GetHost(id);
     }
 }

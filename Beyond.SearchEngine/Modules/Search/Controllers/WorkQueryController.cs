@@ -7,8 +7,8 @@ using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
-[Route("api/search/query/works")]
 [ApiController]
+[Route("api/search/query/works")]
 public class WorkQueryController : BaseController<WorkQueryController>
 {
     private readonly IWorkQueryService _service;
