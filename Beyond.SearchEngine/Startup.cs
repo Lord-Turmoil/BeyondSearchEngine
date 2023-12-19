@@ -15,12 +15,12 @@ namespace Beyond.SearchEngine;
 
 public class Startup
 {
+    private readonly IConfiguration _configuration;
+
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
-
-    private IConfiguration Configuration { get; }
 
 
     public void ConfigureServices(IServiceCollection services)
@@ -43,7 +43,7 @@ public class Startup
 
         // CORS
         var corsOptions = new CorsOptions();
-        Configuration.GetRequiredSection(CorsOptions.CorsSection).Bind(corsOptions);
+        _configuration.GetRequiredSection(CorsOptions.CorsSection).Bind(corsOptions);
         if (corsOptions.Enable)
         {
             services.AddCors(options => {
@@ -72,7 +72,7 @@ public class Startup
 
         // Elasticsearch
         var elasticOptions = new ElasticOptions();
-        Configuration.GetRequiredSection(ElasticOptions.ElasticSection).Bind(elasticOptions);
+        _configuration.GetRequiredSection(ElasticOptions.ElasticSection).Bind(elasticOptions);
         var pool = new SingleNodeConnectionPool(new Uri(elasticOptions.DefaultConnection));
         ConnectionSettings settings = new ConnectionSettings(pool)
             .EnableHttpPipelining()
@@ -117,7 +117,7 @@ public class Startup
 
         // app.UseAuthentication();
         // app.UseAuthorization();
-        
+
         // Must be placed before UseEndpoints.
         app.UseMiddleware<ResponseTimeMiddleware>();
 
@@ -133,11 +133,11 @@ public class Startup
 
     private void _ConfigureDatabase<TContext>(IServiceCollection services) where TContext : DbContext
     {
-        string profile = Configuration["Profile"] ?? "Default";
+        string profile = _configuration["Profile"] ?? "Default";
         Console.WriteLine($"   Profile: {profile}");
 
-        string database = Configuration.GetConnectionString("Database") ?? throw new Exception("Missing database");
-        string connection = Configuration.GetConnectionString("DefaultConnection") ??
+        string database = _configuration.GetConnectionString("Database") ?? throw new Exception("Missing database");
+        string connection = _configuration.GetConnectionString("DefaultConnection") ??
                             throw new Exception("Missing database connection");
 
         Console.WriteLine($"  Database: {database}");

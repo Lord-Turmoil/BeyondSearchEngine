@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using AutoMapper;
-using Beyond.SearchEngine.Modules.Search.Dtos;
+﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Impl;
 using Beyond.Shared.Dtos;

@@ -18,7 +18,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     }
 
     /// <summary>
-    /// Get a single document by id.
+    ///     Get a single document by id.
     /// </summary>
     /// <param name="type">Index type.</param>
     /// <param name="id">ID</param>
@@ -43,7 +43,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     }
 
     /// <summary>
-    /// Get many documents by ids.
+    ///     Get many documents by ids.
     /// </summary>
     /// <param name="type">Index type.</param>
     /// <param name="ids">ID list.</param>

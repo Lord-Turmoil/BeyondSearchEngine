@@ -2,7 +2,6 @@
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Dtos;
-using MySqlX.XDevAPI;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 
@@ -14,8 +13,8 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 public class SearchImpl<TService>
 {
     private readonly IElasticClient _client;
-    private readonly IMapper _mapper;
     private readonly ILogger<TService> _logger;
+    private readonly IMapper _mapper;
 
     public SearchImpl(IElasticClient client, IMapper mapper, ILogger<TService> logger)
     {
