@@ -1,4 +1,5 @@
-﻿using Beyond.SearchEngine.Modules.Search.Services;
+﻿using Beyond.SearchEngine.Modules.Search.Dtos;
+using Beyond.SearchEngine.Modules.Search.Services;
 using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;
@@ -27,7 +28,7 @@ public class ConceptSearchController : BaseController<ConceptSearchController>
     {
         if (PaginationValidator.IsInvalid(pageSize, page))
         {
-            return new BadRequestResponse(new BadRequestDto("Bad pagination"));
+            return new BadRequestResponse(new InvalidPaginationDto());
         }
 
         try

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
@@ -13,17 +14,15 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 public class SearchImpl<TService>
 {
     private readonly IElasticClient _client;
-    private readonly ILogger<TService> _logger;
     private readonly IMapper _mapper;
 
-    public SearchImpl(IElasticClient client, IMapper mapper, ILogger<TService> logger)
+    public SearchImpl(IElasticClient client, IMapper mapper)
     {
         _client = client;
         _mapper = mapper;
-        _logger = logger;
     }
 
-    public async Task<ApiResponse> SearchSingleById<TModel, TDto>(string type, string id)
+    public async Task<TDto?> SearchSingleById<TModel, TDto>(string type, string id)
         where TModel : OpenAlexModel
         where TDto : OpenAlexDto
     {
@@ -31,22 +30,20 @@ public class SearchImpl<TService>
             .Index(type).Query(q => q.Match(m => m.Field(f => f.Id).Query(id))));
         if (!response.IsValid)
         {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
+            throw new SearchException(response.DebugInformation);
         }
 
         if (response.Documents.Count == 0)
         {
-            return new NotFoundResponse(new NotFoundDto($"{type} with ID {id} not found."));
+            return null;
         }
 
-        TDto dto = _mapper.Map<TModel, TDto>(response.Documents.First());
-        return new OkResponse(new OkDto(data: dto));
+        return _mapper.Map<TModel, TDto>(response.Documents.First());
     }
 
-    public async Task<ApiResponse> SearchManyById<TModel, TDto>(string type, IEnumerable<string> ids)
+    public async Task<List<TDto>> SearchManyById<TModel, TDto>(string type, IEnumerable<string> ids)
         where TModel : OpenAlexModel
-        where TDto : OpenAlexDto
+        where TDto : class
     {
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
@@ -56,15 +53,13 @@ public class SearchImpl<TService>
 
         if (!response.IsValid)
         {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
+            throw new SearchException(response.DebugInformation);
         }
 
-        List<TDto> dtos = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
-        return new OkResponse(new OkDto(data: dtos));
+        return response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
     }
 
-    public async Task<ApiResponse> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
+    public async Task<PagedDto> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
     {
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
@@ -82,8 +77,7 @@ public class SearchImpl<TService>
 
         if (!response.IsValid)
         {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new SearchFailedDto());
+            throw new SearchException(response.DebugInformation);
         }
 
         var dto = new PagedDto(
@@ -91,10 +85,10 @@ public class SearchImpl<TService>
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<TModel, DehydratedStatisticsModelDto>).ToList());
-        return new OkResponse(new OkDto(data: dto));
+        return dto;
     }
 
-    public async Task<ApiResponse> PreviewWork(string type, string query, int pageSize, int page)
+    public async Task<PagedDto> PreviewWork(string type, string query, int pageSize, int page)
     {
         ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
             .Index(type)
@@ -111,8 +105,7 @@ public class SearchImpl<TService>
 
         if (!response.IsValid)
         {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new SearchFailedDto());
+            throw new SearchException(response.DebugInformation);
         }
 
         var dto = new PagedDto(
@@ -120,6 +113,6 @@ public class SearchImpl<TService>
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Work, DehydratedWorkDto>).ToList());
-        return new OkResponse(new OkDto(data: dto));
+        return dto;
     }
 }

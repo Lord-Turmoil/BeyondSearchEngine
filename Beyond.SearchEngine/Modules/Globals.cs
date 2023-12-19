@@ -3,7 +3,7 @@
 public static class Globals
 {
     public const int DefaultPageSize = 20;
-    public const int DefaultPage = 1;
+    public const int DefaultPage = 0;
     public const int MaxPageSize = 100;
     public const int MaxPagePressure = 1000;
 

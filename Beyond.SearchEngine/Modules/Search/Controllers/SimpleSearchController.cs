@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Search.Services;
+﻿using Beyond.SearchEngine.Modules.Search.Dtos;
+using Beyond.SearchEngine.Modules.Search.Services;
+using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
@@ -23,8 +25,8 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     /// <param name="type">Index type.</param>
     /// <param name="id">ID</param>
     /// <returns></returns>
-    [Route("single")]
     [HttpGet]
+    [Route("single")]
     public async Task<ApiResponse> SearchSingle([FromQuery] string type, [FromQuery] string id)
     {
         // if (!Globals.AvailableTypes.Contains(type))
@@ -48,8 +50,8 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     /// <param name="type">Index type.</param>
     /// <param name="ids">ID list.</param>
     /// <returns></returns>
-    [Route("many")]
     [HttpGet]
+    [Route("many")]
     public async Task<ApiResponse> SearchMany([FromQuery] string type, [FromQuery] IEnumerable<string> ids)
     {
         if (!Globals.AvailableTypes.Contains(type))
@@ -67,8 +69,8 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         }
     }
 
-    [Route("preview")]
     [HttpGet]
+    [Route("preview")]
     public async Task<ApiResponse> Preview(
         [FromQuery] string type,
         [FromQuery] string query,
@@ -78,6 +80,11 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         if (!Globals.AvailableTypes.Contains(type))
         {
             return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
+        }
+
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
         }
 
         try
