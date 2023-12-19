@@ -1,4 +1,5 @@
 ﻿using Beyond.Shared.Data;
+using Nest;
 
 namespace Beyond.SearchEngine.Modules.Search.Models;
 

@@ -77,7 +77,8 @@ public class SearchImpl<TService>
                 f => f.WorksCount,
                 f => f.CitationCount,
                 f => f.HIndex)))
-            .Query(q => q.Match(m => m.Field(f => f.Name).Query(query))));
+            .Query(q => q.Match(m => m.Field(f => f.Name)
+                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
 
         if (!response.IsValid)
         {
@@ -105,7 +106,8 @@ public class SearchImpl<TService>
                 f => f.Authors,
                 f => f.CitationCount,
                 f => f.PublicationYear)))
-            .Query(q => q.Match(m => m.Field(f => f.Title).Query(query))));
+            .Query(q => q.Match(m => m.Field(f => f.Title)
+                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
 
         if (!response.IsValid)
         {
