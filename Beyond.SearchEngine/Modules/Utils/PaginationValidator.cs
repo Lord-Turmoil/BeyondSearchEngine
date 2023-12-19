@@ -9,6 +9,6 @@ public static class PaginationValidator
             return true;
         }
 
-        return page < 0 || pageSize * page > Globals.MaxPagePressure;
+        return page < 0 || pageSize * page >= Globals.MaxPagePressure;
     }
 }
