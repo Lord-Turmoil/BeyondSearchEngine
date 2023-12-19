@@ -8,11 +8,11 @@ namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [Route("api/search/concepts")]
 [ApiController]
-public class ConceptSearchController : BaseController<ConceptSearchController>
+public class ConceptQueryController : BaseController<ConceptQueryController>
 {
     private readonly IConceptQueryService _service;
 
-    public ConceptSearchController(ILogger<ConceptSearchController> logger, IConceptQueryService service)
+    public ConceptQueryController(ILogger<ConceptQueryController> logger, IConceptQueryService service)
         : base(logger)
     {
         _service = service;

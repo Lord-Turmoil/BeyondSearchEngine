@@ -4,13 +4,13 @@ using Beyond.SearchEngine.Modules.Search.Models;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 
-namespace Beyond.SearchEngine.Modules.Search.Services;
+namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 
-public class ConceptSearchService : ElasticService<ConceptSearchService>, IConceptSearchService
+public class ConceptQueryService : ElasticService<ConceptQueryService>, IConceptQueryService
 {
     private const string IndexName = "concepts";
 
-    public ConceptSearchService(IElasticClient client, IMapper mapper, ILogger<ConceptSearchService> logger)
+    public ConceptQueryService(IElasticClient client, IMapper mapper, ILogger<ConceptQueryService> logger)
         : base(client, mapper, logger)
     {
     }
@@ -32,7 +32,7 @@ public class ConceptSearchService : ElasticService<ConceptSearchService>, IConce
             response.HitsMetadata.Total.Value,
             pageSize,
             page,
-            response.Documents.Select(_mapper.Map<Concept, DehydratedConceptDto>).ToList()
+            response.Documents.Select(_mapper.Map<Concept, DehydratedStatisticsModelDto>).ToList()
         );
 
         return new OkResponse(new OkDto(data: dto));

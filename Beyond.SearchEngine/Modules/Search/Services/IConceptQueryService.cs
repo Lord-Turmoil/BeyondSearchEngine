@@ -2,7 +2,7 @@
 
 namespace Beyond.SearchEngine.Modules.Search.Services;
 
-public interface IConceptSearchService
+public interface IConceptQueryService
 {
     static readonly string Index = "concepts";
 

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Models;
-using Beyond.SearchEngine.Modules.Search.Services.Impl;
 using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 
-namespace Beyond.SearchEngine.Modules.Search.Services;
+namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 
 public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleSearchService
 {
@@ -18,7 +17,8 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
     {
         var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
 
-        return type switch {
+        return type switch
+        {
             "authors" => await impl.SearchSingleById<Author, AuthorDto>(type, id),
             "concepts" => await impl.SearchSingleById<Concept, ConceptDto>(type, id),
             "funders" => await impl.SearchSingleById<Funder, FunderDto>(type, id),
@@ -34,7 +34,8 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
     {
         var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
 
-        return type switch {
+        return type switch
+        {
             "authors" => await impl.SearchManyById<Author, AuthorDto>(type, ids),
             "concepts" => await impl.SearchManyById<Concept, ConceptDto>(type, ids),
             "funders" => await impl.SearchManyById<Funder, FunderDto>(type, ids),
@@ -50,7 +51,8 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
     {
         var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
 
-        return type switch {
+        return type switch
+        {
             "authors" => await impl.PreviewStatisticsModel<Author>(type, query, pageSize, page),
             "concepts" => await impl.PreviewStatisticsModel<Concept>(type, query, pageSize, page),
             "funders" => await impl.PreviewStatisticsModel<Funder>(type, query, pageSize, page),
