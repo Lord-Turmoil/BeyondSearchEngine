@@ -20,19 +20,21 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.InstitutionData, opt => opt.Ignore())
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore());
         CreateMap<AuthorDto, ElasticAuthor>();
+        CreateMap<Author, DehydratedStatisticsModelDto>();
 
         CreateMap<Concept, ConceptDto>();
         CreateMap<ConceptDto, Concept>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.RelatedConceptList, opt => opt.Ignore());
         CreateMap<ConceptDto, ElasticConcept>();
-        CreateMap<Concept, DehydratedConceptDto>();
+        CreateMap<Concept, DehydratedStatisticsModelDto>();
 
         CreateMap<Funder, FunderDto>();
         CreateMap<FunderDto, Funder>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.RoleList, opt => opt.Ignore());
         CreateMap<FunderDto, ElasticFunder>();
+        CreateMap<Funder, DehydratedStatisticsModelDto>();
 
         CreateMap<Institution, InstitutionDto>();
         CreateMap<InstitutionDto, Institution>()
@@ -40,6 +42,7 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore())
             .ForMember(dest => dest.AssociatedInstitutionList, opt => opt.Ignore());
         CreateMap<InstitutionDto, ElasticInstitution>();
+        CreateMap<Institution, DehydratedStatisticsModelDto>();
 
         CreateMap<Publisher, PublisherDto>();
         CreateMap<PublisherDto, Publisher>()
@@ -48,12 +51,14 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.ParentPublisherData, opt => opt.Ignore())
             .ForMember(dest => dest.RoleList, opt => opt.Ignore());
         CreateMap<PublisherDto, ElasticPublisher>();
+        CreateMap<Publisher, DehydratedStatisticsModelDto>();
 
         CreateMap<Source, SourceDto>();
         CreateMap<SourceDto, Source>()
             .ForMember(dest => dest.CountsByYearList, opt => opt.Ignore())
             .ForMember(dest => dest.ConceptList, opt => opt.Ignore());
         CreateMap<SourceDto, ElasticSource>();
+        CreateMap<Source, DehydratedStatisticsModelDto>();
 
         CreateMap<Work, WorkDto>();
         CreateMap<WorkDto, Work>()
@@ -65,5 +70,6 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.AuthorList, opt => opt.Ignore())
             .ForMember(dest => dest.FunderList, opt => opt.Ignore());
         CreateMap<WorkDto, ElasticWork>();
+        CreateMap<Work, DehydratedWorkDto>();
     }
 }

@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
+using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Services.Impl;
 using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
@@ -13,72 +16,51 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
     {
     }
 
-    public async Task<ApiResponse> SearchSingleAsync(string type, string id)
+    public async Task<ApiResponse> SearchSingle(string type, string id)
     {
+        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
+
         return type switch {
-            "authors" => await SearchSingleImpl<Author, AuthorDto>(type, id),
-            "concepts" => await SearchSingleImpl<Concept, ConceptDto>(type, id),
-            "funders" => await SearchSingleImpl<Funder, FunderDto>(type, id),
-            "institutions" => await SearchSingleImpl<Institution, InstitutionDto>(type, id),
-            "publishers" => await SearchSingleImpl<Publisher, PublisherDto>(type, id),
-            "sources" => await SearchSingleImpl<Source, SourceDto>(type, id),
-            "works" => await SearchSingleImpl<Work, WorkDto>(type, id),
+            "authors" => await impl.SearchSingleById<Author, AuthorDto>(type, id),
+            "concepts" => await impl.SearchSingleById<Concept, ConceptDto>(type, id),
+            "funders" => await impl.SearchSingleById<Funder, FunderDto>(type, id),
+            "institutions" => await impl.SearchSingleById<Institution, InstitutionDto>(type, id),
+            "publishers" => await impl.SearchSingleById<Publisher, PublisherDto>(type, id),
+            "sources" => await impl.SearchSingleById<Source, SourceDto>(type, id),
+            "works" => await impl.SearchSingleById<Work, WorkDto>(type, id),
             _ => new BadRequestResponse(new BadRequestDto($"Invalid type {type}"))
         };
     }
 
-    public async Task<ApiResponse> SearchManyAsync(string type, IEnumerable<string> ids)
+    public async Task<ApiResponse> SearchMany(string type, IEnumerable<string> ids)
     {
+        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
+
         return type switch {
-            "authors" => await SearchManyImpl<Author, AuthorDto>(type, ids),
-            "concepts" => await SearchManyImpl<Concept, ConceptDto>(type, ids),
-            "funders" => await SearchManyImpl<Funder, FunderDto>(type, ids),
-            "institutions" => await SearchManyImpl<Institution, InstitutionDto>(type, ids),
-            "publishers" => await SearchManyImpl<Publisher, PublisherDto>(type, ids),
-            "sources" => await SearchManyImpl<Source, SourceDto>(type, ids),
-            "works" => await SearchManyImpl<Work, WorkDto>(type, ids),
+            "authors" => await impl.SearchManyById<Author, AuthorDto>(type, ids),
+            "concepts" => await impl.SearchManyById<Concept, ConceptDto>(type, ids),
+            "funders" => await impl.SearchManyById<Funder, FunderDto>(type, ids),
+            "institutions" => await impl.SearchManyById<Institution, InstitutionDto>(type, ids),
+            "publishers" => await impl.SearchManyById<Publisher, PublisherDto>(type, ids),
+            "sources" => await impl.SearchManyById<Source, SourceDto>(type, ids),
+            "works" => await impl.SearchManyById<Work, WorkDto>(type, ids),
             _ => new BadRequestResponse(new BadRequestDto($"Invalid type {type}"))
         };
     }
 
-    private async Task<ApiResponse> SearchSingleImpl<TModel, TDto>(string type, string id)
-        where TModel : OpenAlexModel
-        where TDto : OpenAlexDto
+    public async Task<ApiResponse> Preview(string type, string query, int pageSize, int page)
     {
-        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
-            .Index(type).Query(q => q.Match(m => m.Field(f => f.Id).Query(id))));
-        if (!response.IsValid)
-        {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
-        }
+        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper, _logger);
 
-        if (response.Documents.Count == 0)
-        {
-            return new NotFoundResponse(new NotFoundDto($"{type} with ID {id} not found."));
-        }
-
-        TDto dto = _mapper.Map<TModel, TDto>(response.Documents.First());
-        return new OkResponse(new OkDto(data: dto));
-    }
-
-    private async Task<ApiResponse> SearchManyImpl<TModel, TDto>(string type, IEnumerable<string> ids)
-        where TModel : OpenAlexModel
-        where TDto : OpenAlexDto
-    {
-        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
-            .Index(type)
-            .Query(q => q.Bool(b => b.Should(ids.Select(
-                id => new Func<QueryContainerDescriptor<TModel>, QueryContainer>(d =>
-                    d.Match(m => m.Field(f => f.Id).Query(id))))))));
-
-        if (!response.IsValid)
-        {
-            _logger.LogError(response.DebugInformation);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
-        }
-
-        List<TDto> dtos = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
-        return new OkResponse(new OkDto(data: dtos));
+        return type switch {
+            "authors" => await impl.PreviewStatisticsModel<Author>(type, query, pageSize, page),
+            "concepts" => await impl.PreviewStatisticsModel<Concept>(type, query, pageSize, page),
+            "funders" => await impl.PreviewStatisticsModel<Funder>(type, query, pageSize, page),
+            "institutions" => await impl.PreviewStatisticsModel<Institution>(type, query, pageSize, page),
+            "publishers" => await impl.PreviewStatisticsModel<Publisher>(type, query, pageSize, page),
+            "sources" => await impl.PreviewStatisticsModel<Source>(type, query, pageSize, page),
+            "works" => await impl.PreviewWork(type, query, pageSize, page),
+            _ => new BadRequestResponse(new BadRequestDto($"Invalid type {type}"))
+        };
     }
 }

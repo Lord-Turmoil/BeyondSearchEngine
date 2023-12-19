@@ -19,7 +19,7 @@ public class ConceptSearchService : ElasticService<ConceptSearchService>, IConce
     {
         ISearchResponse<Concept> response = await _client.SearchAsync<Concept>(s => s
             .Index(IndexName)
-            .From((page - 1) * pageSize)
+            .From(page * pageSize)
             .Size(pageSize)
             .Query(q => q.MatchPhrasePrefix(m => m.Field(f => f.Name).Query(prefix))));
         if (!response.IsValid)

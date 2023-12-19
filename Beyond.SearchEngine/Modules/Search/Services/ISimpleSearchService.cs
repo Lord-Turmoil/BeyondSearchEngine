@@ -7,6 +7,7 @@ namespace Beyond.SearchEngine.Modules.Search.Services;
 /// </summary>
 public interface ISimpleSearchService
 {
-    public Task<ApiResponse> SearchSingleAsync(string type, string id);
-    public Task<ApiResponse> SearchManyAsync(string type, IEnumerable<string> ids);
+    public Task<ApiResponse> SearchSingle(string type, string id);
+    public Task<ApiResponse> SearchMany(string type, IEnumerable<string> ids);
+    public Task<ApiResponse> Preview(string type, string query, int pageSize, int page);
 }

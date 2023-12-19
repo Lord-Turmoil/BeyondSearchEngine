@@ -17,6 +17,12 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         _service = service;
     }
 
+    /// <summary>
+    /// Get a single document by id.
+    /// </summary>
+    /// <param name="type">Index type.</param>
+    /// <param name="id">ID</param>
+    /// <returns></returns>
     [Route("single")]
     [HttpGet]
     public async Task<ApiResponse> SearchSingle([FromQuery] string type, [FromQuery] string id)
@@ -28,7 +34,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.SearchSingleAsync(type, id);
+            return await _service.SearchSingle(type, id);
         }
         catch (Exception ex)
         {
@@ -36,6 +42,12 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         }
     }
 
+    /// <summary>
+    /// Get many documents by ids.
+    /// </summary>
+    /// <param name="type">Index type.</param>
+    /// <param name="ids">ID list.</param>
+    /// <returns></returns>
     [Route("many")]
     [HttpGet]
     public async Task<ApiResponse> SearchMany([FromQuery] string type, [FromQuery] IEnumerable<string> ids)
@@ -47,7 +59,30 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.SearchManyAsync(type, ids);
+            return await _service.SearchMany(type, ids);
+        }
+        catch (Exception ex)
+        {
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
+
+    [Route("preview")]
+    [HttpGet]
+    public async Task<ApiResponse> Preview(
+        [FromQuery] string type,
+        [FromQuery] string query,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (!Globals.AvailableTypes.Contains(type))
+        {
+            return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
+        }
+
+        try
+        {
+            return await _service.Preview(type, query, pageSize, page);
         }
         catch (Exception ex)
         {

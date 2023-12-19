@@ -15,8 +15,6 @@ public class OpenAlexModel
 
     public string FullId => "https://openalex.org/" + Id;
 
-    public string Name { get; set; }
-
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
 
