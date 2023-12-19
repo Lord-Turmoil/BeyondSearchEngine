@@ -1,6 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Elastic;
+using Beyond.SearchEngine.Extensions.Middlewares;
 using Beyond.SearchEngine.Modules;
 using Beyond.SearchEngine.Modules.Update.Services;
 using Elasticsearch.Net;
@@ -116,11 +117,15 @@ public class Startup
 
         // app.UseAuthentication();
         // app.UseAuthorization();
+        
+        // Must be placed before UseEndpoints.
+        app.UseMiddleware<ResponseTimeMiddleware>();
 
         app.UseEndpoints(endpoints => {
             endpoints.MapControllers();
             endpoints.MapSwagger();
         });
+
 
         // loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\BeyondSearch.Api.log");
     }
