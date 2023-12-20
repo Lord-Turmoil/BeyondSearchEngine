@@ -1,5 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Elastic;
 using Beyond.SearchEngine.Extensions.Middlewares;
 using Beyond.SearchEngine.Modules;
@@ -85,6 +86,22 @@ public class Startup
 
         var client = new ElasticClient(settings);
         services.AddSingleton<IElasticClient>(client);
+
+        // Cache
+        var cacheOptions = new CacheOptions();
+        _configuration.GetRequiredSection(CacheOptions.CacheSection).Bind(cacheOptions);
+        if (cacheOptions.Enable)
+        {
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = cacheOptions.DefaultConnection;
+                options.InstanceName = cacheOptions.InstanceName;
+            });
+            services.AddSingleton<ICacheAdapter, RedisCacheAdapter>();
+        }
+        else
+        {
+            services.AddSingleton<ICacheAdapter, NoCacheAdapter>();
+        }
 
         // Background task
         services.AddSingleton<UpdateTask>();

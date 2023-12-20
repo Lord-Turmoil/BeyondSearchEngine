@@ -26,4 +26,6 @@ public static class Globals
     ];
 
     public static readonly Fuzziness DefaultFuzziness = Fuzziness.EditDistance(1);
+
+    public static TimeSpan DefaultCacheTimeout = TimeSpan.FromDays(1);
 }
