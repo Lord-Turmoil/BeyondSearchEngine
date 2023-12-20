@@ -9,7 +9,9 @@ public class SearchModule : BaseModule
     public override IServiceCollection RegisterModule(IServiceCollection services)
     {
         services.AddScoped<ISimpleSearchService, SimpleSearchService>()
-            .AddScoped<IConceptQueryService, ConceptQueryService>();
+            .AddScoped<IConceptQueryService, ConceptQueryService>()
+            .AddScoped<ISourceQueryService, SourceQueryService>()
+            .AddScoped<IWorkQueryService, WorkQueryService>();
 
         return services;
     }

@@ -77,4 +77,27 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
 
         return new OkResponse(new OkDto(data: dto));
     }
+
+    public async Task<ApiResponse> Search(string type, string query, int pageSize, int page)
+    {
+        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper);
+
+        PagedDto? dto = type switch {
+            "authors" => await impl.SearchStatisticsModel<Author, AuthorDto>(type, query, pageSize, page),
+            "concepts" => await impl.SearchStatisticsModel<Concept, ConceptDto>(type, query, pageSize, page),
+            "funders" => await impl.SearchStatisticsModel<Funder, FunderDto>(type, query, pageSize, page),
+            "institutions" => await impl.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize, page),
+            "publishers" => await impl.SearchStatisticsModel<Publisher, PublisherDto>(type, query, pageSize, page),
+            "sources" => await impl.SearchStatisticsModel<Source, SourceDto>(type, query, pageSize, page),
+            "works" => await impl.SearchWork<WorkDto>(type, query, pageSize, page),
+            _ => null
+        };
+
+        if (dto == null)
+        {
+            return new NotFoundResponse(new NotFoundDto());
+        }
+
+        return new OkResponse(new OkDto(data: dto));
+    }
 }

@@ -10,7 +10,7 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQueryService
 {
     private const string IndexName = "sources";
-    protected SourceQueryService(IElasticClient client, IMapper mapper, ILogger<SourceQueryService> logger)
+    public SourceQueryService(IElasticClient client, IMapper mapper, ILogger<SourceQueryService> logger)
         : base(client, mapper, logger)
     {
     }

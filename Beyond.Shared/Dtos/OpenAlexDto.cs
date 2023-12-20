@@ -7,9 +7,6 @@ public class OpenAlexDto
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
 
-    public string FullId => "https://openalex.org/" + Id;
-
-
     [JsonProperty(PropertyName = "created")]
     public DateTime Created { get; set; }
 

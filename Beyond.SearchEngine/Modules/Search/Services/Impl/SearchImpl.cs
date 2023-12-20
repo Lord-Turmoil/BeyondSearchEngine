@@ -4,7 +4,6 @@ using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.Shared.Dtos;
 using Nest;
-using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 
@@ -113,6 +112,53 @@ public class SearchImpl<TService>
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Work, DehydratedWorkDto>).ToList());
+        return dto;
+    }
+
+    public async Task<PagedDto> SearchStatisticsModel<TModel, TDto>(string type, string query, int pageSize, int page)
+        where TModel : OpenAlexStatisticsModel
+        where TDto : class
+    {
+        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
+            .Index(type)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Query(q => q.Match(m => m.Field(f => f.Name)
+                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        var dto = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(_mapper.Map<TModel, TDto>).ToList());
+        return dto;
+    }
+
+    public async Task<PagedDto> SearchWork<TDto>(string type, string query, int pageSize, int page)
+        where TDto : class
+    {
+        ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
+            .Index(type)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Query(q => q.Match(m => m.Field(f => f.Title)
+                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        var dto = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(_mapper.Map<Work, TDto>).ToList());
         return dto;
     }
 }

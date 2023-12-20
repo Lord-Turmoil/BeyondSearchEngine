@@ -98,4 +98,33 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("")]
+    public async Task<ApiResponse> Search(
+        [FromQuery] string type,
+        [FromQuery] string query,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (!Globals.AvailableTypes.Contains(type))
+        {
+            return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
+        }
+
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.Search(type, query, pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting search with type {type}", type);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
 }
