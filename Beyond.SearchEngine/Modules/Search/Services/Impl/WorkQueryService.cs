@@ -1,10 +1,12 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.Shared.Dtos;
 using Nest;
+using Newtonsoft.Json;
 using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
@@ -12,15 +14,25 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryService
 {
     private const string IndexName = "works";
+    private readonly ICacheAdapter _cache;
 
-    public WorkQueryService(IElasticClient client, IMapper mapper, ILogger<WorkQueryService> logger)
+    public WorkQueryService(IElasticClient client, IMapper mapper, ILogger<WorkQueryService> logger,
+        ICacheAdapter cache)
         : base(client, mapper, logger)
     {
+        _cache = cache;
     }
 
     public async Task<ApiResponse> GetRelatedWorks(string id, bool brief)
     {
-        var impl = new SearchImpl<WorkQueryService>(_client, _mapper);
+        string key = $"work:related:{id}:{brief}";
+        var value = await _cache.GetAsync<IEnumerable<object>>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         WorkDto? dto = await impl.SearchSingleById<Work, WorkDto>(IndexName, id);
         if (dto == null)
@@ -28,24 +40,32 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             return new NotFoundResponse(new NotFoundDto());
         }
 
-        IEnumerable<object> result;
         if (brief)
         {
-            result = await impl.SearchManyById<Work, BriefWorkDto>(
+            value = await impl.SearchManyById<Work, BriefWorkDto>(
                 IndexName, dto.RelatedWorkList);
         }
         else
         {
-            result = await impl.SearchManyById<Work, WorkDto>(
+            value = await impl.SearchManyById<Work, WorkDto>(
                 IndexName, dto.RelatedWorkList);
         }
 
-        return new OkResponse(new OkDto(data: result));
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
     }
 
     public async Task<ApiResponse> GetReferencedWorks(string id, bool brief)
     {
-        var impl = new SearchImpl<WorkQueryService>(_client, _mapper);
+        string key = $"work:ref:{id}:{brief}";
+        var value = await _cache.GetAsync<IEnumerable<object>>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         WorkDto? dto = await impl.SearchSingleById<Work, WorkDto>(IndexName, id);
         if (dto == null)
@@ -53,22 +73,53 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             return new NotFoundResponse(new NotFoundDto());
         }
 
-        IEnumerable<object> result;
         if (brief)
         {
-            result = await impl.SearchManyById<Work, BriefWorkDto>(
+            value = await impl.SearchManyById<Work, BriefWorkDto>(
                 IndexName, dto.ReferencedWorkList);
         }
         else
         {
-            result = await impl.SearchManyById<Work, WorkDto>(
+            value = await impl.SearchManyById<Work, WorkDto>(
                 IndexName, dto.ReferencedWorkList);
         }
 
-        return new OkResponse(new OkDto(data: result));
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
     }
 
     public async Task<ApiResponse> QueryWorksBasic(QueryWorkBasicDto dto)
+    {
+        string key = $"work:query:{JsonConvert.SerializeObject(dto)}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        value = await QueryWorksBasicImpl(dto);
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
+    public async Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
+    {
+        string key = $"work:query:{JsonConvert.SerializeObject(dto)}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        value = await QueryWorksAdvancedImpl(dto);
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
+    private async Task<PagedDto> QueryWorksBasicImpl(QueryWorkBasicDto dto)
     {
         var container = new QueryContainer();
 
@@ -77,7 +128,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             Expression<Func<Work, string>>? field = GetField(cond.Field);
             if (field == null)
             {
-                return new BadRequestResponse(new BadRequestDto($"Invalid field: {cond.Field}"));
+                throw new SearchException($"Invalid field: {cond.Field}");
             }
 
             container &= new QueryContainerDescriptor<Work>()
@@ -105,7 +156,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             SortDescriptor<Work>? sortDescriptor = GetSortDescriptor(dto.OrderBy);
             if (sortDescriptor == null)
             {
-                return new BadRequestResponse(new BadRequestDto($"Invalid sort field: {dto.OrderBy.Field}"));
+                throw new SearchException($"Invalid sort field: {dto.OrderBy.Field}");
             }
 
             response = await _client.SearchAsync<Work>(s => s
@@ -139,28 +190,23 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
         }
 
-        var retDto = new PagedDto(
+        return new PagedDto(
             response.Total,
             dto.PageSize,
             dto.Page,
             results
         );
-
-        return new OkResponse(new OkDto(data: retDto));
     }
 
-    public async Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
+    private async Task<PagedDto> QueryWorksAdvancedImpl(QueryWorkAdvancedDto dto)
     {
-        var container = new QueryContainer();
-        bool empty = true;
-
         ISearchResponse<Work> response;
         if (dto.OrderBy != null)
         {
             SortDescriptor<Work>? sortDescriptor = GetSortDescriptor(dto.OrderBy);
             if (sortDescriptor == null)
             {
-                return new BadRequestResponse(new BadRequestDto($"Invalid sort field: {dto.OrderBy.Field}"));
+                throw new SearchException($"Invalid sort field: {dto.OrderBy.Field}");
             }
 
             response = await _client.SearchAsync<Work>(s => s
@@ -194,14 +240,12 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
         }
 
-        var retDto = new PagedDto(
+        return new PagedDto(
             response.Total,
             dto.PageSize,
             dto.Page,
             results
         );
-
-        return new OkResponse(new OkDto(data: retDto));
     }
 
     /// <summary>

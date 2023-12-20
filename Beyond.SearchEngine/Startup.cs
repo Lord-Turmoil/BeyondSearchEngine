@@ -97,6 +97,7 @@ public class Startup
                 options.InstanceName = cacheOptions.InstanceName;
             });
             services.AddSingleton<ICacheAdapter, RedisCacheAdapter>();
+            Globals.DefaultCacheTimeout = TimeSpan.FromMinutes(cacheOptions.TimeoutInMinutes);
         }
         else
         {

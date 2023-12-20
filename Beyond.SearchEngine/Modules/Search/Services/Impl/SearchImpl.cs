@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
@@ -10,21 +11,29 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 /// <summary>
 ///     Fundamental implementation for searching items.
 /// </summary>
-public class SearchImpl<TService>
+public class SearchImpl
 {
     private readonly IElasticClient _client;
     private readonly IMapper _mapper;
+    private readonly ICacheAdapter _cache;
 
-    public SearchImpl(IElasticClient client, IMapper mapper)
+    public SearchImpl(IElasticClient client, IMapper mapper, ICacheAdapter cache)
     {
         _client = client;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<TDto?> SearchSingleById<TModel, TDto>(string type, string id)
         where TModel : OpenAlexModel
         where TDto : OpenAlexDto
     {
+        var value = await _cache.GetAsync<TDto>(id);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type).Query(q => q.Match(m => m.Field(f => f.Id).Query(id))));
         if (!response.IsValid)
@@ -37,13 +46,28 @@ public class SearchImpl<TService>
             return null;
         }
 
-        return _mapper.Map<TModel, TDto>(response.Documents.First());
+        value = _mapper.Map<TModel, TDto>(response.Documents.First());
+        await _cache.SetAsync(id, value);
+
+        return value;
     }
 
     public async Task<List<TDto>> SearchManyById<TModel, TDto>(string type, IEnumerable<string> ids)
         where TModel : OpenAlexModel
         where TDto : class
     {
+        if (!ids.Any())
+        {
+            return [];
+        }
+
+        string key = string.Join(",", ids);
+        List<TDto>? value = await _cache.GetAsync<List<TDto>>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
             .Query(q => q.Bool(b => b.Should(ids.Select(
@@ -55,12 +79,23 @@ public class SearchImpl<TService>
             throw new SearchException(response.DebugInformation);
         }
 
-        return response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
+        value = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
+        await _cache.SetAsync(key, value);
+
+        return value;
     }
 
     public async Task<PagedDto> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
     {
+        string key = $"preview:{type}:{query}:{pageSize}{page}";
+
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
             .From(page * pageSize)
@@ -79,16 +114,26 @@ public class SearchImpl<TService>
             throw new SearchException(response.DebugInformation);
         }
 
-        var dto = new PagedDto(
+        value = new PagedDto(
             response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<TModel, DehydratedStatisticsModelDto>).ToList());
-        return dto;
+        await _cache.SetAsync(key, value);
+
+        return value;
     }
 
     public async Task<PagedDto> PreviewWork(string type, string query, int pageSize, int page)
     {
+        string key = $"preview:{type}:{query}:{pageSize}{page}";
+
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
             .Index(type)
             .From(page * pageSize)
@@ -107,18 +152,27 @@ public class SearchImpl<TService>
             throw new SearchException(response.DebugInformation);
         }
 
-        var dto = new PagedDto(
+        value = new PagedDto(
             response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Work, DehydratedWorkDto>).ToList());
-        return dto;
+        await _cache.SetAsync(key, value);
+
+        return value;
     }
 
     public async Task<PagedDto> SearchStatisticsModel<TModel, TDto>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
         where TDto : class
     {
+        string key = $"search:{type}:{query}:{pageSize}{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
             .From(page * pageSize)
@@ -131,17 +185,26 @@ public class SearchImpl<TService>
             throw new SearchException(response.DebugInformation);
         }
 
-        var dto = new PagedDto(
+        value = new PagedDto(
             response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<TModel, TDto>).ToList());
-        return dto;
+        await _cache.SetAsync(key, value);
+
+        return value;
     }
 
     public async Task<PagedDto> SearchWork<TDto>(string type, string query, int pageSize, int page)
         where TDto : class
     {
+        string key = $"search:{type}:{query}:{pageSize}{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
         ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
             .Index(type)
             .From(page * pageSize)
@@ -154,11 +217,13 @@ public class SearchImpl<TService>
             throw new SearchException(response.DebugInformation);
         }
 
-        var dto = new PagedDto(
+        value = new PagedDto(
             response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Work, TDto>).ToList());
-        return dto;
+        await _cache.SetAsync(key, value);
+
+        return value;
     }
 }

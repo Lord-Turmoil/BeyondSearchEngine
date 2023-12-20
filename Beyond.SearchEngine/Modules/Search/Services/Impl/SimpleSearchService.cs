@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Dtos;
@@ -9,14 +10,18 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 
 public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleSearchService
 {
-    public SimpleSearchService(IElasticClient client, IMapper mapper, ILogger<SimpleSearchService> logger)
+    private readonly ICacheAdapter _cache;
+
+    public SimpleSearchService(IElasticClient client, IMapper mapper, ILogger<SimpleSearchService> logger,
+        ICacheAdapter cache)
         : base(client, mapper, logger)
     {
+        _cache = cache;
     }
 
     public async Task<ApiResponse> SearchSingle(string type, string id)
     {
-        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper);
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         OpenAlexDto? dto = type switch {
             "authors" => await impl.SearchSingleById<Author, AuthorDto>(type, id),
@@ -39,7 +44,7 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
 
     public async Task<ApiResponse> SearchMany(string type, IEnumerable<string> ids)
     {
-        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper);
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         IEnumerable<OpenAlexDto> dto = type switch {
             "authors" => await impl.SearchManyById<Author, AuthorDto>(type, ids),
@@ -57,7 +62,7 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
 
     public async Task<ApiResponse> Preview(string type, string query, int pageSize, int page)
     {
-        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper);
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         PagedDto? dto = type switch {
             "authors" => await impl.PreviewStatisticsModel<Author>(type, query, pageSize, page),
@@ -80,13 +85,14 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
 
     public async Task<ApiResponse> Search(string type, string query, int pageSize, int page)
     {
-        var impl = new SearchImpl<SimpleSearchService>(_client, _mapper);
+        var impl = new SearchImpl(_client, _mapper, _cache);
 
         PagedDto? dto = type switch {
             "authors" => await impl.SearchStatisticsModel<Author, AuthorDto>(type, query, pageSize, page),
             "concepts" => await impl.SearchStatisticsModel<Concept, ConceptDto>(type, query, pageSize, page),
             "funders" => await impl.SearchStatisticsModel<Funder, FunderDto>(type, query, pageSize, page),
-            "institutions" => await impl.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize, page),
+            "institutions" =>
+                await impl.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize, page),
             "publishers" => await impl.SearchStatisticsModel<Publisher, PublisherDto>(type, query, pageSize, page),
             "sources" => await impl.SearchStatisticsModel<Source, SourceDto>(type, query, pageSize, page),
             "works" => await impl.SearchWork<WorkDto>(type, query, pageSize, page),

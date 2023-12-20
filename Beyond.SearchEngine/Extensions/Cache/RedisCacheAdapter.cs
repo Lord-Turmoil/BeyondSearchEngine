@@ -9,35 +9,28 @@ namespace Beyond.SearchEngine.Extensions.Cache;
 public class RedisCacheAdapter : ICacheAdapter
 {
     private readonly IDistributedCache _cache;
+    private readonly TimeSpan _timeout;
 
-    public RedisCacheAdapter(IDistributedCache cache)
+    public RedisCacheAdapter(IDistributedCache cache, IConfiguration configuration)
     {
         _cache = cache;
+
+        var option = new CacheOptions();
+        configuration.GetRequiredSection(CacheOptions.CacheSection).Bind(option);
+        _timeout = TimeSpan.FromMinutes(option.TimeoutInMinutes);
     }
 
     public void Set(string key, object value, TimeSpan? timeSpan = null)
     {
-        if (timeSpan == null)
-        {
-            _cache.SetString(key, JsonConvert.SerializeObject(value));
-        }
-        else
-        {
-            _cache.SetString(key, JsonConvert.SerializeObject(value), new DistributedCacheEntryOptions {
-                AbsoluteExpirationRelativeToNow = timeSpan
-            });
-        }
+        _cache.SetString(key, JsonConvert.SerializeObject(value), new DistributedCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
+        });
     }
 
     public Task SetAsync(string key, object value, TimeSpan? timeSpan = null)
     {
-        if (timeSpan == null)
-        {
-            return _cache.SetStringAsync(key, JsonConvert.SerializeObject(value));
-        }
-
         return _cache.SetStringAsync(key, JsonConvert.SerializeObject(value), new DistributedCacheEntryOptions {
-            AbsoluteExpirationRelativeToNow = timeSpan
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
         });
     }
 

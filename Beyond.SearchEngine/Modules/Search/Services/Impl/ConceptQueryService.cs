@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Nest;
@@ -9,14 +10,23 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 public class ConceptQueryService : ElasticService<ConceptQueryService>, IConceptQueryService
 {
     private const string IndexName = "concepts";
-
-    public ConceptQueryService(IElasticClient client, IMapper mapper, ILogger<ConceptQueryService> logger)
+    private readonly ICacheAdapter _cache;
+    public ConceptQueryService(IElasticClient client, IMapper mapper, ILogger<ConceptQueryService> logger, ICacheAdapter cache)
         : base(client, mapper, logger)
     {
+        _cache = cache;
     }
 
     public async Task<ApiResponse> GetAllWithPrefix(string prefix, int pageSize, int page)
     {
+        string key = $"source:prefix:{prefix}:{pageSize}:{page}";
+
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
         ISearchResponse<Concept> response = await _client.SearchAsync<Concept>(s => s
             .Index(IndexName)
             .From(page * pageSize)
@@ -28,13 +38,14 @@ public class ConceptQueryService : ElasticService<ConceptQueryService>, IConcept
             return new InternalServerErrorResponse(new SearchFailedDto());
         }
 
-        var dto = new PagedDto(
+        value = new PagedDto(
             response.Total,
             pageSize,
             page,
             response.Documents.Select(_mapper.Map<Concept, DehydratedStatisticsModelDto>).ToList()
         );
+        await _cache.SetAsync(key, value);
 
-        return new OkResponse(new OkDto(data: dto));
+        return new OkResponse(new OkDto(data: value));
     }
 }
