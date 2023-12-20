@@ -65,6 +65,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error while getting many documents with type {type}", type);
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
@@ -93,6 +94,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error while getting preview with type {type}", type);
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }

@@ -37,6 +37,7 @@ public class ConceptQueryController : BaseController<ConceptQueryController>
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error while getting all concepts with prefix {prefix}", prefix);
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }

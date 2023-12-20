@@ -12,6 +12,7 @@ namespace Beyond.SearchEngine.Modules.Search.Controllers;
 public class SourceQueryController : BaseController<SourceQueryController>
 {
     private readonly ISourceQueryService _service;
+
     public SourceQueryController(ILogger<SourceQueryController> logger, ISourceQueryService service)
         : base(logger)
     {
@@ -29,13 +30,29 @@ public class SourceQueryController : BaseController<SourceQueryController>
             return new BadRequestResponse(new InvalidPaginationDto());
         }
 
-        return await _service.GetAll(pageSize, page);
+        try
+        {
+            return await _service.GetAll(pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting all sources");
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
     }
 
     [HttpGet]
     [Route("host")]
-    public Task<ApiResponse> GetHost([FromQuery] string id)
+    public async Task<ApiResponse> GetHost([FromQuery] string id)
     {
-        return _service.GetHost(id);
+        try
+        {
+            return await _service.GetHost(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting host of source {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
     }
 }

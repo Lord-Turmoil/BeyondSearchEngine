@@ -21,15 +21,31 @@ public class WorkQueryController : BaseController<WorkQueryController>
 
     [HttpGet]
     [Route("related")]
-    public Task<ApiResponse> GetRelatedWorks([FromQuery] string id, [FromQuery] bool brief = true)
+    public async Task<ApiResponse> GetRelatedWorks([FromQuery] string id, [FromQuery] bool brief = true)
     {
-        return _service.GetRelatedWorks(id, brief);
+        try
+        {
+            return await _service.GetRelatedWorks(id, brief);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting related works of {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
     }
 
     [HttpGet]
     [Route("referenced")]
-    public Task<ApiResponse> GetReferencedWorks([FromQuery] string id, [FromQuery] bool brief = true)
+    public async Task<ApiResponse> GetReferencedWorks([FromQuery] string id, [FromQuery] bool brief = true)
     {
-        return _service.GetReferencedWorks(id, brief);
+        try
+        {
+            return await _service.GetReferencedWorks(id, brief);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting referenced works of {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
     }
 }
