@@ -71,5 +71,6 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.FunderList, opt => opt.Ignore());
         CreateMap<WorkDto, ElasticWork>();
         CreateMap<Work, DehydratedWorkDto>();
+        CreateMap<Work, BriefWorkDto>();
     }
 }
