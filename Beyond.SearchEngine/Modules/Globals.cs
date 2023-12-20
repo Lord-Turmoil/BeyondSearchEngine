@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules;
+﻿using Nest;
+
+namespace Beyond.SearchEngine.Modules;
 
 public static class Globals
 {
@@ -16,4 +18,12 @@ public static class Globals
         "sources",
         "works"
     ];
+
+    public static readonly HashSet<string> AvailableSortFiled = [
+        "title",
+        "citation",
+        "time",
+    ];
+
+    public static readonly Fuzziness DefaultFuzziness = Fuzziness.EditDistance(1);
 }

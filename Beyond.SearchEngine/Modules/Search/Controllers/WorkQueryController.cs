@@ -48,4 +48,44 @@ public class WorkQueryController : BaseController<WorkQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("basic")]
+    public async Task<ApiResponse> QueryBasic([FromBody] QueryWorkBasicDto dto)
+    {
+        if (!dto.Verify())
+        {
+            return new BadRequestResponse(new BadRequestDto());
+        }
+
+        try
+        {
+            return await _service.QueryWorksBasic(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while basic querying works with {dto}", dto);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
+
+    [HttpGet]
+    [Route("advanced")]
+    public async Task<ApiResponse> QueryAdvanced([FromBody] QueryWorkAdvancedDto dto)
+    {
+        if (!dto.Verify())
+        {
+            return new BadRequestResponse(new BadRequestDto());
+        }
+
+        try
+        {
+            return await _service.QueryWorksAdvanced(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while advanced querying works with {dto}", dto);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
 }

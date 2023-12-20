@@ -1,9 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.Shared.Dtos;
 using Nest;
-using System.Collections.Generic;
 using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
@@ -65,5 +66,103 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         }
 
         return new OkResponse(new OkDto(data: result));
+    }
+
+    public async Task<ApiResponse> QueryWorksBasic(QueryWorkBasicDto dto)
+    {
+        var container = new QueryContainer();
+
+        foreach (BasicCondition cond in dto.Conditions)
+        {
+            Expression<Func<Work, string>>? field = GetField(cond.Field);
+            if (field == null)
+            {
+                return new BadRequestResponse(new BadRequestDto($"Invalid field: {cond.Field}"));
+            }
+
+            container &= new QueryContainerDescriptor<Work>()
+                .Match(m => m.Field(field).Query(cond.Value)
+                    .Fuzziness(Globals.DefaultFuzziness));
+        }
+
+        if (dto.TimeRange != null)
+        {
+            container &= new QueryContainerDescriptor<Work>()
+                .DateRange(r => r.Field(w => w.PublicationDate)
+                    .GreaterThanOrEquals(dto.TimeRange.From)
+                    .LessThanOrEquals(dto.TimeRange.To));
+        }
+
+        foreach (string concept in dto.Concepts)
+        {
+            container &= new QueryContainerDescriptor<Work>()
+                .Match(m => m.Field(w => w.Concepts).Query(concept));
+        }
+
+        ISearchResponse<Work> response;
+        if (dto.OrderBy != null)
+        {
+            SortDescriptor<Work>? sortDescriptor = GetSortDescriptor(dto.OrderBy);
+            if (sortDescriptor == null)
+            {
+                return new BadRequestResponse(new BadRequestDto($"Invalid sort field: {dto.OrderBy.Field}"));
+            }
+
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Sort(_ => sortDescriptor)
+                .Query(q => q.Bool(b => b.Must(container))));
+        }
+        else
+        {
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Query(q => q.Bool(b => b.Must(container))));
+        }
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        var retDto = new PagedDto(
+            response.Total,
+            dto.PageSize,
+            dto.Page,
+            response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList());
+
+        return new OkResponse(new OkDto(data: retDto));
+    }
+
+    public Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
+    {
+        throw new NotImplementedException();
+    }
+
+    private static Expression<Func<Work, string>>? GetField(string field)
+    {
+        return field switch {
+            "title" => w => w.Title,
+            "author" => w => w.Authors,
+            "abstract" => w => w.Abstract,
+            "keyword" => w => w.Keywords,
+            "concept" => w => w.Concepts,
+            _ => null
+        };
+    }
+
+    private static SortDescriptor<Work>? GetSortDescriptor(OrderByData data)
+    {
+        SortOrder fieldSort = data.Ascending ? SortOrder.Ascending : SortOrder.Descending;
+        return data.Field switch {
+            "title" => new SortDescriptor<Work>().Field(w => w.Title, fieldSort),
+            "citation" => new SortDescriptor<Work>().Field(w => w.CitationCount, fieldSort),
+            "time" => new SortDescriptor<Work>().Field(w => w.PublicationDate, fieldSort),
+            _ => null
+        };
     }
 }
