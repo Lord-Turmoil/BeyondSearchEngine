@@ -138,9 +138,95 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         return new OkResponse(new OkDto(data: retDto));
     }
 
-    public Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
+    public async Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
     {
-        throw new NotImplementedException();
+        var container = new QueryContainer();
+        bool empty = true;
+
+        ISearchResponse<Work> response;
+        if (dto.OrderBy != null)
+        {
+            SortDescriptor<Work>? sortDescriptor = GetSortDescriptor(dto.OrderBy);
+            if (sortDescriptor == null)
+            {
+                return new BadRequestResponse(new BadRequestDto($"Invalid sort field: {dto.OrderBy.Field}"));
+            }
+
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Sort(_ => sortDescriptor)
+                .Query(q => q.Bool(b => ConstructQueryDescriptor(b, dto))));
+        }
+        else
+        {
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Query(q => q.Bool(b => ConstructQueryDescriptor(b, dto))));
+        }
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        var retDto = new PagedDto(
+            response.Total,
+            dto.PageSize,
+            dto.Page,
+            response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList());
+
+        return new OkResponse(new OkDto(data: retDto));
+    }
+
+    private static BoolQueryDescriptor<Work>? ConstructQueryDescriptor(
+        BoolQueryDescriptor<Work> descriptor,
+        QueryWorkAdvancedDto dto)
+    {
+        foreach (AdvancedCondition cond in dto.Conditions)
+        {
+            Expression<Func<Work, string>>? field = GetField(cond.Field);
+            if (field != null)
+            {
+                QueryContainer container = new QueryContainerDescriptor<Work>()
+                    .Match(m => m.Field(field).Query(cond.Value)
+                        .Fuzziness(Globals.DefaultFuzziness));
+                descriptor = cond.Op switch {
+                    "and" => descriptor.Must(container),
+                    "or" => descriptor.Should(container),
+                    "not" => descriptor.MustNot(container),
+                    _ => throw new SearchException($"Invalid operator: {cond.Op}")
+                };
+            }
+            else
+            {
+                throw new SearchException($"Invalid field: {cond.Field}");
+            }
+        }
+
+        if (dto.TimeRange != null)
+        {
+            descriptor.Must(q => q.DateRange(r => r.Field(w => w.PublicationDate)
+                .GreaterThanOrEquals(dto.TimeRange.From)
+                .LessThanOrEquals(dto.TimeRange.To)));
+        }
+
+        if (dto.Concepts.Count > 0)
+        {
+            var container = new QueryContainer();
+            foreach (string concept in dto.Concepts)
+            {
+                container &= new QueryContainerDescriptor<Work>()
+                    .Match(m => m.Field(w => w.Concepts).Query(concept));
+            }
+
+            descriptor.Must(container);
+        }
+
+        return descriptor;
     }
 
     private static Expression<Func<Work, string>>? GetField(string field)

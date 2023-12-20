@@ -35,7 +35,7 @@ public class AdvancedCondition
     /// <summary>
     /// Can be "and", "or", "not".
     /// </summary>
-    public string Operator { get; set; }
+    public string Op { get; set; }
 }
 
 public class QueryWorkDto : PagedRequestDto
