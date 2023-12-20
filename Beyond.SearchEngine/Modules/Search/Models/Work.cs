@@ -38,7 +38,7 @@ public class Work : OpenAlexModel
 
     public string Source { get; set; }
 
-    public SourceData SourceData => new(Source);
+    public SourceData? SourceData => SourceData.Build(Source);
 
     /// <summary>
     ///     It is the area of the work. <see cref="ConceptData" />

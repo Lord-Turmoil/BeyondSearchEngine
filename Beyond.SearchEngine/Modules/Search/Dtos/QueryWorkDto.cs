@@ -33,13 +33,18 @@ public class AdvancedCondition
     public string Value { get; set; }
 
     /// <summary>
-    /// Can be "and", "or", "not".
+    ///     Can be "and", "or", "not".
     /// </summary>
     public string Op { get; set; }
 }
 
 public class QueryWorkDto : PagedRequestDto
 {
+    /// <summary>
+    ///     Whether to return brief information.
+    /// </summary>
+    public bool Brief { get; set; }
+
     public OrderByData? OrderBy { get; set; }
     public TimeRangeData? TimeRange { get; set; }
     public List<string> Concepts { get; set; }

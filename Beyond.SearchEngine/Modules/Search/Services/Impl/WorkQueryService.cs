@@ -129,11 +129,22 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             throw new SearchException(response.DebugInformation);
         }
 
+        IEnumerable<object> results;
+        if (dto.Brief)
+        {
+            results = response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList();
+        }
+        else
+        {
+            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+        }
+
         var retDto = new PagedDto(
             response.Total,
             dto.PageSize,
             dto.Page,
-            response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList());
+            results
+        );
 
         return new OkResponse(new OkDto(data: retDto));
     }
@@ -173,15 +184,33 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             throw new SearchException(response.DebugInformation);
         }
 
+        IEnumerable<object> results;
+        if (dto.Brief)
+        {
+            results = response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList();
+        }
+        else
+        {
+            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+        }
+
         var retDto = new PagedDto(
             response.Total,
             dto.PageSize,
             dto.Page,
-            response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList());
+            results
+        );
 
         return new OkResponse(new OkDto(data: retDto));
     }
 
+    /// <summary>
+    ///     Construct advanced query descriptor.
+    /// </summary>
+    /// <param name="descriptor">The original descriptor.</param>
+    /// <param name="dto">Advanced query dto.</param>
+    /// <returns>Advanced query descriptor. Null if anything bad happens.</returns>
+    /// <exception cref="SearchException">If condition contains any error.</exception>
     private static BoolQueryDescriptor<Work>? ConstructQueryDescriptor(
         BoolQueryDescriptor<Work> descriptor,
         QueryWorkAdvancedDto dto)

@@ -62,6 +62,16 @@ public class SourceData
         };
     }
 
+    public static SourceData? Build(string? source)
+    {
+        if (string.IsNullOrEmpty(source))
+        {
+            return null;
+        }
+
+        return new SourceData(source);
+    }
+
     public static List<SourceData> BuildList(string data)
     {
         if (string.IsNullOrEmpty(data))
