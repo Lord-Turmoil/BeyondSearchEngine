@@ -1,4 +1,6 @@
-﻿using Beyond.Shared.Indexer;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.Shared.Indexer;
 
 namespace Beyond.Shared.Extensions;
 

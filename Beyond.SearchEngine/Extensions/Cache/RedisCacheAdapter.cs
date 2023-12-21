@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
 namespace Beyond.SearchEngine.Extensions.Cache;

@@ -1,4 +1,6 @@
-﻿using Nest;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Nest;
 
 namespace Beyond.SearchEngine.Modules;
 
@@ -22,7 +24,7 @@ public static class Globals
     public static readonly HashSet<string> AvailableSortFiled = [
         "title",
         "citation",
-        "time",
+        "time"
     ];
 
     public static readonly Fuzziness DefaultFuzziness = Fuzziness.EditDistance(1);

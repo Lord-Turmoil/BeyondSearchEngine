@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Update.Models.Elastic;

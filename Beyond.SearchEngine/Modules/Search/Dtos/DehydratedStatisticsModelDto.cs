@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Search.Models;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Search.Models;
 using Newtonsoft.Json;
 
 namespace Beyond.SearchEngine.Modules.Search.Dtos;

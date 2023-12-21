@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Search.Dtos;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Search.Dtos;
 
 /// <summary>
 ///     Wrapper for paged response dto.

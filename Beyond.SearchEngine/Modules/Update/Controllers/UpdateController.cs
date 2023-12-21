@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Update.Dtos;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Update.Dtos;
 using Beyond.SearchEngine.Modules.Update.Services;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;

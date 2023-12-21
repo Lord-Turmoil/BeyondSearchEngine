@@ -1,4 +1,6 @@
-﻿using Beyond.Shared.Extensions;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.Shared.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

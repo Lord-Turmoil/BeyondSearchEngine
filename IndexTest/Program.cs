@@ -1,4 +1,6 @@
-﻿using Beyond.Shared.Dtos;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.Shared.Dtos;
 using Beyond.Shared.Indexer.Impl;
 using Newtonsoft.Json;
 using System;

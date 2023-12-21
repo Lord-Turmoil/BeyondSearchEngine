@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Search.Dtos;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Services;
 using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;

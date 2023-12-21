@@ -1,4 +1,6 @@
-﻿using Arch.EntityFrameworkCore.UnitOfWork;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Arch.EntityFrameworkCore.UnitOfWork;
 using Beyond.SearchEngine.Modules.Update.Models;
 
 namespace Beyond.SearchEngine.Modules.Update;

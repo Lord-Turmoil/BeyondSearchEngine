@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
@@ -13,9 +15,9 @@ namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
 /// </summary>
 public class SearchImpl
 {
+    private readonly ICacheAdapter _cache;
     private readonly IElasticClient _client;
     private readonly IMapper _mapper;
-    private readonly ICacheAdapter _cache;
 
     public SearchImpl(IElasticClient client, IMapper mapper, ICacheAdapter cache)
     {
@@ -62,7 +64,7 @@ public class SearchImpl
         }
 
         string key = string.Join(",", ids);
-        List<TDto>? value = await _cache.GetAsync<List<TDto>>(key);
+        var value = await _cache.GetAsync<List<TDto>>(key);
         if (value != null)
         {
             return value;

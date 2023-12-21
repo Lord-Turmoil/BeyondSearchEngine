@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Update.Models;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Update.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beyond.SearchEngine.Modules;

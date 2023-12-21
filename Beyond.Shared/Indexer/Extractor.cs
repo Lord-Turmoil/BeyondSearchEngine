@@ -1,4 +1,6 @@
-﻿using SharpCompress.Archives;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.Zip;

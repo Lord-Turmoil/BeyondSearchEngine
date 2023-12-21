@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Update.Services.Updater;
 
 /// <summary>
 ///     Used to prevent multiple updates of the same type.

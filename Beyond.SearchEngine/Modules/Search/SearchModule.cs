@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Search.Services;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Search.Services;
 using Beyond.SearchEngine.Modules.Search.Services.Impl;
 using Tonisoft.AspExtensions.Module;
 

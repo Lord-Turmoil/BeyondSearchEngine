@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using System.Linq.Expressions;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;

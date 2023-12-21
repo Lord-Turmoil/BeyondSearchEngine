@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
@@ -11,7 +13,9 @@ public class ConceptQueryService : ElasticService<ConceptQueryService>, IConcept
 {
     private const string IndexName = "concepts";
     private readonly ICacheAdapter _cache;
-    public ConceptQueryService(IElasticClient client, IMapper mapper, ILogger<ConceptQueryService> logger, ICacheAdapter cache)
+
+    public ConceptQueryService(IElasticClient client, IMapper mapper, ILogger<ConceptQueryService> logger,
+        ICacheAdapter cache)
         : base(client, mapper, logger)
     {
         _cache = cache;

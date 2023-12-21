@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using AutoMapper;
 using Nest;
 
 namespace Beyond.SearchEngine.Modules.Search.Services.Impl;

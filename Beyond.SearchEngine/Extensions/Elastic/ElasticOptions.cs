@@ -1,4 +1,4 @@
-﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
 namespace Beyond.SearchEngine.Extensions.Elastic;
 

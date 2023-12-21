@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Search.Models;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Search.Models;
 
 /// <summary>
 ///     Base class for all models that are used to communicate with ElasticSearch.

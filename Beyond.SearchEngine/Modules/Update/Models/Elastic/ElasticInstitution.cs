@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Update.Models.Elastic;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Update.Models.Elastic;
 
 public class ElasticInstitution : ElasticStatisticsModel
 {
