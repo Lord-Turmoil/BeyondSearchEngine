@@ -10,7 +10,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("api/search/concepts")]
+[Route("search/concepts")]
 public class ConceptQueryController : BaseController<ConceptQueryController>
 {
     private readonly IConceptQueryService _service;
