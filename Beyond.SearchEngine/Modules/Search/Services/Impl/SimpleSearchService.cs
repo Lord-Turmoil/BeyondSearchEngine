@@ -44,7 +44,7 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         return new OkResponse(new OkDto(data: dto));
     }
 
-    public async Task<ApiResponse> SearchMany(string type, IEnumerable<string> ids)
+    public async Task<ApiResponse> SearchMany(string type, IReadOnlyCollection<string> ids)
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 

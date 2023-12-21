@@ -37,7 +37,7 @@ public class SearchImpl
         }
 
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
-            .Index(type).Query(q => q.Term(m => m.Field(f => f.Id).Value(id))));
+            .Index(type).Query(q => q.Ids(i => i.Values(id))));
         if (!response.IsValid)
         {
             throw new SearchException(response.DebugInformation);
@@ -54,7 +54,7 @@ public class SearchImpl
         return value;
     }
 
-    public async Task<List<TDto>> SearchManyById<TModel, TDto>(string type, IEnumerable<string> ids)
+    public async Task<List<TDto>> SearchManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids)
         where TModel : OpenAlexModel
         where TDto : class
     {
@@ -70,16 +70,9 @@ public class SearchImpl
             return value;
         }
 
-        var container = new QueryContainer();
-        foreach (string id in ids)
-        {
-            container |= new QueryContainerDescriptor<Work>()
-                .Term(m => m.Field(f => f.Id).Value(id));
-        }
-
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
-            .Query(q => q.Bool(b => b.Should(container))));
+            .Query(q => q.Ids(i => i.Values(ids))));
 
         if (!response.IsValid)
         {

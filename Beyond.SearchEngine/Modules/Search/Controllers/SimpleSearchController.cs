@@ -54,7 +54,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     /// <returns></returns>
     [HttpGet]
     [Route("many")]
-    public async Task<ApiResponse> SearchMany([FromQuery] string type, [FromQuery] IEnumerable<string> ids)
+    public async Task<ApiResponse> SearchMany([FromQuery] string type, [FromQuery] IReadOnlyCollection<string> ids)
     {
         if (!Globals.AvailableTypes.Contains(type))
         {
