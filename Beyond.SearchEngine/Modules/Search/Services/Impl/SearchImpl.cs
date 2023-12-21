@@ -86,6 +86,7 @@ public class SearchImpl
             throw new SearchException(response.DebugInformation);
         }
 
+
         value = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
         await _cache.SetAsync(key, value);
 
@@ -114,7 +115,7 @@ public class SearchImpl
                 f => f.CitationCount,
                 f => f.HIndex)))
             .Query(q => q.Match(m => m.Field(f => f.Name)
-                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+                .Query(query).Fuzziness(Globals.DefaultFuzziness))));
 
         if (!response.IsValid)
         {
@@ -152,7 +153,7 @@ public class SearchImpl
                 f => f.CitationCount,
                 f => f.PublicationYear)))
             .Query(q => q.Match(m => m.Field(f => f.Title)
-                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+                .Query(query).Fuzziness(Globals.DefaultFuzziness))));
 
         if (!response.IsValid)
         {
@@ -185,7 +186,7 @@ public class SearchImpl
             .From(page * pageSize)
             .Size(pageSize)
             .Query(q => q.Match(m => m.Field(f => f.Name)
-                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+                .Query(query).Fuzziness(Globals.DefaultFuzziness))));
 
         if (!response.IsValid)
         {
@@ -217,7 +218,7 @@ public class SearchImpl
             .From(page * pageSize)
             .Size(pageSize)
             .Query(q => q.Match(m => m.Field(f => f.Title)
-                .Query(query).Fuzziness(Fuzziness.EditDistance(2)))));
+                .Query(query).Fuzziness(Globals.DefaultFuzziness))));
 
         if (!response.IsValid)
         {

@@ -257,7 +257,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
     /// <param name="dto">Advanced query dto.</param>
     /// <returns>Advanced query descriptor. Null if anything bad happens.</returns>
     /// <exception cref="SearchException">If condition contains any error.</exception>
-    private static BoolQueryDescriptor<Work>? ConstructQueryDescriptor(
+    private static BoolQueryDescriptor<Work> ConstructQueryDescriptor(
         BoolQueryDescriptor<Work> descriptor,
         QueryWorkAdvancedDto dto)
     {

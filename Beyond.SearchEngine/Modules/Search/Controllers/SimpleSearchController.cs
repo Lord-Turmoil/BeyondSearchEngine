@@ -10,7 +10,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("search/")]
+[Route("search")]
 public class SimpleSearchController : BaseController<SimpleSearchController>
 {
     private readonly ISimpleSearchService _service;
@@ -102,7 +102,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     }
 
     [HttpGet]
-    [Route("")]
+    [Route("simple")]
     public async Task<ApiResponse> Search(
         [FromQuery] string type,
         [FromQuery] string query,
