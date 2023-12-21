@@ -37,7 +37,7 @@ public class SearchImpl
         }
 
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
-            .Index(type).Query(q => q.Match(m => m.Field(f => f.Id).Query(id))));
+            .Index(type).Query(q => q.Term(m => m.Field(f => f.Id).Value(id))));
         if (!response.IsValid)
         {
             throw new SearchException(response.DebugInformation);
@@ -70,11 +70,16 @@ public class SearchImpl
             return value;
         }
 
+        var container = new QueryContainer();
+        foreach (string id in ids)
+        {
+            container |= new QueryContainerDescriptor<Work>()
+                .Term(m => m.Field(f => f.Id).Value(id));
+        }
+
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
-            .Query(q => q.Bool(b => b.Should(ids.Select(
-                id => new Func<QueryContainerDescriptor<TModel>, QueryContainer>(d =>
-                    d.Match(m => m.Field(f => f.Id).Query(id))))))));
+            .Query(q => q.Bool(b => b.Should(container))));
 
         if (!response.IsValid)
         {
