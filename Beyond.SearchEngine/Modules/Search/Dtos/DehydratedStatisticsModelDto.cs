@@ -11,7 +11,10 @@ namespace Beyond.SearchEngine.Modules.Search.Dtos;
 /// </summary>
 public class DehydratedStatisticsModelDto
 {
+    [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
+
+    [JsonProperty(PropertyName = "name")]
     public string Name { get; set; }
 
     [JsonProperty(PropertyName = "works_count")]
