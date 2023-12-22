@@ -123,35 +123,6 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     private async Task<PagedDto> QueryWorksBasicImpl(QueryWorkBasicDto dto)
     {
-        var container = new QueryContainer();
-
-        foreach (BasicCondition cond in dto.Conditions)
-        {
-            Expression<Func<Work, string>>? field = GetField(cond.Field);
-            if (field == null)
-            {
-                throw new SearchException($"Invalid field: {cond.Field}");
-            }
-
-            container &= new QueryContainerDescriptor<Work>()
-                .Match(m => m.Field(field).Query(cond.Value)
-                    .Fuzziness(Globals.DefaultFuzziness));
-        }
-
-        if (dto.TimeRange != null)
-        {
-            container &= new QueryContainerDescriptor<Work>()
-                .DateRange(r => r.Field(w => w.PublicationDate)
-                    .GreaterThanOrEquals(dto.TimeRange.From)
-                    .LessThanOrEquals(dto.TimeRange.To));
-        }
-
-        foreach (string concept in dto.Concepts)
-        {
-            container &= new QueryContainerDescriptor<Work>()
-                .Match(m => m.Field(w => w.Concepts).Query(concept));
-        }
-
         ISearchResponse<Work> response;
         if (dto.OrderBy != null)
         {
@@ -166,7 +137,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 .From(dto.Page * dto.PageSize)
                 .Size(dto.PageSize)
                 .Sort(_ => sortDescriptor)
-                .Query(q => q.Bool(b => b.Must(container))));
+                .Query(q => q.Bool(b => ConstructBasicQueryDescriptor(b, dto))));
         }
         else
         {
@@ -174,7 +145,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 .Index(IndexName)
                 .From(dto.Page * dto.PageSize)
                 .Size(dto.PageSize)
-                .Query(q => q.Bool(b => b.Must(container))));
+                .Query(q => q.Bool(b => ConstructBasicQueryDescriptor(b, dto))));
         }
 
         if (!response.IsValid)
@@ -216,7 +187,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 .From(dto.Page * dto.PageSize)
                 .Size(dto.PageSize)
                 .Sort(_ => sortDescriptor)
-                .Query(q => q.Bool(b => ConstructQueryDescriptor(b, dto))));
+                .Query(q => q.Bool(b => ConstructAdvancedQueryDescriptor(b, dto))));
         }
         else
         {
@@ -224,7 +195,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 .Index(IndexName)
                 .From(dto.Page * dto.PageSize)
                 .Size(dto.PageSize)
-                .Query(q => q.Bool(b => ConstructQueryDescriptor(b, dto))));
+                .Query(q => q.Bool(b => ConstructAdvancedQueryDescriptor(b, dto))));
         }
 
         if (!response.IsValid)
@@ -250,6 +221,50 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         );
     }
 
+    private static BoolQueryDescriptor<Work> ConstructBasicQueryDescriptor(
+        BoolQueryDescriptor<Work> descriptor,
+        QueryWorkBasicDto dto)
+    {
+        var container = new QueryContainer();
+
+        foreach (BasicCondition cond in dto.Conditions)
+        {
+            Expression<Func<Work, string>>? field = GetField(cond.Field);
+            if (field == null)
+            {
+                throw new SearchException($"Invalid field: {cond.Field}");
+            }
+
+            container &= new QueryContainerDescriptor<Work>()
+                .Match(m => m.Field(field).Query(cond.Value)
+                    .Fuzziness(Globals.DefaultFuzziness));
+        }
+
+        descriptor.Must(container);
+
+        if (dto.TimeRange != null)
+        {
+            descriptor.Filter(q => q
+                .DateRange(r => r.Field(w => w.PublicationDate)
+                .GreaterThanOrEquals(dto.TimeRange.From)
+                .LessThanOrEquals(dto.TimeRange.To)));
+        }
+
+        if (dto.Concepts.Count > 0)
+        {
+            container = new QueryContainer();
+            foreach (string concept in dto.Concepts)
+            {
+                container &= new QueryContainerDescriptor<Work>()
+                    .Match(m => m.Field(w => w.Concepts).Query(concept));
+            }
+
+            descriptor.Filter(container);
+        }
+
+        return descriptor;
+    }
+
     /// <summary>
     ///     Construct advanced query descriptor.
     /// </summary>
@@ -257,7 +272,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
     /// <param name="dto">Advanced query dto.</param>
     /// <returns>Advanced query descriptor. Null if anything bad happens.</returns>
     /// <exception cref="SearchException">If condition contains any error.</exception>
-    private static BoolQueryDescriptor<Work> ConstructQueryDescriptor(
+    private static BoolQueryDescriptor<Work> ConstructAdvancedQueryDescriptor(
         BoolQueryDescriptor<Work> descriptor,
         QueryWorkAdvancedDto dto)
     {
@@ -284,7 +299,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         if (dto.TimeRange != null)
         {
-            descriptor.Must(q => q.DateRange(r => r.Field(w => w.PublicationDate)
+            descriptor.Filter(q => q.DateRange(r => r.Field(w => w.PublicationDate)
                 .GreaterThanOrEquals(dto.TimeRange.From)
                 .LessThanOrEquals(dto.TimeRange.To)));
         }
@@ -298,7 +313,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                     .Match(m => m.Field(w => w.Concepts).Query(concept));
             }
 
-            descriptor.Must(container);
+            descriptor.Filter(container);
         }
 
         return descriptor;
