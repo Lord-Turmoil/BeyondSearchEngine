@@ -8,7 +8,7 @@ using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Update.Controllers;
 
-[Route("search/update")]
+[Route("v1/search/update")]
 [ApiController]
 public class UpdateController : BaseController<UpdateController>
 {

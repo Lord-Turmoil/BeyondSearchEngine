@@ -10,7 +10,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("search/query/sources")]
+[Route("v1/search/query/sources")]
 public class SourceQueryController : BaseController<SourceQueryController>
 {
     private readonly ISourceQueryService _service;

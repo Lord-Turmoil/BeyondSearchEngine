@@ -10,7 +10,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("search")]
+[Route("v1/search")]
 public class SimpleSearchController : BaseController<SimpleSearchController>
 {
     private readonly ISimpleSearchService _service;
