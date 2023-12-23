@@ -62,7 +62,7 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        SourceDto? dto = await impl.SearchSingleById<Source, SourceDto>(IndexName, id);
+        SourceDto? dto = await impl.GetSingleById<Source, SourceDto>(IndexName, id);
         if (dto == null || string.IsNullOrEmpty(dto.HostId))
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -71,11 +71,11 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
         OpenAlexDto? data;
         if (dto.HostId.StartsWith("I"))
         {
-            data = await impl.SearchSingleById<Institution, InstitutionDto>("institutions", dto.HostId);
+            data = await impl.GetSingleById<Institution, InstitutionDto>("institutions", dto.HostId);
         }
         else
         {
-            data = await impl.SearchSingleById<Publisher, PublisherDto>("publishers", dto.HostId);
+            data = await impl.GetSingleById<Publisher, PublisherDto>("publishers", dto.HostId);
         }
 
         if (data == null)

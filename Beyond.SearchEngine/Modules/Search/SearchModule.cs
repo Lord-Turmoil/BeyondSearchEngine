@@ -13,7 +13,8 @@ public class SearchModule : BaseModule
         services.AddScoped<ISimpleSearchService, SimpleSearchService>()
             .AddScoped<IConceptQueryService, ConceptQueryService>()
             .AddScoped<ISourceQueryService, SourceQueryService>()
-            .AddScoped<IWorkQueryService, WorkQueryService>();
+            .AddScoped<IWorkQueryService, WorkQueryService>()
+            .AddScoped<IAuthorQueryService, AuthorQueryService>();
 
         return services;
     }

@@ -9,22 +9,8 @@ public class BaseController<TController> : Controller where TController : Contro
 {
     protected readonly ILogger<TController> _logger;
 
-
-    public BaseController(ILogger<TController> logger)
+    protected BaseController(ILogger<TController> logger)
     {
         _logger = logger;
-    }
-
-    protected async Task<ApiResponse> ResponseWrapper(Task<ApiResponse> task)
-    {
-        try
-        {
-            return await task;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred when processing request.");
-            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
-        }
     }
 }

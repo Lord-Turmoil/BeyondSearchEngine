@@ -26,7 +26,7 @@ public class SearchImpl
         _cache = cache;
     }
 
-    public async Task<TDto?> SearchSingleById<TModel, TDto>(string type, string id)
+    public async Task<TDto?> GetSingleById<TModel, TDto>(string type, string id)
         where TModel : OpenAlexModel
         where TDto : class
     {
@@ -54,7 +54,7 @@ public class SearchImpl
         return value;
     }
 
-    public async Task<List<TDto>> SearchManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids)
+    public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids)
         where TModel : OpenAlexModel
         where TDto : class
     {
@@ -89,7 +89,7 @@ public class SearchImpl
     public async Task<PagedDto> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
     {
-        string key = $"preview:{type}:{query}:{pageSize}{page}";
+        string key = $"preview:{type}:{query}:{pageSize}:{page}";
 
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
@@ -127,7 +127,7 @@ public class SearchImpl
 
     public async Task<PagedDto> PreviewWork(string type, string query, int pageSize, int page)
     {
-        string key = $"preview:{type}:{query}:{pageSize}{page}";
+        string key = $"preview:{type}:{query}:{pageSize}:{page}";
 
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
@@ -167,7 +167,7 @@ public class SearchImpl
         where TModel : OpenAlexStatisticsModel
         where TDto : class
     {
-        string key = $"search:{type}:{query}:{pageSize}{page}";
+        string key = $"search:{type}:{query}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -199,7 +199,7 @@ public class SearchImpl
     public async Task<PagedDto> SearchWork<TDto>(string type, string query, int pageSize, int page)
         where TDto : class
     {
-        string key = $"search:{type}:{query}:{pageSize}{page}";
+        string key = $"search:{type}:{query}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
