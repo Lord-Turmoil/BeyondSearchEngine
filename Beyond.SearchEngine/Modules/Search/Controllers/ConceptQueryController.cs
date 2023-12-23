@@ -43,4 +43,26 @@ public class ConceptQueryController : BaseController<ConceptQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("top")]
+    public async Task<ApiResponse> GetTopConcepts(
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.GetTopConcepts(pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting top concepts");
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
 }

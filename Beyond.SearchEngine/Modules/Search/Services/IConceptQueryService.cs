@@ -9,4 +9,6 @@ public interface IConceptQueryService
     static readonly string Index = "concepts";
 
     Task<ApiResponse> GetAllWithPrefix(string prefix, int pageSize, int page);
+
+    Task<ApiResponse> GetTopConcepts(int pageSize, int page);
 }
