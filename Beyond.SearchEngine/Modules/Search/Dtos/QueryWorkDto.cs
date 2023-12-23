@@ -38,6 +38,9 @@ public class AdvancedCondition
     ///     Can be "and", "or", "not".
     /// </summary>
     public string Op { get; set; }
+
+    public bool Fuzzy { get; set; }
+
 }
 
 public class QueryWorkDto : PagedRequestDto

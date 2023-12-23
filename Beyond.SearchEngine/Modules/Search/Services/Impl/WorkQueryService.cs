@@ -281,9 +281,13 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             Expression<Func<Work, string>>? field = GetField(cond.Field);
             if (field != null)
             {
-                QueryContainer container = new QueryContainerDescriptor<Work>()
-                    .Match(m => m.Field(field).Query(cond.Value)
-                        .Fuzziness(Globals.DefaultFuzziness));
+                QueryContainer container = cond.Fuzzy
+                    ? new QueryContainerDescriptor<Work>()
+                        .Match(m => m.Field(field).Query(cond.Value)
+                            .Fuzziness(Globals.DefaultFuzziness))
+                    : new QueryContainerDescriptor<Work>()
+                        .Match(m => m.Field(field).Query(cond.Value));
+
                 descriptor = cond.Op switch {
                     "and" => descriptor.Must(container),
                     "or" => descriptor.Should(container),
@@ -327,6 +331,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             "abstract" => w => w.Abstract,
             "keyword" => w => w.Keywords,
             "concept" => w => w.Concepts,
+            "source" => w => w.Source,
             _ => null
         };
     }
