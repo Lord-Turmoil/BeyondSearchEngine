@@ -26,10 +26,14 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     /// </summary>
     /// <param name="type">Index type.</param>
     /// <param name="id">ID</param>
+    /// <param name="brief">Whether return brief information</param>
     /// <returns></returns>
     [HttpGet]
     [Route("single")]
-    public async Task<ApiResponse> SearchSingle([FromQuery] string type, [FromQuery] string id)
+    public async Task<ApiResponse> SearchSingle(
+        [FromQuery] string type,
+        [FromQuery] string id,
+        [FromQuery] bool brief = true)
     {
         // if (!Globals.AvailableTypes.Contains(type))
         // {
@@ -38,7 +42,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.SearchSingle(type, id);
+            return await _service.SearchSingle(type, brief, id);
         }
         catch (Exception ex)
         {
@@ -51,10 +55,14 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     /// </summary>
     /// <param name="type">Index type.</param>
     /// <param name="ids">ID list.</param>
+    /// <param name="brief">Whether return brief data.</param>
     /// <returns></returns>
     [HttpGet]
     [Route("many")]
-    public async Task<ApiResponse> SearchMany([FromQuery] string type, [FromQuery] IReadOnlyCollection<string> ids)
+    public async Task<ApiResponse> SearchMany(
+        [FromQuery] string type, 
+        [FromQuery] IReadOnlyCollection<string> ids,
+        [FromQuery] bool brief = true)
     {
         if (!Globals.AvailableTypes.Contains(type))
         {
@@ -63,7 +71,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.SearchMany(type, ids);
+            return await _service.SearchMany(type, brief, ids);
         }
         catch (Exception ex)
         {
@@ -106,6 +114,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     public async Task<ApiResponse> Search(
         [FromQuery] string type,
         [FromQuery] string query,
+        [FromQuery] bool brief,
         [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
         [FromQuery(Name = "p")] int page = Globals.DefaultPage)
     {
@@ -121,7 +130,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.Search(type, query, pageSize, page);
+            return await _service.Search(type, query, brief, pageSize, page);
         }
         catch (Exception ex)
         {

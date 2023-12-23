@@ -21,20 +21,38 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         _cache = cache;
     }
 
-    public async Task<ApiResponse> SearchSingle(string type, string id)
+    public async Task<ApiResponse> SearchSingle(string type, bool brief, string id)
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        OpenAlexDto? dto = type switch {
-            "authors" => await impl.SearchSingleById<Author, AuthorDto>(type, id),
-            "concepts" => await impl.SearchSingleById<Concept, ConceptDto>(type, id),
-            "funders" => await impl.SearchSingleById<Funder, FunderDto>(type, id),
-            "institutions" => await impl.SearchSingleById<Institution, InstitutionDto>(type, id),
-            "publishers" => await impl.SearchSingleById<Publisher, PublisherDto>(type, id),
-            "sources" => await impl.SearchSingleById<Source, SourceDto>(type, id),
-            "works" => await impl.SearchSingleById<Work, WorkDto>(type, id),
-            _ => null
-        };
+
+        object? dto;
+        if (brief)
+        {
+            dto = type switch {
+                "authors" => await impl.SearchSingleById<Author, DehydratedStatisticsModelDto>(type, id),
+                "concepts" => await impl.SearchSingleById<Concept, DehydratedStatisticsModelDto>(type, id),
+                "funders" => await impl.SearchSingleById<Funder, DehydratedStatisticsModelDto>(type, id),
+                "institutions" => await impl.SearchSingleById<Institution, DehydratedStatisticsModelDto>(type, id),
+                "publishers" => await impl.SearchSingleById<Publisher, DehydratedStatisticsModelDto>(type, id),
+                "sources" => await impl.SearchSingleById<Source, DehydratedStatisticsModelDto>(type, id),
+                "works" => await impl.SearchSingleById<Work, DehydratedWorkDto>(type, id),
+                _ => null
+            };
+        }
+        else
+        {
+            dto = type switch {
+                "authors" => await impl.SearchSingleById<Author, AuthorDto>(type, id),
+                "concepts" => await impl.SearchSingleById<Concept, ConceptDto>(type, id),
+                "funders" => await impl.SearchSingleById<Funder, FunderDto>(type, id),
+                "institutions" => await impl.SearchSingleById<Institution, InstitutionDto>(type, id),
+                "publishers" => await impl.SearchSingleById<Publisher, PublisherDto>(type, id),
+                "sources" => await impl.SearchSingleById<Source, SourceDto>(type, id),
+                "works" => await impl.SearchSingleById<Work, WorkDto>(type, id),
+                _ => null
+            };
+        }
 
         if (dto == null)
         {
@@ -44,20 +62,37 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         return new OkResponse(new OkDto(data: dto));
     }
 
-    public async Task<ApiResponse> SearchMany(string type, IReadOnlyCollection<string> ids)
+    public async Task<ApiResponse> SearchMany(string type, bool brief, IReadOnlyCollection<string> ids)
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        IEnumerable<OpenAlexDto> dto = type switch {
-            "authors" => await impl.SearchManyById<Author, AuthorDto>(type, ids),
-            "concepts" => await impl.SearchManyById<Concept, ConceptDto>(type, ids),
-            "funders" => await impl.SearchManyById<Funder, FunderDto>(type, ids),
-            "institutions" => await impl.SearchManyById<Institution, InstitutionDto>(type, ids),
-            "publishers" => await impl.SearchManyById<Publisher, PublisherDto>(type, ids),
-            "sources" => await impl.SearchManyById<Source, SourceDto>(type, ids),
-            "works" => await impl.SearchManyById<Work, WorkDto>(type, ids),
-            _ => []
-        };
+        IEnumerable<object> dto;
+        if (brief)
+        {
+            dto = type switch {
+                "authors" => await impl.SearchManyById<Author, DehydratedStatisticsModelDto>(type, ids),
+                "concepts" => await impl.SearchManyById<Concept, DehydratedStatisticsModelDto>(type, ids),
+                "funders" => await impl.SearchManyById<Funder, DehydratedStatisticsModelDto>(type, ids),
+                "institutions" => await impl.SearchManyById<Institution, DehydratedStatisticsModelDto>(type, ids),
+                "publishers" => await impl.SearchManyById<Publisher, DehydratedStatisticsModelDto>(type, ids),
+                "sources" => await impl.SearchManyById<Source, DehydratedStatisticsModelDto>(type, ids),
+                "works" => await impl.SearchManyById<Work, DehydratedWorkDto>(type, ids),
+                _ => []
+            };
+        }
+        else
+        {
+            dto = type switch {
+                "authors" => await impl.SearchManyById<Author, AuthorDto>(type, ids),
+                "concepts" => await impl.SearchManyById<Concept, ConceptDto>(type, ids),
+                "funders" => await impl.SearchManyById<Funder, FunderDto>(type, ids),
+                "institutions" => await impl.SearchManyById<Institution, InstitutionDto>(type, ids),
+                "publishers" => await impl.SearchManyById<Publisher, PublisherDto>(type, ids),
+                "sources" => await impl.SearchManyById<Source, SourceDto>(type, ids),
+                "works" => await impl.SearchManyById<Work, WorkDto>(type, ids),
+                _ => []
+            };
+        }
 
         return new OkResponse(new OkDto(data: dto));
     }
@@ -85,22 +120,37 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         return new OkResponse(new OkDto(data: dto));
     }
 
-    public async Task<ApiResponse> Search(string type, string query, int pageSize, int page)
+    public async Task<ApiResponse> Search(string type, string query, bool brief, int pageSize, int page)
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        PagedDto? dto = type switch {
-            "authors" => await impl.SearchStatisticsModel<Author, AuthorDto>(type, query, pageSize, page),
-            "concepts" => await impl.SearchStatisticsModel<Concept, ConceptDto>(type, query, pageSize, page),
-            "funders" => await impl.SearchStatisticsModel<Funder, FunderDto>(type, query, pageSize, page),
-            "institutions" =>
-                await impl.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize, page),
-            "publishers" => await impl.SearchStatisticsModel<Publisher, PublisherDto>(type, query, pageSize, page),
-            "sources" => await impl.SearchStatisticsModel<Source, SourceDto>(type, query, pageSize, page),
-            "works" => await impl.SearchWork<WorkDto>(type, query, pageSize, page),
-            _ => null
-        };
-
+        PagedDto? dto;
+        if (brief)
+        {
+            dto = type switch {
+                "authors" => await impl.SearchStatisticsModel<Author, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "concepts" => await impl.SearchStatisticsModel<Concept, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "funders" => await impl.SearchStatisticsModel<Funder, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "institutions" => await impl.SearchStatisticsModel<Institution, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "publishers" => await impl.SearchStatisticsModel<Publisher, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "sources" => await impl.SearchStatisticsModel<Source, DehydratedStatisticsModelDto>(type, query, pageSize, page),
+                "works" => await impl.SearchWork<DehydratedWorkDto>(type, query, pageSize, page),
+                _ => null
+            };
+        }
+        else
+        {
+            dto = type switch {
+                "authors" => await impl.SearchStatisticsModel<Author, AuthorDto>(type, query, pageSize, page),
+                "concepts" => await impl.SearchStatisticsModel<Concept, ConceptDto>(type, query, pageSize, page),
+                "funders" => await impl.SearchStatisticsModel<Funder, FunderDto>(type, query, pageSize, page),
+                "institutions" => await impl.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize, page),
+                "publishers" => await impl.SearchStatisticsModel<Publisher, PublisherDto>(type, query, pageSize, page),
+                "sources" => await impl.SearchStatisticsModel<Source, SourceDto>(type, query, pageSize, page),
+                "works" => await impl.SearchWork<WorkDto>(type, query, pageSize, page),
+                _ => null
+            };
+        }
         if (dto == null)
         {
             return new NotFoundResponse(new NotFoundDto());

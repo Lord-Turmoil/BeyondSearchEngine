@@ -28,7 +28,7 @@ public class SearchImpl
 
     public async Task<TDto?> SearchSingleById<TModel, TDto>(string type, string id)
         where TModel : OpenAlexModel
-        where TDto : OpenAlexDto
+        where TDto : class
     {
         var value = await _cache.GetAsync<TDto>(id);
         if (value != null)

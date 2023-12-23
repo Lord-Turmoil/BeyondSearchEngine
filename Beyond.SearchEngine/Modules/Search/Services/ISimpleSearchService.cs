@@ -9,8 +9,8 @@ namespace Beyond.SearchEngine.Modules.Search.Services;
 /// </summary>
 public interface ISimpleSearchService
 {
-    public Task<ApiResponse> SearchSingle(string type, string id);
-    public Task<ApiResponse> SearchMany(string type, IReadOnlyCollection<string> ids);
-    public Task<ApiResponse> Preview(string type, string query, int pageSize, int page);
-    public Task<ApiResponse> Search(string type, string query, int pageSize, int page);
+    Task<ApiResponse> SearchSingle(string type, bool brief, string id);
+    Task<ApiResponse> SearchMany(string type, bool brief, IReadOnlyCollection<string> ids);
+    Task<ApiResponse> Preview(string type, string query, int pageSize, int page);
+    Task<ApiResponse> Search(string type, string query, bool brief, int pageSize, int page);
 }
