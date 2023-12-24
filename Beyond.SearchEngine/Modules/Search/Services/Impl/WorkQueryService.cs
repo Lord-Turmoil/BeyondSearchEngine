@@ -178,6 +178,55 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         return new OkResponse(new OkDto(data: builder.ToString()));
     }
 
+    public async Task<ApiResponse> GetTopWorks(DateTime? begin, DateTime? end, int pageSize, int page)
+    {
+        string key = $"work:top:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        Func<QueryContainerDescriptor<Work>, QueryContainer> query = descriptor => {
+            if (begin == null)
+            {
+                return end == null
+                    ? descriptor.MatchAll()
+                    : descriptor.DateRange(m => m.Field(f => f.PublicationDate).LessThanOrEquals(end));
+            }
+
+            return end == null
+                ? descriptor.DateRange(m => m.Field(f => f.PublicationDate).GreaterThanOrEquals(begin))
+                : descriptor.DateRange(m => m.Field(f => f.PublicationDate)
+                    .GreaterThanOrEquals(begin)
+                    .LessThanOrEquals(end));
+        };
+
+        ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
+            .Index(IndexName)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Sort(ss => ss.Field(f => f.CitationCount, SortOrder.Descending))
+            .Query(query));
+
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        value = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList()
+        );
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
     private async Task<PagedDto> QueryWorksBasicImpl(QueryWorkBasicDto dto)
     {
         ISearchResponse<Work> response;

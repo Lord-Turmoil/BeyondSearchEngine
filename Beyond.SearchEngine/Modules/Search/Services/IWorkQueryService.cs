@@ -16,4 +16,6 @@ public interface IWorkQueryService
     Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto);
 
     Task<ApiResponse> GetCitations(string type, IReadOnlyCollection<string> idList);
+
+    Task<ApiResponse> GetTopWorks(DateTime? begin, DateTime? end, int pageSize, int page);
 }

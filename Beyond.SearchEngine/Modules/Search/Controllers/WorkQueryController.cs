@@ -2,6 +2,7 @@
 
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Services;
+using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
@@ -103,6 +104,38 @@ public class WorkQueryController : BaseController<WorkQueryController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while exporting citations of {type} with {idList}", type, idList);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
+
+    [HttpGet]
+    [Route("top")]
+    public async Task<ApiResponse> GetTopWorks(
+        [FromQuery] DateTime? begin = null,
+        [FromQuery] DateTime? end = null,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        if (begin != null && end != null)
+        {
+            if (begin >= end)
+            {
+                return new BadRequestResponse(new BadRequestDto("Invalid date range"));
+            }
+        }
+
+        try
+        {
+            return await _service.GetTopWorks(begin, end, pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting top works");
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
