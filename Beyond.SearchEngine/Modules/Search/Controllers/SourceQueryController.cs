@@ -57,4 +57,26 @@ public class SourceQueryController : BaseController<SourceQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("random")]
+    public async Task<ApiResponse> GetRandom(
+        [FromQuery] bool brief = true,
+        [FromQuery(Name = "ps")] int pageSize = 3)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, 100))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.GetRandom(brief, pageSize);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting random sources");
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
 }

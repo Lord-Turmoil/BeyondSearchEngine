@@ -9,4 +9,6 @@ public interface ISourceQueryService
     Task<ApiResponse> GetAll(int pageSize, int page);
 
     Task<ApiResponse> GetHost(string id);
+
+    Task<ApiResponse> GetRandom(bool brief, int pageSize);
 }

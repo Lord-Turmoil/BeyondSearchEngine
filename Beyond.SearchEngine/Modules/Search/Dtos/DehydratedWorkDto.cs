@@ -20,4 +20,7 @@ public class DehydratedWorkDto
 
     [JsonProperty(PropertyName = "publication_year")]
     public int PublicationYear { get; set; }
+
+    [JsonProperty(PropertyName = "updated")]
+    public DateTime Updated { get; set; }
 }

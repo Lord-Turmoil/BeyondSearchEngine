@@ -85,4 +85,50 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
         return new OkResponse(new OkDto(data: data));
     }
+
+    public async Task<ApiResponse> GetRandom(bool brief, int pageSize)
+    {
+        int page = new Random().Next(0, Globals.MaxPagePressure / pageSize);
+
+        string key = $"source:random:{brief}:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Source> response = await _client.SearchAsync<Source>(s => s
+            .Index(IndexName)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Sort(ss => ss.Field(f => f.HIndex, SortOrder.Descending))
+            .Query(q => q.MatchAll()));
+
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        if (brief)
+        {
+            value = new PagedDto(
+                response.Total,
+                pageSize,
+                page,
+                response.Documents.Select(_mapper.Map<Source, DehydratedStatisticsModelDto>));
+        }
+        else
+        {
+            value = new PagedDto(
+                response.Total,
+                pageSize,
+                page,
+                response.Documents.Select(_mapper.Map<Source, SourceDto>));
+        }
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
 }
