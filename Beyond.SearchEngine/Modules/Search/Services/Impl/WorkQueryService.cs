@@ -30,7 +30,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     public async Task<ApiResponse> GetRelatedWorks(string id, bool brief)
     {
-        string key = $"work:related:{id}:{brief}";
+        string key = $"{IndexName}:related:{id}:{brief}";
         var value = await _cache.GetAsync<IEnumerable<object>>(key);
         if (value != null)
         {
@@ -63,7 +63,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     public async Task<ApiResponse> GetReferencedWorks(string id, bool brief)
     {
-        string key = $"work:ref:{id}:{brief}";
+        string key = $"{IndexName}:ref:{id}:{brief}";
         var value = await _cache.GetAsync<IEnumerable<object>>(key);
         if (value != null)
         {
@@ -96,7 +96,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     public async Task<ApiResponse> QueryWorksBasic(QueryWorkBasicDto dto)
     {
-        string key = $"work:query:{JsonConvert.SerializeObject(dto)}";
+        string key = $"{IndexName}:query:{JsonConvert.SerializeObject(dto)}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -111,7 +111,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     public async Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto)
     {
-        string key = $"work:query:{JsonConvert.SerializeObject(dto)}";
+        string key = $"{IndexName}:query:{JsonConvert.SerializeObject(dto)}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -132,7 +132,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         foreach (string id in idList)
         {
-            string key = $"citation:{id}";
+            string key = $"{IndexName}:citation:{id}";
             string? citation = await _cache.GetStringAsync(key);
             if (citation != null)
             {
@@ -180,7 +180,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
     public async Task<ApiResponse> GetTopWorks(DateTime? begin, DateTime? end, int pageSize, int page)
     {
-        string key = $"work:top:{pageSize}:{page}";
+        string key = $"{IndexName}:top:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {

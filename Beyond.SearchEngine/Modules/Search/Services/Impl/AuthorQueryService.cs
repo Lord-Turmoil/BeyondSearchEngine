@@ -27,7 +27,7 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
 
     public async Task<ApiResponse> GetWorks(string id, bool brief, int pageSize, int page)
     {
-        string key = $"author:works:{id}:{brief}:{pageSize}:{page}";
+        string key = $"{IndexName}:works:{id}:{brief}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -69,7 +69,7 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
 
     public async Task<ApiResponse> GetInstitution(string id, bool brief)
     {
-        string key = $"author:institution:{id}:{brief}";
+        string key = $"{IndexName}:institution:{id}:{brief}";
         object? value = await _cache.GetAsync<object>(key);
         if (value != null)
         {
@@ -98,6 +98,40 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
         {
             return new NotFoundResponse(new NotFoundDto("No such institution"));
         }
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
+    public async Task<ApiResponse> GetTopAuthors(int pageSize, int page)
+    {
+        string key = $"{IndexName}:top:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Author> response = await _client.SearchAsync<Author>(s => s
+            .Index(IndexName)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Sort(ss => ss.Field(f => f.HIndex, SortOrder.Descending))
+            .Query(q => q.MatchAll()));
+
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        value = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(_mapper.Map<Author, DehydratedStatisticsModelDto>).ToList()
+        );
 
         await _cache.SetAsync(key, value);
 

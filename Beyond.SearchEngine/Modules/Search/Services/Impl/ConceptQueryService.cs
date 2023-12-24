@@ -24,7 +24,7 @@ public class ConceptQueryService : ElasticService<ConceptQueryService>, IConcept
 
     public async Task<ApiResponse> GetAllWithPrefix(string prefix, int pageSize, int page)
     {
-        string key = $"source:prefix:{prefix}:{pageSize}:{page}";
+        string key = $"{IndexName}:prefix:{prefix}:{pageSize}:{page}";
 
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
@@ -56,7 +56,7 @@ public class ConceptQueryService : ElasticService<ConceptQueryService>, IConcept
 
     public async Task<ApiResponse> GetTopConcepts(int pageSize, int page)
     {
-        string key = $"source:top:{pageSize}:{page}";
+        string key = $"{IndexName}:top:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {

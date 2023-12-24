@@ -26,7 +26,7 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
     public async Task<ApiResponse> GetAll(int pageSize, int page)
     {
-        string key = $"source:all:{pageSize}:{page}";
+        string key = $"{IndexName}:all:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -93,7 +93,7 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
     {
         int page = new Random().Next(0, Globals.MaxPagePressure / pageSize);
 
-        string key = $"source:random:{brief}:{pageSize}:{page}";
+        string key = $"{IndexName}:random:{brief}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {
@@ -137,7 +137,7 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
     public async Task<ApiResponse> GetTopSourceStatisticsByWorksCount(int pageSize, int page)
     {
-        string key = $"source:top:works:{pageSize}:{page}";
+        string key = $"{IndexName}:top:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
         if (value != null)
         {

@@ -4,7 +4,7 @@ using System.Text;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Data;
 
-namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
+namespace Beyond.SearchEngine.Modules.Utils;
 
 public static class CitationGenerator
 {
@@ -145,7 +145,8 @@ public static class CitationGenerator
 
     private static string GetBibtexEntryType(string openAlexType)
     {
-        return openAlexType switch {
+        return openAlexType switch
+        {
             "article" => "article",
             "book-chapter" => "incollection",
             "dissertation" => "phdthesis",
@@ -156,7 +157,8 @@ public static class CitationGenerator
 
     private static string GetEndNoteEntryType(string openAlexType)
     {
-        return openAlexType switch {
+        return openAlexType switch
+        {
             "book" => "Book",
             "book-chapter" => "Book",
             "article" => "Journal Article",

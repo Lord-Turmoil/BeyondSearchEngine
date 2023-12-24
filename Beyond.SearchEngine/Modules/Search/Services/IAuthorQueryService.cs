@@ -9,4 +9,6 @@ public interface IAuthorQueryService
     Task<ApiResponse> GetWorks(string id, bool brief, int pageSize, int page);
 
     Task<ApiResponse> GetInstitution(string id, bool brief);
+
+    Task<ApiResponse> GetTopAuthors(int pageSize, int page);
 }
