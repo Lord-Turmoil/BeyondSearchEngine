@@ -1,25 +1,21 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
+using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
-using Beyond.SearchEngine.Extensions.Module;
-using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Statistics.Dtos;
 using Beyond.SearchEngine.Modules.Statistics.Models;
-using Beyond.SearchEngine.Modules.Utils;
-using Nest;
+using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Statistics.Services.Impl;
 
-public class WorkStatisticsService : ElasticService<WorkStatisticsService>, IWorkStatisticsService
+public class WorkStatisticsService : BaseService<WorkStatisticsService>, IWorkStatisticsService
 {
-    private const string IndexName = "work-statistics";
-
     private readonly ICacheAdapter _cache;
 
-    public WorkStatisticsService(IElasticClient client, IMapper mapper, ILogger<WorkStatisticsService> logger,
-        ICacheAdapter cache)
-        : base(client, mapper, logger)
+    public WorkStatisticsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<WorkStatisticsService> logger,
+        ICacheAdapter cache) : base(unitOfWork, mapper, logger)
     {
         _cache = cache;
     }
@@ -32,74 +28,66 @@ public class WorkStatisticsService : ElasticService<WorkStatisticsService>, IWor
             return new NotFoundResponse(new NotFoundDto());
         }
 
-        return new OkResponse(new OkDto(data: value));
+        return new OkResponse(new OkDto(data: _mapper.Map<WorkStatistics, WorkStatisticsDto>(value)));
     }
 
-    public async Task<ApiResponse> LikeWork(string id)
+    public async Task<ApiResponse> LikeWork(int userId, string workId)
     {
-        WorkStatistics? value = await GetOrCreateStatistics(id);
+        IRepository<UserLikeRecord> repo = _unitOfWork.GetRepository<UserLikeRecord>();
+        UserLikeRecord? record = await repo.FindAsync(userId, workId);
+        if (record != null)
+        {
+            return new OkResponse(new OkDto("Already liked the work"));
+        }
+
+        WorkStatistics? value = await GetOrCreateStatistics(workId);
         if (value == null)
         {
-            return new NotFoundResponse(new NotFoundDto());
+            return new NotFoundResponse(new NotFoundDto("Work not found"));
         }
 
         value.Likes++;
+
         await UpdateStatistics(value);
+        await repo.InsertAsync(new UserLikeRecord {
+            UserId = userId,
+            WorkId = workId,
+            Created = DateTime.Now
+        });
+        await _unitOfWork.SaveChangesAsync();
 
         return new OkResponse(new OkDto(data: value.Likes));
     }
 
-    public async Task<ApiResponse> UnLikeWork(string id)
+    public async Task<ApiResponse> UnLikeWork(int userId, string workId)
     {
-        WorkStatistics? value = await GetOrCreateStatistics(id);
+        IRepository<UserLikeRecord> repo = _unitOfWork.GetRepository<UserLikeRecord>();
+        UserLikeRecord? record = await repo.FindAsync(userId, workId);
+        if (record == null)
+        {
+            return new OkResponse(new OkDto("You didn't like the work"));
+        }
+
+        WorkStatistics? value = await GetOrCreateStatistics(workId);
         if (value == null)
         {
-            return new NotFoundResponse(new NotFoundDto());
+            return new NotFoundResponse(new NotFoundDto("Work not found"));
         }
 
         value.Likes--;
-        if (value.Likes < 0)
-        {
-            value.Likes = 0;
-        }
-
         await UpdateStatistics(value);
+        repo.Delete(record);
+        await _unitOfWork.SaveChangesAsync();
 
         return new OkResponse(new OkDto(data: value.Likes));
     }
 
-    public async Task<ApiResponse> QuestionWork(string id)
+    public async Task<ApiResponse> IsLiked(int userId, string workId)
     {
-        WorkStatistics? value = await GetOrCreateStatistics(id);
-        if (value == null)
-        {
-            return new NotFoundResponse(new NotFoundDto());
-        }
+        IRepository<UserLikeRecord> repo = _unitOfWork.GetRepository<UserLikeRecord>();
+        bool value = await repo.FindAsync(userId, workId) != null;
 
-        value.Questions++;
-
-        await UpdateStatistics(value);
-
-        return new OkResponse(new OkDto(data: value.Questions));
-    }
-
-    public async Task<ApiResponse> UnQuestionWork(string id)
-    {
-        WorkStatistics? value = await GetOrCreateStatistics(id);
-        if (value == null)
-        {
-            return new NotFoundResponse(new NotFoundDto());
-        }
-
-        value.Questions--;
-        if (value.Questions < 0)
-        {
-            value.Questions = 0;
-        }
-
-        await UpdateStatistics(value);
-
-        return new OkResponse(new OkDto(data: value.Questions));
+        return new OkResponse(new OkDto(data: value));
     }
 
     public async Task<ApiResponse> ViewWork(string id)
@@ -113,6 +101,7 @@ public class WorkStatisticsService : ElasticService<WorkStatisticsService>, IWor
         value.Views++;
 
         await UpdateStatistics(value);
+        await _unitOfWork.SaveChangesAsync();
 
         return new OkResponse(new OkDto(data: value.Views));
     }
@@ -132,8 +121,8 @@ public class WorkStatisticsService : ElasticService<WorkStatisticsService>, IWor
             return value;
         }
 
-        var agent = new SearchAgent(_client, _mapper, _cache);
-        value = await agent.GetModelById<WorkStatistics>(IndexName, id);
+        IRepository<WorkStatistics> repo = _unitOfWork.GetRepository<WorkStatistics>();
+        value = await repo.FindAsync(id);
         if (value != null)
         {
             await _cache.SetAsync(key, value);
@@ -141,41 +130,27 @@ public class WorkStatisticsService : ElasticService<WorkStatisticsService>, IWor
         }
 
         // Then this value is not exist in the database.
-        // First check if work exists.
-        var work = await agent.GetModelById<Work>("works", id);
-        if (work == null)
-        {
-            // No corresponding work.
-            return null;
-        }
-
         // Create a new statistics.
         value = new WorkStatistics {
             Id = id,
             Likes = 0,
-            Questions = 0,
             Views = 0
         };
-        IndexResponse response = await _client.IndexAsync(value, op => op
-            .Index(IndexName)
-            .Id(id));
-        if (!response.IsValid)
-        {
-            _logger.LogError(response.DebugInformation);
-            // Warning: We swallow this error, and return an instant value.
-        }
 
+        await repo.InsertAsync(value);
+        await _unitOfWork.SaveChangesAsync();
         await _cache.SetAsync(key, value);
 
         return value;
     }
 
+    // Warning: It will not save!
     private async Task UpdateStatistics(WorkStatistics statistics)
     {
         string key = GetKey(statistics.Id);
         await _cache.SetAsync(key, statistics);
-        await _client.IndexAsync(statistics, op => op
-            .Index(IndexName)
-            .Id(statistics.Id));
+
+        IRepository<WorkStatistics> repo = _unitOfWork.GetRepository<WorkStatistics>();
+        repo.Update(statistics);
     }
 }

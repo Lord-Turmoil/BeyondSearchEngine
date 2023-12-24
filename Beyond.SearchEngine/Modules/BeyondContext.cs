@@ -1,5 +1,6 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
+using Beyond.SearchEngine.Modules.Statistics.Models;
 using Beyond.SearchEngine.Modules.Update.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,4 +26,8 @@ public class BeyondContext : DbContext
     // public DbSet<Publisher> Publishers { get; set; }
     // public DbSet<Source> Sources { get; set; }
     // public DbSet<Work> Works { get; set; }
+
+    // Statistics Module
+    public DbSet<WorkStatistics> WorkStatistics { get; set; }
+    public DbSet<UserLikeRecord> UserLikeRecords { get; set; }
 }

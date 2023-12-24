@@ -1,26 +1,20 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Beyond.SearchEngine.Modules.Statistics.Models;
 
-/// <summary>
-///     A patch for OpenAlex data.
-/// </summary>
 public class WorkStatistics
 {
-    /// <summary>
-    ///     The OpenAlex work id.
-    /// </summary>
+    [Key]
+    [Column(TypeName = "varchar(12)")]
     public string Id { get; set; }
 
     /// <summary>
     ///     How many reader like the work.
     /// </summary>
     public int Likes { get; set; }
-
-    /// <summary>
-    ///     How many reader question the work.
-    /// </summary>
-    public int Questions { get; set; }
 
     /// <summary>
     ///     How many people view the work.

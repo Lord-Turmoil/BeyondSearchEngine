@@ -8,11 +8,10 @@ public interface IWorkStatisticsService
 {
     Task<ApiResponse> GetStatistics(string id);
 
-    Task<ApiResponse> LikeWork(string id);
-    Task<ApiResponse> UnLikeWork(string id);
+    Task<ApiResponse> LikeWork(int userId, string workId);
+    Task<ApiResponse> UnLikeWork(int userId, string workId);
 
-    Task<ApiResponse> QuestionWork(string id);
-    Task<ApiResponse> UnQuestionWork(string id);
+    Task<ApiResponse> IsLiked(int userId, string workId);
 
     Task<ApiResponse> ViewWork(string id);
 }

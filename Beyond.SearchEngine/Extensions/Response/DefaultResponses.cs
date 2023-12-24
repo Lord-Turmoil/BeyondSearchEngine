@@ -37,6 +37,13 @@ public class NotFoundResponse : ApiResponse
     }
 }
 
+public class MethodNotAllowedResponse : ApiResponse
+{
+    public MethodNotAllowedResponse(object? value) : base(StatusCodes.Status405MethodNotAllowed, value)
+    {
+    }
+}
+
 public class InternalServerErrorResponse : ApiResponse
 {
     public InternalServerErrorResponse(object? value) : base(StatusCodes.Status500InternalServerError, value)

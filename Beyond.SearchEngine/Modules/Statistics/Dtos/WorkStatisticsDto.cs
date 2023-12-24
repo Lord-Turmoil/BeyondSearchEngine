@@ -12,9 +12,6 @@ public class WorkStatisticsDto
     [JsonProperty(PropertyName = "likes")]
     public int Likes { get; set; }
 
-    [JsonProperty(PropertyName = "questions")]
-    public int Questions { get; set; }
-
     [JsonProperty(PropertyName = "views")]
     public int Views { get; set; }
 }

@@ -36,61 +36,46 @@ public class WorkStatisticsController : BaseController<WorkStatisticsController>
 
     [HttpPost]
     [Route("like")]
-    public async Task<ApiResponse> LikeWork([FromQuery] string id)
+    public async Task<ApiResponse> LikeWork([FromQuery] int userId, [FromQuery] string workId)
     {
         try
         {
-            return await _service.LikeWork(id);
+            return await _service.LikeWork(userId, workId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while liking work {id}", id);
+            _logger.LogError(ex, "Error while {userId} liking work {workId}", userId, workId);
             return new InternalServerErrorResponse(new InternalServerErrorDto());
         }
     }
 
     [HttpPost]
     [Route("unlike")]
-    public async Task<ApiResponse> UnlikeWork([FromQuery] string id)
+    public async Task<ApiResponse> UnlikeWork([FromQuery] int userId, [FromQuery] string workId)
     {
         try
         {
-            return await _service.UnLikeWork(id);
+            return await _service.UnLikeWork(userId, workId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while unliking work {id}", id);
+            _logger.LogError(ex, "Error while {userId} unliking work {workId}", userId, workId);
             return new InternalServerErrorResponse(new InternalServerErrorDto());
         }
     }
 
-    [HttpPost]
-    [Route("question")]
-    public async Task<ApiResponse> QuestionWork([FromQuery] string id)
+    [HttpGet]
+    [Route("islike")]
+    public Task<ApiResponse> IsUserLikedWork([FromQuery] int userId, [FromQuery] string workId)
     {
         try
         {
-            return await _service.QuestionWork(id);
+            return _service.IsLiked(userId, workId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while questioning work {id}", id);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
-        }
-    }
-
-    [HttpPost]
-    [Route("unquestion")]
-    public async Task<ApiResponse> UnQuestionWork([FromQuery] string id)
-    {
-        try
-        {
-            return await _service.UnQuestionWork(id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error while unquestioning work {id}", id);
-            return new InternalServerErrorResponse(new InternalServerErrorDto());
+            _logger.LogError(ex, "Error while checking whether {userId} liked work {workId}", userId, workId);
+            return Task.FromResult<ApiResponse>(new InternalServerErrorResponse(new InternalServerErrorDto()));
         }
     }
 

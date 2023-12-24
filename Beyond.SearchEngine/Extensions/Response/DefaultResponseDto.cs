@@ -63,6 +63,14 @@ public class NotFoundDto : ApiResponseDto
     }
 }
 
+public class MethodNotAllowedDto : ApiResponseDto
+{
+    public MethodNotAllowedDto(string? message = "Method not allowed", object? data = null)
+        : base(StatusCodes.Status405MethodNotAllowed, message, data)
+    {
+    }
+}
+
 public class InternalServerErrorDto : ApiResponseDto
 {
     public InternalServerErrorDto(string? message = "Unexpected error", object? data = null)
