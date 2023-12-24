@@ -25,13 +25,11 @@ public class RedisCacheAdapter : ICacheAdapter
     public void Set(string key, object value, TimeSpan? timeSpan = null)
     {
         SetString(key, JsonConvert.SerializeObject(value), timeSpan);
-
     }
 
     public Task SetAsync(string key, object value, TimeSpan? timeSpan = null)
     {
         return SetStringAsync(key, JsonConvert.SerializeObject(value), timeSpan);
-
     }
 
     public TObject? Get<TObject>(string key) where TObject : class

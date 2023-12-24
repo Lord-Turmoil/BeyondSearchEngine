@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using System.Text;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Data;
 

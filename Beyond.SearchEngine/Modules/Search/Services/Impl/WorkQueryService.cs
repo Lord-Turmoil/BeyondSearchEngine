@@ -303,8 +303,8 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         {
             descriptor.Filter(q => q
                 .DateRange(r => r.Field(w => w.PublicationDate)
-                .GreaterThanOrEquals(dto.TimeRange.From)
-                .LessThanOrEquals(dto.TimeRange.To)));
+                    .GreaterThanOrEquals(dto.TimeRange.From)
+                    .LessThanOrEquals(dto.TimeRange.To)));
         }
 
         if (dto.Concepts.Count > 0)

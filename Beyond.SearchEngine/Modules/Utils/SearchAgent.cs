@@ -5,7 +5,6 @@ using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
-using Beyond.Shared.Dtos;
 using Nest;
 
 namespace Beyond.SearchEngine.Modules.Utils;
@@ -136,6 +135,7 @@ public class SearchAgent
 
         return count;
     }
+
     public async Task<PagedDto> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
     {

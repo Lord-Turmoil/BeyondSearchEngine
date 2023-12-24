@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
 using Newtonsoft.Json;
 
 namespace Beyond.SearchEngine.Modules.Statistics.Dtos;

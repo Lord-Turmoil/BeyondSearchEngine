@@ -60,7 +60,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     [HttpGet]
     [Route("many")]
     public async Task<ApiResponse> SearchMany(
-        [FromQuery] string type, 
+        [FromQuery] string type,
         [FromQuery(Name = "ids")] IReadOnlyCollection<string> idList,
         [FromQuery] bool brief = true)
     {

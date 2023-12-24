@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Statistics.Models;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Statistics.Models;
 
 /// <summary>
 ///     A patch for OpenAlex data.

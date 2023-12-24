@@ -1,4 +1,6 @@
-﻿namespace Beyond.SearchEngine.Modules.Statistics.Exceptions;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+namespace Beyond.SearchEngine.Modules.Statistics.Exceptions;
 
 public class IndexException : Exception
 {

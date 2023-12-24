@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
@@ -89,7 +91,8 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
 
 
         value = brief
-            ? await agent.GetSingleById<Institution, DehydratedStatisticsModelDto>("institutions", authorInstitutionData.Id, brief)
+            ? await agent.GetSingleById<Institution, DehydratedStatisticsModelDto>("institutions",
+                authorInstitutionData.Id, brief)
             : await agent.GetSingleById<Institution, InstitutionDto>("institutions", authorInstitutionData.Id, brief);
         if (value == null)
         {
