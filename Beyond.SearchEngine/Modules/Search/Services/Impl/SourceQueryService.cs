@@ -5,6 +5,7 @@ using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
@@ -62,9 +63,9 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
     /// <returns></returns>
     public async Task<ApiResponse> GetHost(string id, bool brief)
     {
-        var impl = new SearchImpl(_client, _mapper, _cache);
+        var agent = new SearchAgent(_client, _mapper, _cache);
 
-        SourceDto? dto = await impl.GetSingleById<Source, SourceDto>(IndexName, id, brief);
+        SourceDto? dto = await agent.GetSingleById<Source, SourceDto>(IndexName, id, brief);
         if (dto == null || string.IsNullOrEmpty(dto.HostId))
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -73,11 +74,11 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
         OpenAlexDto? data;
         if (dto.HostId.StartsWith("I"))
         {
-            data = await impl.GetSingleById<Institution, InstitutionDto>("institutions", dto.HostId, brief);
+            data = await agent.GetSingleById<Institution, InstitutionDto>("institutions", dto.HostId, brief);
         }
         else
         {
-            data = await impl.GetSingleById<Publisher, PublisherDto>("publishers", dto.HostId, brief);
+            data = await agent.GetSingleById<Publisher, PublisherDto>("publishers", dto.HostId, brief);
         }
 
         if (data == null)
@@ -156,8 +157,8 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
             return new InternalServerErrorResponse(new SearchFailedDto());
         }
 
-        var impl = new SearchImpl(_client, _mapper, _cache);
-        long count = await impl.GetCount<Work>(IndexName);
+        var agent = new SearchAgent(_client, _mapper, _cache);
+        long count = await agent.GetCount<Work>(IndexName);
         value = new PagedDto(
             response.Total,
             pageSize,

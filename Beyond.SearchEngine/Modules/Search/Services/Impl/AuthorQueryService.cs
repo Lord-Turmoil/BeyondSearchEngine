@@ -3,6 +3,7 @@ using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;
 using Beyond.Shared.Dtos;
 using Nest;
@@ -73,8 +74,8 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
             return new OkResponse(new OkDto(data: value));
         }
 
-        var impl = new SearchImpl(_client, _mapper, _cache);
-        AuthorDto? author = await impl.GetSingleById<Author, AuthorDto>(IndexName, id, brief);
+        var agent = new SearchAgent(_client, _mapper, _cache);
+        AuthorDto? author = await agent.GetSingleById<Author, AuthorDto>(IndexName, id, brief);
         if (author == null)
         {
             return new NotFoundResponse(new NotFoundDto("No such author"));
@@ -88,8 +89,8 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
 
 
         value = brief
-            ? await impl.GetSingleById<Institution, DehydratedStatisticsModelDto>("institutions", authorInstitutionData.Id, brief)
-            : await impl.GetSingleById<Institution, InstitutionDto>("institutions", authorInstitutionData.Id, brief);
+            ? await agent.GetSingleById<Institution, DehydratedStatisticsModelDto>("institutions", authorInstitutionData.Id, brief)
+            : await agent.GetSingleById<Institution, InstitutionDto>("institutions", authorInstitutionData.Id, brief);
         if (value == null)
         {
             return new NotFoundResponse(new NotFoundDto("No such institution"));

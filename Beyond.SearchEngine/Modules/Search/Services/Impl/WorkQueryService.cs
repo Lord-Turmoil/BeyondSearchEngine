@@ -8,6 +8,7 @@ using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
+using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Dtos;
 using Nest;
 using Newtonsoft.Json;
@@ -36,9 +37,9 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             return new OkResponse(new OkDto(data: value));
         }
 
-        var impl = new SearchImpl(_client, _mapper, _cache);
+        var agent = new SearchAgent(_client, _mapper, _cache);
 
-        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id, brief);
+        WorkDto? dto = await agent.GetSingleById<Work, WorkDto>(IndexName, id, brief);
         if (dto == null)
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -46,12 +47,12 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         if (brief)
         {
-            value = await impl.GetManyById<Work, BriefWorkDto>(
+            value = await agent.GetManyById<Work, BriefWorkDto>(
                 IndexName, dto.RelatedWorkList, brief);
         }
         else
         {
-            value = await impl.GetManyById<Work, WorkDto>(
+            value = await agent.GetManyById<Work, WorkDto>(
                 IndexName, dto.RelatedWorkList, brief);
         }
 
@@ -69,9 +70,9 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             return new OkResponse(new OkDto(data: value));
         }
 
-        var impl = new SearchImpl(_client, _mapper, _cache);
+        var agent = new SearchAgent(_client, _mapper, _cache);
 
-        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id, brief);
+        WorkDto? dto = await agent.GetSingleById<Work, WorkDto>(IndexName, id, brief);
         if (dto == null)
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -79,12 +80,12 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         if (brief)
         {
-            value = await impl.GetManyById<Work, BriefWorkDto>(
+            value = await agent.GetManyById<Work, BriefWorkDto>(
                 IndexName, dto.ReferencedWorkList, brief);
         }
         else
         {
-            value = await impl.GetManyById<Work, WorkDto>(
+            value = await agent.GetManyById<Work, WorkDto>(
                 IndexName, dto.ReferencedWorkList, brief);
         }
 
@@ -126,7 +127,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
     public async Task<ApiResponse> GetCitations(string type, IReadOnlyCollection<string> idList)
     {
         StringBuilder builder = new();
-        var impl = new SearchImpl(_client, _mapper, _cache);
+        var agent = new SearchAgent(_client, _mapper, _cache);
         bool first = true;
 
         foreach (string id in idList)
@@ -148,7 +149,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 continue;
             }
 
-            var work = await impl.GetModelById<Work>(IndexName, id);
+            var work = await agent.GetModelById<Work>(IndexName, id);
             if (work == null)
             {
                 // Warning: We swallow this error.

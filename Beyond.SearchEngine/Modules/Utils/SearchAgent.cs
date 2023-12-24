@@ -8,18 +8,18 @@ using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.Shared.Dtos;
 using Nest;
 
-namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
+namespace Beyond.SearchEngine.Modules.Utils;
 
 /// <summary>
 ///     Fundamental implementation for searching items.
 /// </summary>
-public class SearchImpl
+public class SearchAgent
 {
     private readonly ICacheAdapter _cache;
     private readonly IElasticClient _client;
     private readonly IMapper _mapper;
 
-    public SearchImpl(IElasticClient client, IMapper mapper, ICacheAdapter cache)
+    public SearchAgent(IElasticClient client, IMapper mapper, ICacheAdapter cache)
     {
         _client = client;
         _mapper = mapper;
