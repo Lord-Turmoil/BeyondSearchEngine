@@ -3,6 +3,8 @@
 using AutoMapper;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Statistics.Dtos;
+using Beyond.SearchEngine.Modules.Statistics.Models;
 using Beyond.SearchEngine.Modules.Update.Models.Elastic;
 using Beyond.Shared.Dtos;
 
@@ -74,5 +76,8 @@ public class AutoMapperProfile : MapperConfigurationExpression
         CreateMap<WorkDto, ElasticWork>();
         CreateMap<Work, DehydratedWorkDto>();
         CreateMap<Work, BriefWorkDto>();
+
+
+        CreateMap<WorkStatistics, WorkStatisticsDto>().ReverseMap();
     }
 }

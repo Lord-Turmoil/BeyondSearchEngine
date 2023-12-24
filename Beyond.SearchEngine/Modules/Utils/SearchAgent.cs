@@ -26,7 +26,7 @@ public class SearchAgent
         _cache = cache;
     }
 
-    public async Task<TModel?> GetModelById<TModel>(string type, string id) where TModel : OpenAlexModel
+    public async Task<TModel?> GetModelById<TModel>(string type, string id) where TModel : class
     {
         string key = $"model:{id}";
         var value = await _cache.GetAsync<TModel>(key);
