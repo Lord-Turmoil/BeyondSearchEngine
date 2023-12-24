@@ -3,7 +3,7 @@
 using AutoMapper;
 using Nest;
 
-namespace Beyond.SearchEngine.Modules.Search.Services.Impl;
+namespace Beyond.SearchEngine.Extensions.Module;
 
 public class ElasticService<TService>
 {

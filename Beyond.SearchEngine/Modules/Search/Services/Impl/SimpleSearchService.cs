@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
+using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Dtos;
