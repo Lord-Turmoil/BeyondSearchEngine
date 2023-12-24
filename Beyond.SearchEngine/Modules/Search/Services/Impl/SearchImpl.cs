@@ -26,11 +26,12 @@ public class SearchImpl
         _cache = cache;
     }
 
-    public async Task<TDto?> GetSingleById<TModel, TDto>(string type, string id)
+    public async Task<TDto?> GetSingleById<TModel, TDto>(string type, string id, bool brief)
         where TModel : OpenAlexModel
         where TDto : class
     {
-        var value = await _cache.GetAsync<TDto>(id);
+        string key = $"single:{id}:{brief}";
+        var value = await _cache.GetAsync<TDto>(key);
         if (value != null)
         {
             return value;
@@ -49,7 +50,39 @@ public class SearchImpl
         }
 
         value = _mapper.Map<TModel, TDto>(response.Documents.First());
-        await _cache.SetAsync(id, value);
+        await _cache.SetAsync(key, value);
+
+        return value;
+    }
+
+    public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids, bool brief)
+        where TModel : OpenAlexModel
+        where TDto : class
+    {
+        if (!ids.Any())
+        {
+            return [];
+        }
+
+        string key = $"many:{brief}:{string.Join(",", ids)}";
+        var value = await _cache.GetAsync<List<TDto>>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
+        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
+            .Index(type)
+            .Query(q => q.Ids(i => i.Values(ids))));
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+
+        value = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
+        await _cache.SetAsync(key, value);
 
         return value;
     }
@@ -76,39 +109,6 @@ public class SearchImpl
 
         return count;
     }
-
-    public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids)
-        where TModel : OpenAlexModel
-        where TDto : class
-    {
-        if (!ids.Any())
-        {
-            return [];
-        }
-
-        string key = string.Join(",", ids);
-        var value = await _cache.GetAsync<List<TDto>>(key);
-        if (value != null)
-        {
-            return value;
-        }
-
-        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
-            .Index(type)
-            .Query(q => q.Ids(i => i.Values(ids))));
-
-        if (!response.IsValid)
-        {
-            throw new SearchException(response.DebugInformation);
-        }
-
-
-        value = response.Documents.Select(_mapper.Map<TModel, TDto>).ToList();
-        await _cache.SetAsync(key, value);
-
-        return value;
-    }
-
     public async Task<PagedDto> PreviewStatisticsModel<TModel>(string type, string query, int pageSize, int page)
         where TModel : OpenAlexStatisticsModel
     {

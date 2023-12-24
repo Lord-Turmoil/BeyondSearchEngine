@@ -45,11 +45,11 @@ public class SourceQueryController : BaseController<SourceQueryController>
 
     [HttpGet]
     [Route("host")]
-    public async Task<ApiResponse> GetHost([FromQuery] string id)
+    public async Task<ApiResponse> GetHost([FromQuery] string id, [FromQuery] bool brief)
     {
         try
         {
-            return await _service.GetHost(id);
+            return await _service.GetHost(id, brief);
         }
         catch (Exception ex)
         {

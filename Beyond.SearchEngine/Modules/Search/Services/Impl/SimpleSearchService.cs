@@ -25,31 +25,30 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-
         object? dto;
         if (brief)
         {
             dto = type switch {
-                "authors" => await impl.GetSingleById<Author, DehydratedStatisticsModelDto>(type, id),
-                "concepts" => await impl.GetSingleById<Concept, DehydratedStatisticsModelDto>(type, id),
-                "funders" => await impl.GetSingleById<Funder, DehydratedStatisticsModelDto>(type, id),
-                "institutions" => await impl.GetSingleById<Institution, DehydratedStatisticsModelDto>(type, id),
-                "publishers" => await impl.GetSingleById<Publisher, DehydratedStatisticsModelDto>(type, id),
-                "sources" => await impl.GetSingleById<Source, DehydratedStatisticsModelDto>(type, id),
-                "works" => await impl.GetSingleById<Work, DehydratedWorkDto>(type, id),
+                "authors" => await impl.GetSingleById<Author, DehydratedStatisticsModelDto>(type, id, brief),
+                "concepts" => await impl.GetSingleById<Concept, DehydratedStatisticsModelDto>(type, id, brief),
+                "funders" => await impl.GetSingleById<Funder, DehydratedStatisticsModelDto>(type, id, brief),
+                "institutions" => await impl.GetSingleById<Institution, DehydratedStatisticsModelDto>(type, id, brief),
+                "publishers" => await impl.GetSingleById<Publisher, DehydratedStatisticsModelDto>(type, id, brief),
+                "sources" => await impl.GetSingleById<Source, DehydratedStatisticsModelDto>(type, id, brief),
+                "works" => await impl.GetSingleById<Work, DehydratedWorkDto>(type, id, brief),
                 _ => null
             };
         }
         else
         {
             dto = type switch {
-                "authors" => await impl.GetSingleById<Author, AuthorDto>(type, id),
-                "concepts" => await impl.GetSingleById<Concept, ConceptDto>(type, id),
-                "funders" => await impl.GetSingleById<Funder, FunderDto>(type, id),
-                "institutions" => await impl.GetSingleById<Institution, InstitutionDto>(type, id),
-                "publishers" => await impl.GetSingleById<Publisher, PublisherDto>(type, id),
-                "sources" => await impl.GetSingleById<Source, SourceDto>(type, id),
-                "works" => await impl.GetSingleById<Work, WorkDto>(type, id),
+                "authors" => await impl.GetSingleById<Author, AuthorDto>(type, id, brief),
+                "concepts" => await impl.GetSingleById<Concept, ConceptDto>(type, id, brief),
+                "funders" => await impl.GetSingleById<Funder, FunderDto>(type, id, brief),
+                "institutions" => await impl.GetSingleById<Institution, InstitutionDto>(type, id, brief),
+                "publishers" => await impl.GetSingleById<Publisher, PublisherDto>(type, id, brief),
+                "sources" => await impl.GetSingleById<Source, SourceDto>(type, id, brief),
+                "works" => await impl.GetSingleById<Work, WorkDto>(type, id, brief),
                 _ => null
             };
         }
@@ -70,26 +69,26 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         if (brief)
         {
             dto = type switch {
-                "authors" => await impl.GetManyById<Author, DehydratedStatisticsModelDto>(type, ids),
-                "concepts" => await impl.GetManyById<Concept, DehydratedStatisticsModelDto>(type, ids),
-                "funders" => await impl.GetManyById<Funder, DehydratedStatisticsModelDto>(type, ids),
-                "institutions" => await impl.GetManyById<Institution, DehydratedStatisticsModelDto>(type, ids),
-                "publishers" => await impl.GetManyById<Publisher, DehydratedStatisticsModelDto>(type, ids),
-                "sources" => await impl.GetManyById<Source, DehydratedStatisticsModelDto>(type, ids),
-                "works" => await impl.GetManyById<Work, DehydratedWorkDto>(type, ids),
+                "authors" => await impl.GetManyById<Author, DehydratedStatisticsModelDto>(type, ids, brief),
+                "concepts" => await impl.GetManyById<Concept, DehydratedStatisticsModelDto>(type, ids, brief),
+                "funders" => await impl.GetManyById<Funder, DehydratedStatisticsModelDto>(type, ids, brief),
+                "institutions" => await impl.GetManyById<Institution, DehydratedStatisticsModelDto>(type, ids, brief),
+                "publishers" => await impl.GetManyById<Publisher, DehydratedStatisticsModelDto>(type, ids, brief),
+                "sources" => await impl.GetManyById<Source, DehydratedStatisticsModelDto>(type, ids, brief),
+                "works" => await impl.GetManyById<Work, DehydratedWorkDto>(type, ids, brief),
                 _ => []
             };
         }
         else
         {
             dto = type switch {
-                "authors" => await impl.GetManyById<Author, AuthorDto>(type, ids),
-                "concepts" => await impl.GetManyById<Concept, ConceptDto>(type, ids),
-                "funders" => await impl.GetManyById<Funder, FunderDto>(type, ids),
-                "institutions" => await impl.GetManyById<Institution, InstitutionDto>(type, ids),
-                "publishers" => await impl.GetManyById<Publisher, PublisherDto>(type, ids),
-                "sources" => await impl.GetManyById<Source, SourceDto>(type, ids),
-                "works" => await impl.GetManyById<Work, WorkDto>(type, ids),
+                "authors" => await impl.GetManyById<Author, AuthorDto>(type, ids, brief),
+                "concepts" => await impl.GetManyById<Concept, ConceptDto>(type, ids, brief),
+                "funders" => await impl.GetManyById<Funder, FunderDto>(type, ids, brief),
+                "institutions" => await impl.GetManyById<Institution, InstitutionDto>(type, ids, brief),
+                "publishers" => await impl.GetManyById<Publisher, PublisherDto>(type, ids, brief),
+                "sources" => await impl.GetManyById<Source, SourceDto>(type, ids, brief),
+                "works" => await impl.GetManyById<Work, WorkDto>(type, ids, brief),
                 _ => []
             };
         }

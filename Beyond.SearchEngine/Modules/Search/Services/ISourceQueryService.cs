@@ -8,7 +8,7 @@ public interface ISourceQueryService
 {
     Task<ApiResponse> GetAll(int pageSize, int page);
 
-    Task<ApiResponse> GetHost(string id);
+    Task<ApiResponse> GetHost(string id, bool brief);
 
     Task<ApiResponse> GetRandom(bool brief, int pageSize);
 

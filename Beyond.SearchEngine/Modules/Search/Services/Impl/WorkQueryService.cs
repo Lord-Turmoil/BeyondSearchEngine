@@ -36,7 +36,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id);
+        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id, brief);
         if (dto == null)
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -45,12 +45,12 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         if (brief)
         {
             value = await impl.GetManyById<Work, BriefWorkDto>(
-                IndexName, dto.RelatedWorkList);
+                IndexName, dto.RelatedWorkList, brief);
         }
         else
         {
             value = await impl.GetManyById<Work, WorkDto>(
-                IndexName, dto.RelatedWorkList);
+                IndexName, dto.RelatedWorkList, brief);
         }
 
         await _cache.SetAsync(key, value);
@@ -69,7 +69,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id);
+        WorkDto? dto = await impl.GetSingleById<Work, WorkDto>(IndexName, id, brief);
         if (dto == null)
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -78,12 +78,12 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         if (brief)
         {
             value = await impl.GetManyById<Work, BriefWorkDto>(
-                IndexName, dto.ReferencedWorkList);
+                IndexName, dto.ReferencedWorkList, brief);
         }
         else
         {
             value = await impl.GetManyById<Work, WorkDto>(
-                IndexName, dto.ReferencedWorkList);
+                IndexName, dto.ReferencedWorkList, brief);
         }
 
         await _cache.SetAsync(key, value);

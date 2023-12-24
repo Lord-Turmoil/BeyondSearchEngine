@@ -57,12 +57,13 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
     ///     direct cache for it.
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="brief"></param>
     /// <returns></returns>
-    public async Task<ApiResponse> GetHost(string id)
+    public async Task<ApiResponse> GetHost(string id, bool brief)
     {
         var impl = new SearchImpl(_client, _mapper, _cache);
 
-        SourceDto? dto = await impl.GetSingleById<Source, SourceDto>(IndexName, id);
+        SourceDto? dto = await impl.GetSingleById<Source, SourceDto>(IndexName, id, brief);
         if (dto == null || string.IsNullOrEmpty(dto.HostId))
         {
             return new NotFoundResponse(new NotFoundDto());
@@ -71,11 +72,11 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
         OpenAlexDto? data;
         if (dto.HostId.StartsWith("I"))
         {
-            data = await impl.GetSingleById<Institution, InstitutionDto>("institutions", dto.HostId);
+            data = await impl.GetSingleById<Institution, InstitutionDto>("institutions", dto.HostId, brief);
         }
         else
         {
-            data = await impl.GetSingleById<Publisher, PublisherDto>("publishers", dto.HostId);
+            data = await impl.GetSingleById<Publisher, PublisherDto>("publishers", dto.HostId, brief);
         }
 
         if (data == null)
