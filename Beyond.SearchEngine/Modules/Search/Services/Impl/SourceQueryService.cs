@@ -131,4 +131,43 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
         return new OkResponse(new OkDto(data: value));
     }
+
+    public async Task<ApiResponse> GetTopSourceStatisticsByWorksCount(int pageSize, int page)
+    {
+        string key = $"source:top:works:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Source> response = await _client.SearchAsync<Source>(s => s
+            .Index(IndexName)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Sort(ss => ss.Field(f => f.WorksCount, SortOrder.Descending))
+            .Query(q => q.MatchAll()));
+
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        var impl = new SearchImpl(_client, _mapper, _cache);
+        long count = await impl.GetCount<Work>(IndexName);
+        value = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(source =>
+                new TopSourcesDto {
+                    Source = _mapper.Map<Source, DehydratedStatisticsModelDto>(source),
+                    Percent = double.Round((double)source.WorksCount / count * 100.0, 2)
+                }).ToList());
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
 }

@@ -26,4 +26,44 @@ public class NoCacheAdapter : ICacheAdapter
     {
         return Task.FromResult<TObject?>(null);
     }
+
+    public void Remove(string key)
+    {
+        // Nothing...
+    }
+
+    public Task RemoveAsync(string key)
+    {
+        return Task.CompletedTask;
+    }
+
+    public bool Exists(string key)
+    {
+        return false;
+    }
+
+    public Task<bool> ExistsAsync(string key)
+    {
+        return Task.FromResult(false);
+    }
+
+    public void SetInt(string key, long value, TimeSpan? timeSpan = null)
+    {
+        // Nothing...
+    }
+
+    public Task SetIntAsync(string key, long value, TimeSpan? timeSpan = null)
+    {
+        return Task.CompletedTask;
+    }
+
+    public long GetInt(string key, long defaultValue)
+    {
+        return defaultValue;
+    }
+
+    public Task<long> GetIntAsync(string key, long defaultValue)
+    {
+        return Task.FromResult(defaultValue);
+    }
 }

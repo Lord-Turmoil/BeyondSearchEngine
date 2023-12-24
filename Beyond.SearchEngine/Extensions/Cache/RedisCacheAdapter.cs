@@ -1,5 +1,6 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
@@ -46,5 +47,51 @@ public class RedisCacheAdapter : ICacheAdapter
     {
         string? value = await _cache.GetStringAsync(key);
         return value == null ? null : JsonConvert.DeserializeObject<TObject>(value);
+    }
+
+    public void Remove(string key)
+    {
+        _cache.Remove(key);
+    }
+
+    public Task RemoveAsync(string key)
+    {
+        return _cache.RemoveAsync(key);
+    }
+
+    public bool Exists(string key)
+    {
+        return _cache.GetString(key) != null;
+    }
+
+    public async Task<bool> ExistsAsync(string key)
+    {
+        return await _cache.GetStringAsync(key) != null;
+    }
+
+    public void SetInt(string key, long value, TimeSpan? timeSpan = null)
+    {
+        _cache.Set(key, BitConverter.GetBytes(value), new DistributedCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
+        });
+    }
+
+    public Task SetIntAsync(string key, long value, TimeSpan? timeSpan = null)
+    {
+        return _cache.SetAsync(key, BitConverter.GetBytes(value), new DistributedCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
+        });
+    }
+
+    public long GetInt(string key, long defaultValue)
+    {
+        byte[]? bytes = _cache.Get(key);
+        return bytes == null ? defaultValue : BitConverter.ToInt64(bytes);
+    }
+
+    public async Task<long> GetIntAsync(string key, long defaultValue)
+    {
+        byte[]? bytes = await _cache.GetAsync(key);
+        return bytes == null ? defaultValue : BitConverter.ToInt64(bytes);
     }
 }

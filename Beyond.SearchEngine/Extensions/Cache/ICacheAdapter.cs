@@ -14,4 +14,16 @@ public interface ICacheAdapter
 
     TObject? Get<TObject>(string key) where TObject : class;
     Task<TObject?> GetAsync<TObject>(string key) where TObject : class;
+
+    void Remove(string key);
+    Task RemoveAsync(string key);
+
+    bool Exists(string key);
+    Task<bool> ExistsAsync(string key);
+
+    void SetInt(string key, long value, TimeSpan? timeSpan = null);
+    Task SetIntAsync(string key, long value, TimeSpan? timeSpan = null);
+
+    long GetInt(string key, long defaultValue);
+    Task<long> GetIntAsync(string key, long defaultValue);
 }

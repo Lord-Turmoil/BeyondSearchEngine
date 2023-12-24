@@ -54,6 +54,29 @@ public class SearchImpl
         return value;
     }
 
+    public async Task<long> GetCount<TModel>(string type) where TModel : OpenAlexModel
+    {
+        string key = $"count:{type}";
+        long count = await _cache.GetIntAsync(key, -1);
+        if (count != -1)
+        {
+            return count;
+        }
+
+        CountResponse response = await _client.CountAsync<TModel>(s => s
+            .Index("works")
+            .Query(q => q.MatchAll()));
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        count = response.Count;
+        await _cache.SetIntAsync(key, count);
+
+        return count;
+    }
+
     public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids)
         where TModel : OpenAlexModel
         where TDto : class

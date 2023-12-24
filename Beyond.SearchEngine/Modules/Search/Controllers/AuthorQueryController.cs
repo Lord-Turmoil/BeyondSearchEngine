@@ -8,7 +8,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("v1/search/author")]
+[Route("v1/search/query/author")]
 public class AuthorQueryController : BaseController<AuthorQueryController>
 {
     private readonly IAuthorQueryService _service;
