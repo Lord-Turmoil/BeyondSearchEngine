@@ -54,14 +54,14 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
     ///     Get many documents by ids.
     /// </summary>
     /// <param name="type">Index type.</param>
-    /// <param name="ids">ID list.</param>
+    /// <param name="idList">ID list.</param>
     /// <param name="brief">Whether return brief data.</param>
     /// <returns></returns>
     [HttpGet]
     [Route("many")]
     public async Task<ApiResponse> SearchMany(
         [FromQuery] string type, 
-        [FromQuery] IReadOnlyCollection<string> ids,
+        [FromQuery(Name = "ids")] IReadOnlyCollection<string> idList,
         [FromQuery] bool brief = true)
     {
         if (!Globals.AvailableTypes.Contains(type))
@@ -71,7 +71,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         try
         {
-            return await _service.SearchMany(type, brief, ids);
+            return await _service.SearchMany(type, brief, idList);
         }
         catch (Exception ex)
         {

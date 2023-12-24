@@ -11,8 +11,9 @@ public interface IWorkQueryService
 
     Task<ApiResponse> GetReferencedWorks(string id, bool brief);
 
-
     Task<ApiResponse> QueryWorksBasic(QueryWorkBasicDto dto);
 
     Task<ApiResponse> QueryWorksAdvanced(QueryWorkAdvancedDto dto);
+
+    Task<ApiResponse> GetCitations(string type, IReadOnlyCollection<string> idList);
 }

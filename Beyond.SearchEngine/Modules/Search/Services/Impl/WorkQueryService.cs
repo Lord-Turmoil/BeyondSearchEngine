@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
 using System.Linq.Expressions;
+using System.Text;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
@@ -119,6 +120,60 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         await _cache.SetAsync(key, value);
 
         return new OkResponse(new OkDto(data: value));
+    }
+
+    public async Task<ApiResponse> GetCitations(string type, IReadOnlyCollection<string> idList)
+    {
+        StringBuilder builder = new();
+        var impl = new SearchImpl(_client, _mapper, _cache);
+        bool first = true;
+
+        foreach (string id in idList)
+        {
+            string key = $"citation:{id}";
+            string? citation = await _cache.GetStringAsync(key);
+            if (citation != null)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    builder.AppendLine();
+                }
+
+                builder.AppendLine(citation);
+                continue;
+            }
+
+            var work = await impl.GetModelById<Work>(IndexName, id);
+            if (work == null)
+            {
+                // Warning: We swallow this error.
+                continue;
+            }
+
+            // Each citation is guaranteed to have a line separator.
+            citation = CitationGenerator.GenerateCitation(type, work);
+            if (citation == null)
+            {
+                return new BadRequestResponse(new BadRequestDto("Invalid citation type"));
+            }
+
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                builder.AppendLine();
+            }
+
+            builder.Append(citation);
+        }
+
+        return new OkResponse(new OkDto(data: builder.ToString()));
     }
 
     private async Task<PagedDto> QueryWorksBasicImpl(QueryWorkBasicDto dto)

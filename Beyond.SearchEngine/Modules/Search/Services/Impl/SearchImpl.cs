@@ -26,6 +26,33 @@ public class SearchImpl
         _cache = cache;
     }
 
+    public async Task<TModel?> GetModelById<TModel>(string type, string id) where TModel : OpenAlexModel
+    {
+        string key = $"model:{id}";
+        var value = await _cache.GetAsync<TModel>(key);
+        if (value != null)
+        {
+            return value;
+        }
+
+        ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
+            .Index(type).Query(q => q.Ids(i => i.Values(id))));
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        if (response.Documents.Count == 0)
+        {
+            return null;
+        }
+
+        value = response.Documents.First();
+        await _cache.SetAsync(key, value);
+
+        return value;
+    }
+
     public async Task<TDto?> GetSingleById<TModel, TDto>(string type, string id, bool brief)
         where TModel : OpenAlexModel
         where TDto : class
@@ -55,16 +82,16 @@ public class SearchImpl
         return value;
     }
 
-    public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> ids, bool brief)
+    public async Task<List<TDto>> GetManyById<TModel, TDto>(string type, IReadOnlyCollection<string> idList, bool brief)
         where TModel : OpenAlexModel
         where TDto : class
     {
-        if (!ids.Any())
+        if (!idList.Any())
         {
             return [];
         }
 
-        string key = $"many:{brief}:{string.Join(",", ids)}";
+        string key = $"many:{brief}:{string.Join(",", idList)}";
         var value = await _cache.GetAsync<List<TDto>>(key);
         if (value != null)
         {
@@ -73,7 +100,7 @@ public class SearchImpl
 
         ISearchResponse<TModel> response = await _client.SearchAsync<TModel>(s => s
             .Index(type)
-            .Query(q => q.Ids(i => i.Values(ids))));
+            .Query(q => q.Ids(i => i.Values(idList))));
 
         if (!response.IsValid)
         {

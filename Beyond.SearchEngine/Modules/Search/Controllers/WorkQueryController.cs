@@ -89,4 +89,21 @@ public class WorkQueryController : BaseController<WorkQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("citation")]
+    public async Task<ApiResponse> ExportCitation(
+        [FromQuery] string type,
+        [FromQuery(Name = "ids")] IReadOnlyCollection<string> idList)
+    {
+        try
+        {
+            return await _service.GetCitations(type, idList);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while exporting citations of {type} with {idList}", type, idList);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
 }

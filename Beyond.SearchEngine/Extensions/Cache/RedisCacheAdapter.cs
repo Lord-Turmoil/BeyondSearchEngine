@@ -1,6 +1,5 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
@@ -25,16 +24,14 @@ public class RedisCacheAdapter : ICacheAdapter
 
     public void Set(string key, object value, TimeSpan? timeSpan = null)
     {
-        _cache.SetString(key, JsonConvert.SerializeObject(value), new DistributedCacheEntryOptions {
-            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
-        });
+        SetString(key, JsonConvert.SerializeObject(value), timeSpan);
+
     }
 
     public Task SetAsync(string key, object value, TimeSpan? timeSpan = null)
     {
-        return _cache.SetStringAsync(key, JsonConvert.SerializeObject(value), new DistributedCacheEntryOptions {
-            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
-        });
+        return SetStringAsync(key, JsonConvert.SerializeObject(value), timeSpan);
+
     }
 
     public TObject? Get<TObject>(string key) where TObject : class
@@ -49,24 +46,28 @@ public class RedisCacheAdapter : ICacheAdapter
         return value == null ? null : JsonConvert.DeserializeObject<TObject>(value);
     }
 
-    public void Remove(string key)
+    public void SetString(string key, string value, TimeSpan? timeSpan = null)
     {
-        _cache.Remove(key);
+        _cache.SetString(key, value, new DistributedCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
+        });
     }
 
-    public Task RemoveAsync(string key)
+    public Task SetStringAsync(string key, string value, TimeSpan? timeSpan = null)
     {
-        return _cache.RemoveAsync(key);
+        return _cache.SetStringAsync(key, value, new DistributedCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = timeSpan ?? _timeout
+        });
     }
 
-    public bool Exists(string key)
+    public string? GetString(string key)
     {
-        return _cache.GetString(key) != null;
+        return _cache.GetString(key);
     }
 
-    public async Task<bool> ExistsAsync(string key)
+    public Task<string?> GetStringAsync(string key)
     {
-        return await _cache.GetStringAsync(key) != null;
+        return _cache.GetStringAsync(key);
     }
 
     public void SetInt(string key, long value, TimeSpan? timeSpan = null)
@@ -93,5 +94,25 @@ public class RedisCacheAdapter : ICacheAdapter
     {
         byte[]? bytes = await _cache.GetAsync(key);
         return bytes == null ? defaultValue : BitConverter.ToInt64(bytes);
+    }
+
+    public void Remove(string key)
+    {
+        _cache.Remove(key);
+    }
+
+    public Task RemoveAsync(string key)
+    {
+        return _cache.RemoveAsync(key);
+    }
+
+    public bool Exists(string key)
+    {
+        return _cache.GetString(key) != null;
+    }
+
+    public async Task<bool> ExistsAsync(string key)
+    {
+        return await _cache.GetStringAsync(key) != null;
     }
 }
