@@ -10,7 +10,7 @@ using Tonisoft.AspExtensions.Response;
 namespace Beyond.SearchEngine.Modules.Search.Controllers;
 
 [ApiController]
-[Route("v1/search/query/author")]
+[Route("v1/search/query/authors")]
 public class AuthorQueryController : BaseController<AuthorQueryController>
 {
     private readonly IAuthorQueryService _service;
@@ -56,6 +56,28 @@ public class AuthorQueryController : BaseController<AuthorQueryController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting institution of author {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
+        }
+    }
+
+    [HttpGet]
+    [Route("top")]
+    public async Task<ApiResponse> GetTopAuthors(
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.GetTopAuthors(pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting top authors");
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }

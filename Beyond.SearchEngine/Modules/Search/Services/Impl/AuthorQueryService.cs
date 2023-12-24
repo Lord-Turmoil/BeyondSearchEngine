@@ -5,6 +5,7 @@ using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
 using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;
 using Beyond.Shared.Dtos;
@@ -106,35 +107,17 @@ public class AuthorQueryService : ElasticService<AuthorQueryService>, IAuthorQue
 
     public async Task<ApiResponse> GetTopAuthors(int pageSize, int page)
     {
-        string key = $"{IndexName}:top:{pageSize}:{page}";
-        var value = await _cache.GetAsync<PagedDto>(key);
-        if (value != null)
+        var agent = new StatisticsAgent(_client, _mapper, _cache);
+
+        try
         {
+            PagedDto value = await agent.GetTopModels<Author, DehydratedStatisticsModelDto>(IndexName, pageSize, page);
             return new OkResponse(new OkDto(data: value));
         }
-
-        ISearchResponse<Author> response = await _client.SearchAsync<Author>(s => s
-            .Index(IndexName)
-            .From(page * pageSize)
-            .Size(pageSize)
-            .Sort(ss => ss.Field(f => f.HIndex, SortOrder.Descending))
-            .Query(q => q.MatchAll()));
-
-        if (!response.IsValid)
+        catch (SearchException ex)
         {
-            _logger.LogError(response.DebugInformation);
+            _logger.LogError(ex, ex.Message);
             return new InternalServerErrorResponse(new SearchFailedDto());
         }
-
-        value = new PagedDto(
-            response.Total,
-            pageSize,
-            page,
-            response.Documents.Select(_mapper.Map<Author, DehydratedStatisticsModelDto>).ToList()
-        );
-
-        await _cache.SetAsync(key, value);
-
-        return new OkResponse(new OkDto(data: value));
     }
 }
