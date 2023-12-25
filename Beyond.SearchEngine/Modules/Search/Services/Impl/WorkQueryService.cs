@@ -124,6 +124,21 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         return new OkResponse(new OkDto(data: value));
     }
 
+    public async Task<ApiResponse> QueryWorksWithAllFields(QueryWorkAllFieldsDto dto)
+    {
+        string key = $"{IndexName}:query:{JsonConvert.SerializeObject(dto)}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        value = await QueryWorksAllFieldsImpl(dto);
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
     public async Task<ApiResponse> GetCitations(string type, IReadOnlyCollection<string> idList)
     {
         StringBuilder builder = new();
@@ -327,6 +342,55 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         );
     }
 
+    private async Task<PagedDto> QueryWorksAllFieldsImpl(QueryWorkAllFieldsDto dto)
+    {
+        ISearchResponse<Work> response;
+        if (dto.OrderBy != null)
+        {
+            SortDescriptor<Work>? sortDescriptor = GetSortDescriptor(dto.OrderBy);
+            if (sortDescriptor == null)
+            {
+                throw new SearchException($"Invalid sort field: {dto.OrderBy.Field}");
+            }
+
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Sort(_ => sortDescriptor)
+                .Query(q => q.Bool(b => ConstructAllFieldsQueryDescriptor(b, dto))));
+        }
+        else
+        {
+            response = await _client.SearchAsync<Work>(s => s
+                .Index(IndexName)
+                .From(dto.Page * dto.PageSize)
+                .Size(dto.PageSize)
+                .Query(q => q.Bool(b => ConstructAllFieldsQueryDescriptor(b, dto))));
+        }
+
+        if (!response.IsValid)
+        {
+            throw new SearchException(response.DebugInformation);
+        }
+
+        IEnumerable<object> results;
+        if (dto.Brief)
+        {
+            results = response.Documents.Select(_mapper.Map<Work, BriefWorkDto>).ToList();
+        }
+        else
+        {
+            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+        }
+
+        return new PagedDto(
+            response.Total,
+            dto.PageSize,
+            dto.Page,
+            results
+        );
+    }
     private static BoolQueryDescriptor<Work> ConstructBasicQueryDescriptor(
         BoolQueryDescriptor<Work> descriptor,
         QueryWorkBasicDto dto)
@@ -424,6 +488,29 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             }
 
             descriptor.Filter(container);
+        }
+
+        return descriptor;
+    }
+
+    private static BoolQueryDescriptor<Work> ConstructAllFieldsQueryDescriptor(
+        BoolQueryDescriptor<Work> descriptor,
+        QueryWorkAllFieldsDto dto)
+    {
+        descriptor.Should(should => should.MultiMatch(m => m
+            .Fields(f => f.Field(w => w.Title)
+                .Field(w => w.Authors)
+                .Field(w => w.Abstract)
+                .Field(w => w.Keywords)
+                .Field(w => w.Concepts)
+                .Field(w => w.Source))
+            .Query(dto.Query)));
+
+        if (dto.TimeRange != null)
+        {
+            descriptor.Filter(q => q.DateRange(r => r.Field(w => w.PublicationDate)
+                .GreaterThanOrEquals(dto.TimeRange.From)
+                .LessThanOrEquals(dto.TimeRange.To)));
         }
 
         return descriptor;

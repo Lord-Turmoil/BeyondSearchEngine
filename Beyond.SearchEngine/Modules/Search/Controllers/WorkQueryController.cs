@@ -93,6 +93,27 @@ public class WorkQueryController : BaseController<WorkQueryController>
         }
     }
 
+    [HttpPost]
+    [HttpGet]
+    [Route("all")]
+    public async Task<ApiResponse> QueryAll([FromBody] QueryWorkAllFieldsDto dto)
+    {
+        if (!dto.Verify())
+        {
+            return await Task.FromResult<ApiResponse>(new BadRequestResponse(new BadRequestDto()));
+        }
+
+        try
+        {
+            return await _service.QueryWorksWithAllFields(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while querying works with {dto}", dto);
+            return await Task.FromResult<ApiResponse>(new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
+        }
+    }
+
     [HttpGet]
     [Route("citation")]
     public async Task<ApiResponse> ExportCitation(

@@ -93,3 +93,31 @@ public class QueryWorkAdvancedDto : QueryWorkDto
         return base.Verify() && Conditions.Count > 0;
     }
 }
+
+public class QueryWorkAllFieldsDto : PagedRequestDto
+{
+    public bool Brief { get; set; }
+
+    public OrderByData? OrderBy { get; set; }
+    public TimeRangeData? TimeRange { get; set; }
+    public string Query { get; set; }
+
+    public override bool Verify()
+    {
+        if (!base.Verify())
+        {
+            return false;
+        }
+        if (TimeRange != null && TimeRange.From > TimeRange.To)
+        {
+            return false;
+        }
+
+        if (OrderBy != null && Globals.AvailableSortFiled.Contains(OrderBy.Field))
+        {
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(Query);
+    }
+}
