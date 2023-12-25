@@ -286,7 +286,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         }
         else
         {
-            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+            results = response.Documents.Select(m => _mapper.Map<Work, WorkSearchDto>(m).Mock()).ToList();
         }
 
         return new PagedDto(
@@ -336,7 +336,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         }
         else
         {
-            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+            results = response.Documents.Select(m => _mapper.Map<Work, WorkSearchDto>(m).Mock()).ToList();
         }
 
         return new PagedDto(
@@ -386,7 +386,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         }
         else
         {
-            results = response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList();
+            results = response.Documents.Select(m => _mapper.Map<Work, WorkSearchDto>(m).Mock()).ToList();
         }
 
         return new PagedDto(

@@ -1,13 +1,12 @@
-﻿using System.Text;
-using Beyond.SearchEngine.Modules.Search.Models;
+﻿using System.Globalization;
+using System.Text;
 using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;
-using Beyond.Shared.Dtos;
 using Newtonsoft.Json;
 
-namespace Beyond.SearchEngine.Modules.Deprecated.Dtos;
+namespace Beyond.SearchEngine.Modules.Search.Dtos;
 
-public class DeprecatedWorkDto : OpenAlexDto
+public class WorkSearchDto
 {
     [JsonProperty(PropertyName = "doi")]
     public string FullDoi { get; set; }
@@ -37,6 +36,9 @@ public class DeprecatedWorkDto : OpenAlexDto
     /***               Relations              ***/
 
     [JsonProperty(PropertyName = "source")]
+    public string Source { get; set; }
+
+    [JsonIgnore]
     public SourceData? SourceData { get; set; }
 
     [JsonProperty(PropertyName = "concepts")]
@@ -45,17 +47,9 @@ public class DeprecatedWorkDto : OpenAlexDto
     [JsonProperty(PropertyName = "keywords")]
     public List<KeywordData> KeywordList { get; set; }
 
-    [JsonProperty(PropertyName = "related_works")]
-    public List<string> RelatedWorkList { get; set; }
-
-    [JsonProperty(PropertyName = "referenced_works")]
-    public List<string> ReferencedWorkList { get; set; }
-
     [JsonProperty(PropertyName = "authors")]
     public List<AuthorData> AuthorList { get; set; }
 
-    [JsonProperty(PropertyName = "funders")]
-    public List<FunderData> FunderList { get; set; }
 
     /***              Statistics               ***/
 
@@ -68,18 +62,39 @@ public class DeprecatedWorkDto : OpenAlexDto
     [JsonProperty(PropertyName = "publication_date")]
     public DateTime? PublicationDate { get; set; }
 
-    public void Mock()
+    public WorkSearchDto Mock()
     {
         if (string.IsNullOrEmpty(FullDoi))
         {
             FullDoi = DataMock.RandomDoi();
         }
 
-        if (SourceData == null || string.IsNullOrEmpty(SourceData.Name))
+        if (SourceData == null)
         {
             SourceData = DataMock.RandomSourceData();
         }
+        else
+        {
+            DataMock.MendSourceData(SourceData);
+        }
+
+        StringBuilder builder = new();
+        builder.Append(SourceData.Name).Append(", ");
+        if (PublicationDate != null)
+        {
+            builder.Append(PublicationDate?.ToString("MMMM yyyy", CultureInfo.InvariantCulture));
+        }
+        else
+        {
+            builder.Append(PublicationYear);
+        }
+        builder.Append(", ");
+        builder.Append(Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Type));
+        builder.Append(", ");
+        builder.Append(FullDoi);
+
+        Source = builder.ToString();
+
+        return this;
     }
-
-
 }

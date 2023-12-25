@@ -77,6 +77,8 @@ public class AutoMapperProfile : MapperConfigurationExpression
         CreateMap<WorkDto, ElasticWork>();
         CreateMap<Work, DehydratedWorkDto>();
         CreateMap<Work, BriefWorkDto>();
+        CreateMap<Work, WorkSearchDto>()
+            .ForMember(dest => dest.Source, opt => opt.Ignore());
 
 
         CreateMap<WorkStatistics, WorkStatisticsDto>().ReverseMap();
