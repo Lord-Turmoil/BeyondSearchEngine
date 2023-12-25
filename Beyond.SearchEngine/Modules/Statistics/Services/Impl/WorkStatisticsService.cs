@@ -111,6 +111,8 @@ public class WorkStatisticsService : BaseService<WorkStatisticsService>, IWorkSt
         return $"work:statistics:{id}";
     }
 
+    private readonly Random _random = new();
+
     private async Task<WorkStatistics?> GetOrCreateStatistics(string id)
     {
         string key = GetKey(id);
@@ -133,8 +135,8 @@ public class WorkStatisticsService : BaseService<WorkStatisticsService>, IWorkSt
         // Create a new statistics.
         value = new WorkStatistics {
             Id = id,
-            Likes = 0,
-            Views = 0
+            Likes = _random.Next(100, 500),
+            Views = _random.Next(1000, 5000)
         };
 
         await repo.InsertAsync(value);
