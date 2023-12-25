@@ -4,6 +4,8 @@ using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Deprecated.Dtos;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.Shared.Dtos;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 
@@ -22,7 +24,7 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
 
     public async Task<ApiResponse> GetAuthorById(string id, bool brief)
     {
-        string key = $"deprecated:authors:{id}:{brief}";
+        string key = $"d:authors:{id}:{brief}";
         object? value = await _cache.GetAsync<object>(key);
         if (value != null)
         {
@@ -45,6 +47,48 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
         value = brief
             ? _mapper.Map<Author, DehydratedStatisticsModelDto>(response.Documents.First())
             : _mapper.Map<Author, DeprecatedAuthorDto>(response.Documents.First());
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
+    public async Task<ApiResponse> GetWorksOfAuthor(string id, bool brief, int pageSize, int page)
+    {
+        string key = $"d:authors:works:{id}:{brief}:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
+            .Index("works")
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Query(q => q.Match(m => m.Field(f => f.Authors).Query(id))));
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        if (brief)
+        {
+            value = new PagedDto(
+                response.Total,
+                pageSize,
+                page,
+                response.Documents.Select(_mapper.Map<Work, DeprecatedBriefWorkDto>).ToList());
+        }
+        else
+        {
+            value = new PagedDto(
+                response.Total,
+                pageSize,
+                page,
+                response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList());
+        }
 
         await _cache.SetAsync(key, value);
 

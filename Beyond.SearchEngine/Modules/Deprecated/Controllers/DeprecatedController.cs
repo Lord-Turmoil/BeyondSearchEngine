@@ -1,4 +1,6 @@
 ﻿using Beyond.SearchEngine.Modules.Deprecated.Services;
+using Beyond.SearchEngine.Modules.Search.Dtos;
+using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
@@ -31,6 +33,30 @@ public class DeprecatedController : BaseController<DeprecatedController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting deprecated author by ID {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto());
+        }
+    }
+
+    [HttpGet]
+    [Route("query/authors/works")]
+    public async Task<ApiResponse> GetWorksOfAuthor(
+        [FromQuery] string id,
+        [FromQuery] bool brief,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.GetWorksOfAuthor(id, brief, pageSize, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting deprecated works of author {id}", id);
             return new InternalServerErrorResponse(new InternalServerErrorDto());
         }
     }
