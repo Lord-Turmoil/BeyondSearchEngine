@@ -22,6 +22,11 @@ public static class DataMock
         "Archives of Oncology and Cancer Therapy"
     };
 
+    public static int RandomInt(int min, int max)
+    {
+        return random.Next(min, max);
+    }
+
     public static string RandomDoi()
     {
         //  https://doi.org/10.1080/14729679.2018.1507831

@@ -11,4 +11,6 @@ public interface IConceptQueryService
     Task<ApiResponse> GetAllWithPrefix(string prefix, int pageSize, int page);
 
     Task<ApiResponse> GetTopConcepts(int pageSize, int page);
+
+    Task<ApiResponse> GetRandomHot(bool brief, int pageSize);
 }

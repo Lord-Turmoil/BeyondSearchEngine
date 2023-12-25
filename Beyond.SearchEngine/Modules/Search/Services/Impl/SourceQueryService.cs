@@ -89,9 +89,9 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
         return new OkResponse(new OkDto(data: data));
     }
 
-    public async Task<ApiResponse> GetRandom(bool brief, int pageSize)
+    public async Task<ApiResponse> GetRandomHot(bool brief, int pageSize)
     {
-        int page = new Random().Next(0, Globals.MaxPagePressure / pageSize);
+        int page = DataMock.RandomInt(0, Globals.MaxPagePressure / pageSize);
 
         string key = $"{IndexName}:random:{brief}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);

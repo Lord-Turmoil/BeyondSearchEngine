@@ -60,7 +60,7 @@ public class SourceQueryController : BaseController<SourceQueryController>
 
     [HttpGet]
     [Route("random")]
-    public async Task<ApiResponse> GetRandom(
+    public async Task<ApiResponse> GetRandomHot(
         [FromQuery] bool brief = true,
         [FromQuery(Name = "ps")] int pageSize = 3)
     {
@@ -71,7 +71,7 @@ public class SourceQueryController : BaseController<SourceQueryController>
 
         try
         {
-            return await _service.GetRandom(brief, pageSize);
+            return await _service.GetRandomHot(brief, pageSize);
         }
         catch (Exception ex)
         {

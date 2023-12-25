@@ -65,4 +65,26 @@ public class ConceptQueryController : BaseController<ConceptQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("random")]
+    public async Task<ApiResponse> GetRandomHot(
+        [FromQuery] bool brief = true,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, 10))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.GetRandomHot(brief, pageSize);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting random hot concepts");
+            return await Task.FromResult<ApiResponse>(new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
+        }
+    }
 }
