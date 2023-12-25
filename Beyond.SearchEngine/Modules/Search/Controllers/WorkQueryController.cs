@@ -120,6 +120,11 @@ public class WorkQueryController : BaseController<WorkQueryController>
         [FromQuery] string type,
         [FromQuery(Name = "ids")] IReadOnlyCollection<string> idList)
     {
+        if (ListValidator.IsInvalidIdList(idList))
+        {
+            return new BadRequestResponse(new BadRequestDto("Invalid id list"));
+        }
+
         try
         {
             return await _service.GetCitations(type, idList);

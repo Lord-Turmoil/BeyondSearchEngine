@@ -147,6 +147,11 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         foreach (string id in idList)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                continue;
+            }
+
             string key = $"{IndexName}:citation:{id}";
             string? citation = await _cache.GetStringAsync(key);
             if (citation != null)

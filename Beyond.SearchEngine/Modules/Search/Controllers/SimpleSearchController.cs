@@ -69,6 +69,11 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
             return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
         }
 
+        if (ListValidator.IsInvalidIdList(idList))
+        {
+            return new BadRequestResponse(new BadRequestDto("Invalid id list"));
+        }
+
         try
         {
             return await _service.SearchMany(type, brief, idList);

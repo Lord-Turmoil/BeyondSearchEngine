@@ -71,27 +71,40 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         if (brief)
         {
             dto = type switch {
-                "authors" => await agent.GetManyById<Author, DehydratedStatisticsModelDto>(type, idList, brief),
-                "concepts" => await agent.GetManyById<Concept, DehydratedStatisticsModelDto>(type, idList, brief),
-                "funders" => await agent.GetManyById<Funder, DehydratedStatisticsModelDto>(type, idList, brief),
-                "institutions" => await agent.GetManyById<Institution, DehydratedStatisticsModelDto>(type, idList,
-                    brief),
-                "publishers" => await agent.GetManyById<Publisher, DehydratedStatisticsModelDto>(type, idList, brief),
-                "sources" => await agent.GetManyById<Source, DehydratedStatisticsModelDto>(type, idList, brief),
-                "works" => await agent.GetManyById<Work, DehydratedWorkDto>(type, idList, brief),
+                "authors" => await agent.GetManyById<Author, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "concepts" => await agent.GetManyById<Concept, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "funders" => await agent.GetManyById<Funder, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "institutions" => await agent.GetManyById<Institution, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "publishers" => await agent.GetManyById<Publisher, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "sources" => await agent.GetManyById<Source, DehydratedStatisticsModelDto>(
+                    type, idList, brief),
+                "works" => await agent.GetManyById<Work, DehydratedWorkDto>(
+                    type, idList, brief),
                 _ => []
             };
         }
         else
         {
             dto = type switch {
-                "authors" => await agent.GetManyById<Author, AuthorDto>(type, idList, brief),
-                "concepts" => await agent.GetManyById<Concept, ConceptDto>(type, idList, brief),
-                "funders" => await agent.GetManyById<Funder, FunderDto>(type, idList, brief),
-                "institutions" => await agent.GetManyById<Institution, InstitutionDto>(type, idList, brief),
-                "publishers" => await agent.GetManyById<Publisher, PublisherDto>(type, idList, brief),
-                "sources" => await agent.GetManyById<Source, SourceDto>(type, idList, brief),
-                "works" => await agent.GetManyById<Work, WorkDto>(type, idList, brief),
+                "authors" => await agent.GetManyById<Author, AuthorDto>(
+                    type, idList, brief),
+                "concepts" => await agent.GetManyById<Concept, ConceptDto>(
+                    type, idList, brief),
+                "funders" => await agent.GetManyById<Funder, FunderDto>(
+                    type, idList, brief),
+                "institutions" => await agent.GetManyById<Institution, InstitutionDto>(
+                    type, idList, brief),
+                "publishers" => await agent.GetManyById<Publisher, PublisherDto>(
+                    type, idList, brief),
+                "sources" => await agent.GetManyById<Source, SourceDto>(
+                    type, idList, brief),
+                "works" => await agent.GetManyById<Work, WorkDto>(
+                    type, idList, brief),
                 _ => []
             };
         }
@@ -104,13 +117,20 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         var agent = new SearchAgent(_client, _mapper, _cache);
 
         PagedDto? dto = type switch {
-            "authors" => await agent.PreviewStatisticsModel<Author>(type, query, pageSize, page),
-            "concepts" => await agent.PreviewStatisticsModel<Concept>(type, query, pageSize, page),
-            "funders" => await agent.PreviewStatisticsModel<Funder>(type, query, pageSize, page),
-            "institutions" => await agent.PreviewStatisticsModel<Institution>(type, query, pageSize, page),
-            "publishers" => await agent.PreviewStatisticsModel<Publisher>(type, query, pageSize, page),
-            "sources" => await agent.PreviewStatisticsModel<Source>(type, query, pageSize, page),
-            "works" => await agent.PreviewWork(type, query, pageSize, page),
+            "authors" => await agent.PreviewStatisticsModel<Author>(
+                type, query, pageSize, page),
+            "concepts" => await agent.PreviewStatisticsModel<Concept>(
+                type, query, pageSize, page),
+            "funders" => await agent.PreviewStatisticsModel<Funder>(
+                type, query, pageSize, page),
+            "institutions" => await agent.PreviewStatisticsModel<Institution>(
+                type, query, pageSize, page),
+            "publishers" => await agent.PreviewStatisticsModel<Publisher>(
+                type, query, pageSize, page),
+            "sources" => await agent.PreviewStatisticsModel<Source>(
+                type, query, pageSize, page),
+            "works" => await agent.PreviewWork(
+                type, query, pageSize, page),
             _ => null
         };
 
@@ -130,18 +150,18 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         if (brief)
         {
             dto = type switch {
-                "authors" => await agent.SearchStatisticsModel<Author, DehydratedStatisticsModelDto>(type, query,
-                    pageSize, page),
-                "concepts" => await agent.SearchStatisticsModel<Concept, DehydratedStatisticsModelDto>(type, query,
-                    pageSize, page),
-                "funders" => await agent.SearchStatisticsModel<Funder, DehydratedStatisticsModelDto>(type, query,
-                    pageSize, page),
-                "institutions" => await agent.SearchStatisticsModel<Institution, DehydratedStatisticsModelDto>(type,
-                    query, pageSize, page),
-                "publishers" => await agent.SearchStatisticsModel<Publisher, DehydratedStatisticsModelDto>(type, query,
-                    pageSize, page),
-                "sources" => await agent.SearchStatisticsModel<Source, DehydratedStatisticsModelDto>(type, query,
-                    pageSize, page),
+                "authors" => await agent.SearchStatisticsModel<Author, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
+                "concepts" => await agent.SearchStatisticsModel<Concept, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
+                "funders" => await agent.SearchStatisticsModel<Funder, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
+                "institutions" => await agent.SearchStatisticsModel<Institution, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
+                "publishers" => await agent.SearchStatisticsModel<Publisher, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
+                "sources" => await agent.SearchStatisticsModel<Source, DehydratedStatisticsModelDto>(
+                    type, query, pageSize, page),
                 "works" => await agent.SearchWork<DehydratedWorkDto>(type, query, pageSize, page),
                 _ => null
             };
@@ -149,14 +169,21 @@ public class SimpleSearchService : ElasticService<SimpleSearchService>, ISimpleS
         else
         {
             dto = type switch {
-                "authors" => await agent.SearchStatisticsModel<Author, AuthorDto>(type, query, pageSize, page),
-                "concepts" => await agent.SearchStatisticsModel<Concept, ConceptDto>(type, query, pageSize, page),
-                "funders" => await agent.SearchStatisticsModel<Funder, FunderDto>(type, query, pageSize, page),
-                "institutions" => await agent.SearchStatisticsModel<Institution, InstitutionDto>(type, query, pageSize,
+                "authors" => await agent.SearchStatisticsModel<Author, AuthorDto>(
+                    type, query, pageSize, page),
+                "concepts" => await agent.SearchStatisticsModel<Concept, ConceptDto>(
+                    type, query, pageSize, page),
+                "funders" => await agent.SearchStatisticsModel<Funder, FunderDto>(
+                    type, query, pageSize, page),
+                "institutions" => await agent.SearchStatisticsModel<Institution, InstitutionDto>(
+                    type, query, pageSize,
                     page),
-                "publishers" => await agent.SearchStatisticsModel<Publisher, PublisherDto>(type, query, pageSize, page),
-                "sources" => await agent.SearchStatisticsModel<Source, SourceDto>(type, query, pageSize, page),
-                "works" => await agent.SearchWork<WorkDto>(type, query, pageSize, page),
+                "publishers" => await agent.SearchStatisticsModel<Publisher, PublisherDto>(
+                    type, query, pageSize, page),
+                "sources" => await agent.SearchStatisticsModel<Source, SourceDto>(
+                    type, query, pageSize, page),
+                "works" => await agent.SearchWork<WorkDto>(
+                    type, query, pageSize, page),
                 _ => null
             };
         }
