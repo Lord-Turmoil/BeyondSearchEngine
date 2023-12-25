@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
 
 using AutoMapper;
+using Beyond.SearchEngine.Modules.Deprecated.Dtos;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Statistics.Dtos;
@@ -79,5 +80,10 @@ public class AutoMapperProfile : MapperConfigurationExpression
 
 
         CreateMap<WorkStatistics, WorkStatisticsDto>().ReverseMap();
+
+
+        // Deprecated
+        CreateMap<Author, DeprecatedAuthorDto>()
+            .ForMember(dest => dest.Institution, opt => opt.Ignore());
     }
 }
