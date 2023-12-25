@@ -35,10 +35,10 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
         [FromQuery] string id,
         [FromQuery] bool brief = true)
     {
-        // if (!Globals.AvailableTypes.Contains(type))
-        // {
-        //     return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
-        // }
+        if (!Globals.AvailableTypes.Contains(type))
+        {
+            return new BadRequestResponse(new BadRequestDto($"Invalid type {type}"));
+        }
 
         try
         {
