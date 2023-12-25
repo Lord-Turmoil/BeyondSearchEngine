@@ -51,7 +51,7 @@ public class WorkQueryController : BaseController<WorkQueryController>
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("basic")]
     public async Task<ApiResponse> QueryBasic([FromBody] QueryWorkBasicDto dto)
     {
@@ -71,7 +71,7 @@ public class WorkQueryController : BaseController<WorkQueryController>
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("advanced")]
     public async Task<ApiResponse> QueryAdvanced([FromBody] QueryWorkAdvancedDto dto)
     {
