@@ -87,5 +87,6 @@ public class AutoMapperProfile : MapperConfigurationExpression
             .ForMember(dest => dest.Institution, opt => opt.Ignore());
         CreateMap<Work, DeprecatedBriefWorkDto>()
             .ForMember(dest => dest.Authors, opt => opt.Ignore());
+        CreateMap<Work, DeprecatedWorkDto>();
     }
 }

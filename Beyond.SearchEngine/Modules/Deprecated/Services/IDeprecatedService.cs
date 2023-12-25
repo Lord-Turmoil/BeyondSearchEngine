@@ -21,4 +21,12 @@ public interface IDeprecatedService
     /// <param name="page"></param>
     /// <returns></returns>
     Task<ApiResponse> GetWorksOfAuthor(string id, bool brief, int pageSize, int page);
+
+    /// <summary>
+    ///     This will return deprecated work dto. With possible fake DOI and source name.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="brief"></param>
+    /// <returns></returns>
+    Task<ApiResponse> GetWorkById(string id, bool brief);
 }

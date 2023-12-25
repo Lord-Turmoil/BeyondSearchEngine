@@ -5,7 +5,6 @@ using Beyond.SearchEngine.Modules.Deprecated.Dtos;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.Shared.Dtos;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Nest;
 using Tonisoft.AspExtensions.Response;
 
@@ -88,6 +87,45 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
                 pageSize,
                 page,
                 response.Documents.Select(_mapper.Map<Work, WorkDto>).ToList());
+        }
+
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
+
+    public async Task<ApiResponse> GetWorkById(string id, bool brief)
+    {
+        string key = $"d:works:{id}:{brief}";
+        object? value = await _cache.GetAsync<object>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Work> response = await _client.SearchAsync<Work>(s => s
+            .Index("works")
+            .Query(q => q.Ids(i => i.Values(id))));
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        if (response.Documents.Count == 0)
+        {
+            return new NotFoundResponse(new NotFoundDto());
+        }
+
+        if (brief)
+        {
+            value = _mapper.Map<Work, DeprecatedBriefWorkDto>(response.Documents.First());
+        }
+        else
+        {
+            DeprecatedWorkDto dto = _mapper.Map<Work, DeprecatedWorkDto>(response.Documents.First());
+            dto.Mock();
+            value = dto;
         }
 
         await _cache.SetAsync(key, value);

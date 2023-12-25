@@ -11,7 +11,7 @@ namespace Beyond.SearchEngine.Modules.Deprecated.Controllers;
 ///     This controller is for all deprecated APIs.
 /// </summary>
 [ApiController]
-[Route("v1/search/deprecated")]
+[Route("v1/search/d")]
 public class DeprecatedController : BaseController<DeprecatedController>
 {
     private readonly IDeprecatedService _service;
@@ -57,6 +57,21 @@ public class DeprecatedController : BaseController<DeprecatedController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting deprecated works of author {id}", id);
+            return new InternalServerErrorResponse(new InternalServerErrorDto());
+        }
+    }
+
+    [HttpGet]
+    [Route("query/works/single")]
+    public async Task<ApiResponse> GetWorkById([FromQuery] string id, [FromQuery] bool brief = true)
+    {
+        try
+        {
+            return await _service.GetWorkById(id, brief);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting deprecated work by ID {id}", id);
             return new InternalServerErrorResponse(new InternalServerErrorDto());
         }
     }
