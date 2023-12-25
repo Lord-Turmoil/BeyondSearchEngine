@@ -113,7 +113,7 @@ public class QueryWorkAllFieldsDto : PagedRequestDto
             return false;
         }
 
-        if (OrderBy != null && Globals.AvailableSortFiled.Contains(OrderBy.Field))
+        if (OrderBy != null && !Globals.AvailableSortFiled.Contains(OrderBy.Field))
         {
             return false;
         }
