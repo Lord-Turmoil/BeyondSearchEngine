@@ -75,4 +75,24 @@ public class DeprecatedController : BaseController<DeprecatedController>
             return new InternalServerErrorResponse(new InternalServerErrorDto());
         }
     }
+
+    [HttpGet]
+    [Route("query/works/citation")]
+    public async Task<ApiResponse> GetWorkCitations([FromQuery] IReadOnlyCollection<string> idList)
+    {
+        if (ListValidator.IsInvalidIdList(idList))
+        {
+            return new BadRequestResponse(new InvalidIdListDto());
+        }
+
+        try
+        {
+            return await _service.GetWorkCitations(idList);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting deprecated work citations by ID list {idList}", idList);
+            return new InternalServerErrorResponse(new InternalServerErrorDto());
+        }
+    }
 }

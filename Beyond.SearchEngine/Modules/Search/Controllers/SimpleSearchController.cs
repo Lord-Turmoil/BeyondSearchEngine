@@ -71,7 +71,7 @@ public class SimpleSearchController : BaseController<SimpleSearchController>
 
         if (ListValidator.IsInvalidIdList(idList))
         {
-            return new BadRequestResponse(new BadRequestDto("Invalid id list"));
+            return new BadRequestResponse(new InvalidIdListDto());
         }
 
         try

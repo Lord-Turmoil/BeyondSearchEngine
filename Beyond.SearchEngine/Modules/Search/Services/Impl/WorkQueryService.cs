@@ -152,7 +152,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
                 continue;
             }
 
-            string key = $"{IndexName}:citation:{id}";
+            string key = $"{IndexName}:citation:{type}:{id}";
             string? citation = await _cache.GetStringAsync(key);
             if (citation != null)
             {

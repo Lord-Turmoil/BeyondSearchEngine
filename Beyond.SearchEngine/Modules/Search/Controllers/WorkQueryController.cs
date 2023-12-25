@@ -122,7 +122,7 @@ public class WorkQueryController : BaseController<WorkQueryController>
     {
         if (ListValidator.IsInvalidIdList(idList))
         {
-            return new BadRequestResponse(new BadRequestDto("Invalid id list"));
+            return new BadRequestResponse(new InvalidIdListDto());
         }
 
         try

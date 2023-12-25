@@ -4,6 +4,7 @@ using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Deprecated.Dtos;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
+using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Dtos;
 using Nest;
 using Tonisoft.AspExtensions.Response;
@@ -131,5 +132,61 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
         await _cache.SetAsync(key, value);
 
         return new OkResponse(new OkDto(data: value));
+    }
+
+    public Task<ApiResponse> GetWorkCitations(IReadOnlyCollection<string> idList)
+    {
+        /*
+        foreach (string id in idList)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                continue;
+            }
+
+            string key = $"{IndexName}:citation:{type}:{id}";
+            string? citation = await _cache.GetStringAsync(key);
+            if (citation != null)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    builder.AppendLine();
+                }
+
+                builder.AppendLine(citation);
+                continue;
+            }
+
+            var work = await agent.GetModelById<Work>(IndexName, id);
+            if (work == null)
+            {
+                // Warning: We swallow this error.
+                continue;
+            }
+
+            // Each citation is guaranteed to have a line separator.
+            citation = CitationGenerator.GenerateCitation(type, work);
+            if (citation == null)
+            {
+                return new BadRequestResponse(new BadRequestDto("Invalid citation type"));
+            }
+
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                builder.AppendLine();
+            }
+
+            builder.Append(citation);
+        }
+        */
+        throw new NotImplementedException();
     }
 }

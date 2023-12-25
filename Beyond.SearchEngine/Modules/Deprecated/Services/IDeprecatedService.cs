@@ -29,4 +29,11 @@ public interface IDeprecatedService
     /// <param name="brief"></param>
     /// <returns></returns>
     Task<ApiResponse> GetWorkById(string id, bool brief);
+
+    /// <summary>
+    ///     This will return all citations of work.
+    /// </summary>
+    /// <param name="idList"></param>
+    /// <returns></returns>
+    Task<ApiResponse> GetWorkCitations(IReadOnlyCollection<string> idList);
 }
