@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
 using Beyond.SearchEngine.Modules.Deprecated.Dtos;
@@ -134,9 +135,14 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
         return new OkResponse(new OkDto(data: value));
     }
 
-    public Task<ApiResponse> GetWorkCitations(IReadOnlyCollection<string> idList)
+    private readonly string[] CitationTypes = ["bibtex", "endnote", "acm"];
+
+    public async Task<ApiResponse> GetWorkCitations(IReadOnlyCollection<string> idList)
     {
-        /*
+        bool[] first = [true, true, true];
+        StringBuilder[] builder = [new StringBuilder(), new StringBuilder(), new StringBuilder()];
+        var agent = new SearchAgent(_client, _mapper, _cache);
+
         foreach (string id in idList)
         {
             if (string.IsNullOrEmpty(id))
@@ -144,49 +150,50 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
                 continue;
             }
 
-            string key = $"{IndexName}:citation:{type}:{id}";
-            string? citation = await _cache.GetStringAsync(key);
-            if (citation != null)
-            {
-                if (first)
-                {
-                    first = false;
-                }
-                else
-                {
-                    builder.AppendLine();
-                }
-
-                builder.AppendLine(citation);
-                continue;
-            }
-
-            var work = await agent.GetModelById<Work>(IndexName, id);
+            var work = await agent.GetModelById<Work>("works", id);
             if (work == null)
             {
                 // Warning: We swallow this error.
                 continue;
             }
 
-            // Each citation is guaranteed to have a line separator.
-            citation = CitationGenerator.GenerateCitation(type, work);
-            if (citation == null)
+            for (int i = 0; i < 3; i++)
             {
-                return new BadRequestResponse(new BadRequestDto("Invalid citation type"));
-            }
+                string type = CitationTypes[i];
+                string key = $"d:works:citation:{type}:{id}";
+                string? citation = await _cache.GetStringAsync(key);
+                if (citation != null)
+                {
+                    builder[i].AppendLine(citation);
+                    continue;
+                }
 
-            if (first)
-            {
-                first = false;
-            }
-            else
-            {
-                builder.AppendLine();
-            }
+                // Each citation is guaranteed to have a line separator.
+                citation = CitationGenerator.GenerateCitation(type, work);
+                if (citation == null)
+                {
+                    return new BadRequestResponse(new BadRequestDto("Invalid citation type"));
+                }
 
-            builder.Append(citation);
+                if (first[i])
+                {
+                    first[i] = false;
+                }
+                else
+                {
+                    builder[i].AppendLine();
+                }
+
+                builder[i].Append(citation);
+            }
         }
-        */
-        throw new NotImplementedException();
+
+        var dto = new DeprecatedCitationDto {
+            Bibtex = builder[0].ToString(),
+            Endnote = builder[1].ToString(),
+            Acm = builder[2].ToString()
+        };
+
+        return new OkResponse(new OkDto(data: dto));
     }
 }

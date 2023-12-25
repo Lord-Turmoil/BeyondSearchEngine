@@ -11,18 +11,18 @@ public class DeprecatedWorkDto : OpenAlexDto
     private static readonly Random random = new();
 
     private static readonly string[] SourceNames = {
-        "PubMed",
-        "Springer",
-        "IEEE",
-        "ACM",
-        "Elsevier",
-        "Wiley",
-        "Taylor & Francis",
-        "Oxford University Press",
-        "Cambridge University Press",
-        "SAGE",
-        "Nature",
-        "Science"
+        "Nagoya JALT journal",
+        "Perio J (Online)",
+        "FoDEx-Studie",
+        "Borobudur Engineering Review",
+        "ESTEEM Academic Journal",
+        "Moldovan Journal of Health Sciences",
+        "Kifah Jurnal Pengabdian Masyarakat",
+        "Revista Apthapi",
+        "Laborem",
+        "SilvaWorld",
+        "Journal of Philosophy and Ethics",
+        "Archives of Oncology and Cancer Therapy"
     };
 
     [JsonProperty(PropertyName = "doi")]

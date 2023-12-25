@@ -65,12 +65,12 @@ public static class CitationGenerator
                 .AppendLine("},");
         }
 
-        if (!string.IsNullOrEmpty(work.Abstract))
-        {
-            builder.Append("abstract = {")
-                .Append(work.Abstract)
-                .AppendLine("},");
-        }
+        // if (!string.IsNullOrEmpty(work.Abstract))
+        // {
+        //     builder.Append("abstract = {")
+        //         .Append(work.Abstract)
+        //         .AppendLine("},");
+        // }
 
         builder.AppendLine("}");
     }

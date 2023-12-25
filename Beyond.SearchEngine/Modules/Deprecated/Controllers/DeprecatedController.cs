@@ -78,7 +78,7 @@ public class DeprecatedController : BaseController<DeprecatedController>
 
     [HttpGet]
     [Route("query/works/citation")]
-    public async Task<ApiResponse> GetWorkCitations([FromQuery] IReadOnlyCollection<string> idList)
+    public async Task<ApiResponse> GetWorkCitations([FromQuery(Name = "ids")] IReadOnlyCollection<string> idList)
     {
         if (ListValidator.IsInvalidIdList(idList))
         {
