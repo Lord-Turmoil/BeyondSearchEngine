@@ -173,4 +173,35 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
         return new OkResponse(new OkDto(data: value));
     }
+
+    public async Task<ApiResponse> SearchSource(string query, int pageSize, int page)
+    {
+        string key = $"{IndexName}:search:{query}:{pageSize}:{page}";
+        var value = await _cache.GetAsync<PagedDto>(key);
+        if (value != null)
+        {
+            return new OkResponse(new OkDto(data: value));
+        }
+
+        ISearchResponse<Source> response = await _client.SearchAsync<Source>(s => s.Index(IndexName)
+            .From(page * pageSize)
+            .Size(pageSize)
+            .Sort(ss => ss.Field(f => f.HIndex, SortOrder.Descending))
+            .Query(q => q.Match(m => m.Field(f => f.Name)
+                .Query(query).Fuzziness(Globals.DefaultFuzziness))));
+        if (!response.IsValid)
+        {
+            _logger.LogError(response.DebugInformation);
+            return new InternalServerErrorResponse(new SearchFailedDto());
+        }
+
+        value = new PagedDto(
+            response.Total,
+            pageSize,
+            page,
+            response.Documents.Select(_mapper.Map<Source, DehydratedStatisticsModelDto>));
+        await _cache.SetAsync(key, value);
+
+        return new OkResponse(new OkDto(data: value));
+    }
 }

@@ -101,4 +101,27 @@ public class SourceQueryController : BaseController<SourceQueryController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("basic")]
+    public async Task<ApiResponse> SearchBasic(
+        [FromQuery] string query,
+        [FromQuery(Name = "ps")] int pageSize = Globals.DefaultPageSize,
+        [FromQuery(Name = "p")] int page = Globals.DefaultPage)
+    {
+        if (PaginationValidator.IsInvalid(pageSize, page))
+        {
+            return new BadRequestResponse(new InvalidPaginationDto());
+        }
+
+        try
+        {
+            return await _service.SearchSource(query, pageSize, page);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while searching sources with {query}", query);
+            return new InternalServerErrorResponse(new InternalServerErrorDto(e.Message));
+        }
+    }
 }

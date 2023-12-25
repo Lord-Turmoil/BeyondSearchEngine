@@ -13,4 +13,6 @@ public interface ISourceQueryService
     Task<ApiResponse> GetRandom(bool brief, int pageSize);
 
     Task<ApiResponse> GetTopSourceStatisticsByWorksCount(int pageSize, int page);
+
+    Task<ApiResponse> SearchSource(string query, int pageSize, int page);
 }
