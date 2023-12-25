@@ -25,7 +25,4 @@ public class DehydratedStatisticsModelDto
 
     [JsonProperty(PropertyName = "h_index")]
     public int HIndex { get; set; }
-
-    [JsonProperty(PropertyName = "updated")]
-    public DateTime Updated { get; set; }
 }
