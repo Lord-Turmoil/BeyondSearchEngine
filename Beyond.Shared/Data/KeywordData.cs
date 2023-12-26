@@ -43,11 +43,19 @@ public class KeywordData
     {
         // BUG: The data may contain '&lt;' or other HTML escape characters
         // This will cause the split to fail. Here is a quick fix.
-        if (string.IsNullOrEmpty(data)  || data.Contains('&'))
+        if (string.IsNullOrEmpty(data) || data.Contains('&'))
         {
             return [];
         }
 
-        return data.Split(';').Select(c => new KeywordData(c)).ToList();
+        try
+        {
+            return data.Split(';').Select(c => new KeywordData(c)).ToList();
+        }
+        catch (Exception ex)
+        {
+            // BUG: We swallow this bug. Potential mul-format data.
+            return [];
+        }
     }
 }

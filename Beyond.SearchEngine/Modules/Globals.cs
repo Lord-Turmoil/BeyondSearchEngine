@@ -8,8 +8,8 @@ public static class Globals
 {
     public const int DefaultPageSize = 20;
     public const int DefaultPage = 0;
-    public const int MaxPageSize = 100;
-    public const int MaxPagePressure = 1000;
+    public const int MaxPageSize = 1000;
+    public const int MaxPagePressure = 9000;
 
     public static readonly HashSet<string> AvailableTypes = [
         "authors",
