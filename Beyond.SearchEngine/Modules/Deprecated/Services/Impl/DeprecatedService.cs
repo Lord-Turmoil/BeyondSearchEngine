@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using System.Text;
 using AutoMapper;
 using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Extensions.Module;
@@ -15,6 +17,8 @@ namespace Beyond.SearchEngine.Modules.Deprecated.Services.Impl;
 public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedService
 {
     private readonly ICacheAdapter _cache;
+
+    private readonly string[] CitationTypes = ["bibtex", "endnote", "acm"];
 
     public DeprecatedService(IElasticClient client, IMapper mapper, ILogger<DeprecatedService> logger,
         ICacheAdapter cache)
@@ -134,8 +138,6 @@ public class DeprecatedService : ElasticService<DeprecatedService>, IDeprecatedS
 
         return new OkResponse(new OkDto(data: value));
     }
-
-    private readonly string[] CitationTypes = ["bibtex", "endnote", "acm"];
 
     public async Task<ApiResponse> GetWorkCitations(IReadOnlyCollection<string> idList)
     {

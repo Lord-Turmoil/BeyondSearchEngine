@@ -14,6 +14,8 @@ public class WorkStatisticsService : BaseService<WorkStatisticsService>, IWorkSt
 {
     private readonly ICacheAdapter _cache;
 
+    private readonly Random _random = new();
+
     public WorkStatisticsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<WorkStatisticsService> logger,
         ICacheAdapter cache) : base(unitOfWork, mapper, logger)
     {
@@ -110,8 +112,6 @@ public class WorkStatisticsService : BaseService<WorkStatisticsService>, IWorkSt
     {
         return $"work:statistics:{id}";
     }
-
-    private readonly Random _random = new();
 
     private async Task<WorkStatistics?> GetOrCreateStatistics(string id)
     {

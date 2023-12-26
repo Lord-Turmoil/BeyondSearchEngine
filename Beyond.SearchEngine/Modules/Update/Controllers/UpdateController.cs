@@ -64,5 +64,4 @@ public class UpdateController : BaseController<UpdateController>
     {
         return _updateService.QueryVersion();
     }
-
 }

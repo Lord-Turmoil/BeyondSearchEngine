@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Beyond.SearchEngine.Modules.Statistics.Models;
 

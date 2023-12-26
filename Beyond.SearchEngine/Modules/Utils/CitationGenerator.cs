@@ -145,8 +145,7 @@ public static class CitationGenerator
 
     private static string GetBibtexEntryType(string openAlexType)
     {
-        return openAlexType switch
-        {
+        return openAlexType switch {
             "article" => "article",
             "book-chapter" => "incollection",
             "dissertation" => "phdthesis",
@@ -157,8 +156,7 @@ public static class CitationGenerator
 
     private static string GetEndNoteEntryType(string openAlexType)
     {
-        return openAlexType switch
-        {
+        return openAlexType switch {
             "book" => "Book",
             "book-chapter" => "Book",
             "article" => "Journal Article",

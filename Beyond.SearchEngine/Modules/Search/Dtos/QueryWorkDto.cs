@@ -108,6 +108,7 @@ public class QueryWorkAllFieldsDto : PagedRequestDto
         {
             return false;
         }
+
         if (TimeRange != null && TimeRange.From > TimeRange.To)
         {
             return false;

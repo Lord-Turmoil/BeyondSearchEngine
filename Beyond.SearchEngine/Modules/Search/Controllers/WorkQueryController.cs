@@ -4,7 +4,6 @@ using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Services;
 using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
 
@@ -117,7 +116,8 @@ public class WorkQueryController : BaseController<WorkQueryController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while querying works with {dto}", dto);
-            return await Task.FromResult<ApiResponse>(new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
+            return await Task.FromResult<ApiResponse>(
+                new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
         }
     }
 

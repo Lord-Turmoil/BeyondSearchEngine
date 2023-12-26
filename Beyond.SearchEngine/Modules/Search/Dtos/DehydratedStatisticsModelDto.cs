@@ -28,7 +28,7 @@ public class DehydratedStatisticsModelDto
 
     // [JsonProperty(PropertyName = "created")]
     // public DateTime Created { get; set; }
-       
+
     // [JsonProperty(PropertyName = "updated")]
     // public DateTime Updated { get; set; }
 }

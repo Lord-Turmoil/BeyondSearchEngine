@@ -396,6 +396,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
             results
         );
     }
+
     private static BoolQueryDescriptor<Work> ConstructBasicQueryDescriptor(
         BoolQueryDescriptor<Work> descriptor,
         QueryWorkBasicDto dto)

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using System.Globalization;
 using System.Text;
 using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;

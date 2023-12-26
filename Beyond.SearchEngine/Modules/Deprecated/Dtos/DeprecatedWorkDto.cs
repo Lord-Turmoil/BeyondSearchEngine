@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Beyond.SearchEngine.Modules.Search.Models;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
 using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;
 using Beyond.Shared.Dtos;
@@ -80,6 +80,4 @@ public class DeprecatedWorkDto : OpenAlexDto
             SourceData = DataMock.RandomSourceData();
         }
     }
-
-
 }

@@ -84,7 +84,8 @@ public class ConceptQueryController : BaseController<ConceptQueryController>
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting random hot concepts");
-            return await Task.FromResult<ApiResponse>(new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
+            return await Task.FromResult<ApiResponse>(
+                new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message)));
         }
     }
 }

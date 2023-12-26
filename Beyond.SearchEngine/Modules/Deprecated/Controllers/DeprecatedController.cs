@@ -1,4 +1,6 @@
-﻿using Beyond.SearchEngine.Modules.Deprecated.Services;
+﻿// Copyright (C) 2018 - 2023 Tony's Studio. All rights reserved.
+
+using Beyond.SearchEngine.Modules.Deprecated.Services;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;

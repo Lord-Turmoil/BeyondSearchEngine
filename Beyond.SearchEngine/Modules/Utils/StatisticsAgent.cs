@@ -5,9 +5,7 @@ using Beyond.SearchEngine.Extensions.Cache;
 using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Models;
 using Beyond.SearchEngine.Modules.Search.Services.Exceptions;
-using Beyond.Shared.Dtos;
 using Nest;
-using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine.Modules.Utils;
 
