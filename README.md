@@ -38,11 +38,8 @@ It was an amazing experience working with ASP.NET Core and Elasticsearch. Here a
 
 At the very beginning, you need to [Setup Elasticsearch With Kibana](https://www.tonys-studio.top/posts/Setup-Elasticsearch-with-Kibana/). Then, if you need to move your data from a relational database, see how to [Ingest Data From MySQL to Elasticsearch](https://www.tonys-studio.top/posts/Ingest-Data-from-MySQL-to-Elasticsearch/). Next, as your first step towards cross-platform development with .NET, you can skim over [Cross-Platform Development With .NET Core](https://www.tonys-studio.top/posts/Cross-platform-Development-with-NET-Core/). At last, [Empower ASP.NET Core With Elasticsearch](https://www.tonys-studio.top/posts/Empower-ASP-NET-Core-with-Elasticsearch/), you can.
 
-{% note info flat %}
-
-If you encountered some performance issue when indexing large amount of data, you can reach out to [Bulk Task Optimization in C#](https://www.tonys-studio.top/posts/Bulk-Task-Optimization-in-C/).
-
-{% endnote %}
+> If you encountered some performance issue when indexing large amount of data, you can reach out to [Bulk Task Optimization in C#](https://www.tonys-studio.top/posts/Bulk-Task-Optimization-in-C/).
+>
 
 ---
 
