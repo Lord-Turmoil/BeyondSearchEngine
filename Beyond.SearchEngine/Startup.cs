@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Nest;
 using Tonisoft.AspExtensions.Cors;
 using Tonisoft.AspExtensions.Module;
+using Tonisoft.AspExtensions.Response;
 
 namespace Beyond.SearchEngine;
 
@@ -146,7 +147,6 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapSwagger();
         });
-
 
         // loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\BeyondSearch.Api.log");
     }

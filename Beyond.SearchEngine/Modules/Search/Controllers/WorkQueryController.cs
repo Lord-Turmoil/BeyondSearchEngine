@@ -4,6 +4,7 @@ using Beyond.SearchEngine.Modules.Search.Dtos;
 using Beyond.SearchEngine.Modules.Search.Services;
 using Beyond.SearchEngine.Modules.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using Tonisoft.AspExtensions.Module;
 using Tonisoft.AspExtensions.Response;
 
@@ -63,7 +64,9 @@ public class WorkQueryController : BaseController<WorkQueryController>
 
         try
         {
-            return await _service.QueryWorksBasic(dto);
+            ApiResponse response = await _service.QueryWorksBasic(dto);
+            Response.Headers.Append("Access-Control-Expose-Headers", "X-Response-Time");
+            return response;
         }
         catch (Exception ex)
         {
@@ -84,7 +87,9 @@ public class WorkQueryController : BaseController<WorkQueryController>
 
         try
         {
-            return await _service.QueryWorksAdvanced(dto);
+            ApiResponse response = await _service.QueryWorksAdvanced(dto);
+            Response.Headers.Append("Access-Control-Expose-Headers", "X-Response-Time");
+            return response;
         }
         catch (Exception ex)
         {
@@ -105,7 +110,9 @@ public class WorkQueryController : BaseController<WorkQueryController>
 
         try
         {
-            return await _service.QueryWorksWithAllFields(dto);
+            ApiResponse response = await _service.QueryWorksWithAllFields(dto);
+            Response.Headers.Append("Access-Control-Expose-Headers", "X-Response-Time");
+            return response;
         }
         catch (Exception ex)
         {
