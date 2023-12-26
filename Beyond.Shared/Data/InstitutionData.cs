@@ -70,6 +70,11 @@ public class InstitutionData
             return [];
         }
 
+        if (data.Contains('&'))
+        {
+            return [];
+        }
+
         return data.Split(';').Select(c => new InstitutionData(c)).ToList();
     }
 }

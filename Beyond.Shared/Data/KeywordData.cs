@@ -41,7 +41,9 @@ public class KeywordData
 
     public static List<KeywordData> BuildList(string data)
     {
-        if (string.IsNullOrEmpty(data))
+        // BUG: The data may contain '&lt;' or other HTML escape characters
+        // This will cause the split to fail. Here is a quick fix.
+        if (string.IsNullOrEmpty(data)  || data.Contains('&'))
         {
             return [];
         }

@@ -404,6 +404,11 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
 
         foreach (BasicCondition cond in dto.Conditions)
         {
+            if (string.IsNullOrEmpty(cond.Value))
+            {
+                continue;
+            }
+
             Expression<Func<Work, string>>? field = GetField(cond.Field);
             if (field == null)
             {
@@ -453,6 +458,11 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
     {
         foreach (AdvancedCondition cond in dto.Conditions)
         {
+            if (string.IsNullOrEmpty(cond.Value))
+            {
+                continue;
+            }
+
             Expression<Func<Work, string>>? field = GetField(cond.Field);
             if (field != null)
             {

@@ -105,7 +105,7 @@ public class WorkQueryController : BaseController<WorkQueryController>
     {
         if (!dto.Verify())
         {
-            return await Task.FromResult<ApiResponse>(new BadRequestResponse(new BadRequestDto()));
+            return new BadRequestResponse(new BadRequestDto());
         }
 
         try

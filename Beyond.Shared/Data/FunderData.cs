@@ -45,7 +45,7 @@ public class FunderData
 
     public static List<FunderData> BuildList(string data)
     {
-        if (string.IsNullOrEmpty(data))
+        if (string.IsNullOrEmpty(data) || data.Contains('&'))
         {
             return [];
         }
