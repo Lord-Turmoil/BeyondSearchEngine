@@ -12,7 +12,7 @@ public class Work : OpenAlexModel
     /// </summary>
     public string Doi { get; set; }
 
-    public string FullDoi => "https://doi.org/" + Doi;
+    public string FullDoi => string.IsNullOrEmpty(Doi) ? string.Empty : "https://doi.org/" + Doi;
 
 
     /***               Basics               ***/
