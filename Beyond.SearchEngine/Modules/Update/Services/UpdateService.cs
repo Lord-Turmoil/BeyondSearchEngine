@@ -93,4 +93,9 @@ public class UpdateService : BaseService<UpdateService>, IUpdateService
         bool status = UpdateMutex.IsUpdating(type);
         return new OkResponse(new OkDto(data: status));
     }
+
+    public ApiResponse QueryVersion()
+    {
+        return new OkResponse(new OkDto(data: Globals.Version));
+    }
 }

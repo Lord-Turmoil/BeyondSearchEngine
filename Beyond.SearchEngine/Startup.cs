@@ -30,6 +30,9 @@ public class Startup
         services.AddUnitOfWork<BeyondContext>();
         services.RegisterModules();
 
+        // Version
+        Globals.Version = _configuration["Version"] ?? Globals.Version;
+
         // Controllers
         services.AddControllers().AddNewtonsoftJson();
 

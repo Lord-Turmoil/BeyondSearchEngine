@@ -57,4 +57,12 @@ public class UpdateController : BaseController<UpdateController>
             return new InternalServerErrorResponse(new InternalServerErrorDto(ex.Message));
         }
     }
+
+    [HttpGet]
+    [Route("~/v1/search/version")]
+    public ApiResponse QueryVersion()
+    {
+        return _updateService.QueryVersion();
+    }
+
 }

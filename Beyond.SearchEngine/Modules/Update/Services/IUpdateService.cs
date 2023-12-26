@@ -12,4 +12,6 @@ public interface IUpdateService
     Task<ApiResponse> ConfigureUpdate(ConfigureUpdateDto dto);
 
     ApiResponse QueryUpdateStatus(string type);
+
+    ApiResponse QueryVersion();
 }
