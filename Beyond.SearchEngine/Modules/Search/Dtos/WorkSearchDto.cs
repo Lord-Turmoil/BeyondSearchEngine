@@ -42,6 +42,9 @@ public class WorkSearchDto : OpenAlexDto
     [JsonProperty(PropertyName = "source")]
     public SourceData? SourceData { get; set; }
 
+    [JsonProperty(PropertyName = "publish_by")]
+    public string PublishBy { get; set; }
+
     [JsonProperty(PropertyName = "concepts")]
     public List<ConceptData> ConceptList { get; set; }
 
@@ -89,12 +92,22 @@ public class WorkSearchDto : OpenAlexDto
         {
             builder.Append(PublicationYear);
         }
+
+        TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
         builder.Append(", ");
-        builder.Append(Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Type));
+        builder.Append(textInfo.ToTitleCase(Type));
         builder.Append(", ");
         builder.Append(FullDoi);
 
         Source = builder.ToString();
+
+        string publishBy = textInfo.ToTitleCase(SourceData.Name);
+        string temp = string.Join(null, publishBy.Split(' ').Select(x => textInfo.ToUpper(x[0])));
+        PublishBy = temp.Length > 4 ? temp[..4] : temp;
+        if (PublishBy.Length < 2)
+        {
+            PublishBy += textInfo.ToUpper(publishBy[1]);
+        }
 
         return this;
     }
