@@ -36,10 +36,10 @@ public class WorkSearchDto : OpenAlexDto
 
     /***               Relations              ***/
 
-    [JsonProperty(PropertyName = "source")]
+    [JsonProperty(PropertyName = "source_text")]
     public string Source { get; set; }
 
-    [JsonIgnore]
+    [JsonProperty(PropertyName = "source")]
     public SourceData? SourceData { get; set; }
 
     [JsonProperty(PropertyName = "concepts")]

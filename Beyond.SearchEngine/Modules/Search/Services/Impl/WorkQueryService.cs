@@ -505,10 +505,7 @@ public class WorkQueryService : ElasticService<WorkQueryService>, IWorkQueryServ
         descriptor.Should(should => should.MultiMatch(m => m
             .Fields(f => f.Field(w => w.Title)
                 .Field(w => w.Authors)
-                .Field(w => w.Abstract)
-                .Field(w => w.Keywords)
-                .Field(w => w.Concepts)
-                .Field(w => w.Source))
+                .Field(w => w.Abstract))
             .Query(dto.Query)));
 
         if (dto.TimeRange != null)
