@@ -91,7 +91,7 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
 
     public async Task<ApiResponse> GetRandomHot(bool brief, int pageSize)
     {
-        int page = DataMock.RandomInt(0, Globals.MaxPagePressure / pageSize);
+        int page = DataMock.RandomInt(0, 300 / pageSize);
 
         string key = $"{IndexName}:random:{brief}:{pageSize}:{page}";
         var value = await _cache.GetAsync<PagedDto>(key);
@@ -104,8 +104,8 @@ public class SourceQueryService : ElasticService<SourceQueryService>, ISourceQue
             .Index(IndexName)
             .From(page * pageSize)
             .Size(pageSize)
-            .Sort(ss => ss.Field(f => f.HIndex, SortOrder.Descending))
-            .Query(q => q.MatchAll()));
+            .Query(q => q.Range(m => m.Field(f => f.HIndex).GreaterThan(300)))
+            .PostFilter(f => f.FunctionScore(fs => fs.Functions(fu => fu.RandomScore()))));
 
         if (!response.IsValid)
         {

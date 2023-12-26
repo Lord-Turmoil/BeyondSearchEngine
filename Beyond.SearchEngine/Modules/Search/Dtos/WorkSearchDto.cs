@@ -2,11 +2,12 @@
 using System.Text;
 using Beyond.SearchEngine.Modules.Utils;
 using Beyond.Shared.Data;
+using Beyond.Shared.Dtos;
 using Newtonsoft.Json;
 
 namespace Beyond.SearchEngine.Modules.Search.Dtos;
 
-public class WorkSearchDto
+public class WorkSearchDto : OpenAlexDto
 {
     [JsonProperty(PropertyName = "doi")]
     public string FullDoi { get; set; }
